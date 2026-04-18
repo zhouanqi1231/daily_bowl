@@ -17,15 +17,11 @@ class UserProfileScreen extends StatelessWidget {
       backgroundColor: appTheme.white_A700,
       appBar: CustomAppBar(
         leadingIcon: ImageConstant.imgMenu,
-        onLeadingPressed: () => Get.toNamed(AppRoutes.settingsMenuScreen),
-        actions: [
-          GestureDetector(
+        onLeadingTap: () => Get.toNamed(AppRoutes.settingsMenuScreen),
+        actionIcons: [
+          CustomAppBarAction(
+            iconPath: ImageConstant.imgShare,
             onTap: () => controller.onSharePressed(),
-            child: CustomImageView(
-              imagePath: ImageConstant.imgShare,
-              height: 24.h,
-              width: 24.h,
-            ),
           ),
         ],
         backgroundColor: appTheme.white_A700,

@@ -67,18 +67,15 @@ class RecipeSearchResultsScreen
       selectedIndex: 0,
       onChanged: (index) {
         var bottomBarItem = bottomBarItemList[index];
-        Get.toNamed(bottomBarItem.routeName, id: 1);
+        Get.toNamed(bottomBarItem.routeName!, id: 1);
       },
-      backgroundColor: appTheme.purple_50,
-      activeColor: appTheme.deep_purple_50_02,
-      inactiveColor: appTheme.gray_800,
     );
   }
 
   Widget getCurrentPage(String currentRoute) {
     switch (currentRoute) {
       case AppRoutes.recipeSearchResultsScreen:
-        return recipeSearchResultsScreen();
+        return RecipeSearchResultsScreenInitialPage();
       default:
         return Container();
     }

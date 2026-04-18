@@ -153,4 +153,6 @@ class TextStyleHelper {
     fontFamily: 'Roboto',
     color: appTheme.red_900,
   );
+
+  TextStyle get bodyTextRoboto => TextStyle(fontFamily: 'Roboto');
 }

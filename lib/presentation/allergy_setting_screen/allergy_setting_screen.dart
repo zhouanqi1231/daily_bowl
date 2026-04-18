@@ -25,7 +25,7 @@ class AllergySettingScreen extends GetWidget<AllergySettingController> {
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return CustomAppBar(
       leadingIcon: ImageConstant.imgArrowLeft,
-      onLeadingPressed: () {
+      onLeadingTap: () {
         Get.back();
       },
       backgroundColor: appTheme.transparentCustom,

@@ -13,7 +13,7 @@ class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
       backgroundColor: appTheme.deep_purple_50,
       appBar: CustomAppBar(
         leadingIcon: ImageConstant.imgArrowLeft,
-        onLeadingPressed: () => Get.back(),
+        onLeadingTap: () => Get.back(),
         backgroundColor: appTheme.transparentCustom,
         horizontalPadding: 18.h,
       ),
