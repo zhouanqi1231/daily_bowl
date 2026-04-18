@@ -69,6 +69,22 @@ class AppNavigationScreen extends GetWidget<AppNavigationController> {
                           AppRoutes.allergySettingScreen,
                         ),
                       ),
+                      _buildScreenTitle(
+                        context,
+                        screenTitle: "Explore",
+                        onTapScreenTitle: () => onTapScreenTitle(
+                          context,
+                          AppRoutes.recipeSearchResultsScreen,
+                        ),
+                      ),
+                      _buildScreenTitle(
+                        context,
+                        screenTitle: "Recipe Detail",
+                        onTapScreenTitle: () => onTapScreenTitle(
+                          context,
+                          AppRoutes.recipeDetailScreen,
+                        ),
+                      ),
                     ],
                   ),
                 ),
