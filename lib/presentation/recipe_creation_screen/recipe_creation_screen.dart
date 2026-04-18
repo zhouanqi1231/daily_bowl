@@ -123,7 +123,6 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                 return Container(
                   margin: EdgeInsets.only(bottom: 12.h),
                   child: Row(
-                    spacing: 10.h,
                     children: [
                       Expanded(
                         child: CustomFloatingTextField(
@@ -132,6 +131,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                           validator: controller.validateIngredientName,
                         ),
                       ),
+                      SizedBox(width: 10.h),
                       SizedBox(
                         width: 70.h,
                         child: CustomFloatingTextField(
@@ -147,6 +147,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                           validator: controller.validateIngredientQuantity,
                         ),
                       ),
+                      SizedBox(width: 10.h),
                       SizedBox(
                         width: 70.h,
                         child: CustomFloatingTextField(
@@ -206,7 +207,6 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
       padding: EdgeInsets.fromLTRB(24.h, 16.h, 24.h, 16.h),
       decoration: BoxDecoration(color: appTheme.white_A700),
       child: Row(
-        spacing: 20.h,
         children: [
           Expanded(
             child: CustomButton(
@@ -217,6 +217,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
               onPressed: () => controller.discardRecipe(),
             ),
           ),
+          SizedBox(width: 20.h),
           Expanded(
             child: Obx(
               () => CustomButton(

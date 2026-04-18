@@ -25,11 +25,13 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
                   padding: EdgeInsets.only(top: 12.h, left: 16.h, right: 16.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
-                    spacing: 16.h,
                     children: [
                       _buildRecipeHeaderSection(context),
+                      SizedBox(height: 16.h),
                       _buildIngredientsSection(context),
+                      SizedBox(height: 16.h),
                       _buildStepsSection(context),
+                      SizedBox(height: 16.h),
                       _buildUpdatedDateSection(context),
                     ],
                   ),
@@ -165,17 +167,17 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 14.h,
         children: [
           Text(
             "Ingredients",
             style: TextStyleHelper.instance.title16MediumRoboto,
           ),
+          SizedBox(height: 14.h),
           Obx(
             () => CustomIngredientsList(
               ingredientsList:
                   controller.recipeDetailModel.value?.ingredientsList?.value ??
-                  [], // Modified: Added null safety and proper value access for Rx<List<CustomIngredientsItem>>
+                  [],
             ),
           ),
         ],
@@ -191,12 +193,12 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 16.h,
             children: [
               Text(
                 "Steps",
                 style: TextStyleHelper.instance.title16MediumRoboto,
               ),
+              SizedBox(height: 16.h),
               Obx(
                 () => CustomInstructionList(
                   instructions:
@@ -205,7 +207,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
                           .value
                           ?.instructionsList
                           ?.value ??
-                      [], // Modified: Added null safety and proper value access for Rx<List<String>>
+                      [],
                 ),
               ),
             ],

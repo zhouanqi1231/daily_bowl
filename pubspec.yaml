@@ -2,10 +2,10 @@ name: recipe_master
 description: A new Flutter project.
 version: 1.0.0+1
 environment: 
-  sdk: ^3.9.0
+  sdk: '>=3.0.0 <4.0.0'
 dependencies: 
-  flutter:   # 🚨 CRITICAL: Required for every Flutter project - DO NOT REMOVE
-    sdk: flutter # 🚨 CRITICAL: Required for every Flutter project - DO NOT REMOVE
+  flutter: 
+    sdk: flutter 
   flutter_localizations: 
     sdk: flutter
   flutter_svg: ^2.0.12
@@ -21,10 +21,10 @@ dependencies:
   web: any
   universal_html: ^2.2.4
 dev_dependencies: 
-  flutter_test:    # 🚨 CRITICAL: Required for Flutter project testing - DO NOT REMOVE
-    sdk: flutter    # 🚨 CRITICAL: Required for Flutter project testing - DO NOT REMOVE
+  flutter_test: 
+    sdk: flutter
 flutter: 
-  uses-material-design: true # 🚨 CRITICAL: Required for Material icon font - DO NOT REMOVE
+  uses-material-design: true 
   assets: 
     - assets/
     - assets/images/
@@ -47,11 +47,3 @@ flutter:
       fonts: 
         - asset: assets/fonts/RozhaOneRegular.ttf
           weight: 400
-
-  # 🚨 CRITICAL ASSET MANAGEMENT RULES:
-  # - DO NOT ADD NEW ASSET DIRECTORIES (assets/svg/, assets/icons/, etc.)
-  # - ONLY USE EXISTING AND ITEMS AVAILABLE IN THE DIRECTORIES LISTED ABOVE (assets/, assets/images/)
-
-  # 🚨 CRITICAL FONTS RULE:
-  # - DO NOT ADD NEW LOCAL FONTS TO assets/fonts/ 
-  # - ONLY USE EXISTING LOCAL FONTS FROM assets/fonts/

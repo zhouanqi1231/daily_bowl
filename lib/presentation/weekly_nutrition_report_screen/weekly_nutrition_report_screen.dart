@@ -46,10 +46,10 @@ class WeeklyNutritionReportScreen
             width: double.infinity,
             margin: EdgeInsets.symmetric(horizontal: 12.h),
             child: Column(
-              spacing: 64.h,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 10.h),
                 GestureDetector(
                   onTap: () => Get.back(),
                   child: CustomImageView(
@@ -58,6 +58,7 @@ class WeeklyNutritionReportScreen
                     width: 24.h,
                   ),
                 ),
+                SizedBox(height: 64.h),
                 Padding(
                   padding: EdgeInsets.only(left: 4.h),
                   child: Text(
@@ -79,13 +80,15 @@ class WeeklyNutritionReportScreen
       width: double.infinity,
       margin: EdgeInsets.symmetric(horizontal: 16.h),
       child: Column(
-        spacing: 24.h,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 24.h),
           _buildRecipesSection(context),
+          SizedBox(height: 24.h),
           _buildIngredientsSection(context),
+          SizedBox(height: 24.h),
           _buildNutritionAnalysisSection(context),
+          SizedBox(height: 24.h),
           _buildCongratulationsSection(context),
         ],
       ),
@@ -104,7 +107,6 @@ class WeeklyNutritionReportScreen
         ),
         SizedBox(height: 20.h),
         Column(
-          spacing: 10.h,
           children: List.generate(
             controller.weeklyNutritionReportModel.value?.recipesList?.length ??
                 0,
@@ -113,11 +115,14 @@ class WeeklyNutritionReportScreen
                   .weeklyNutritionReportModel
                   .value!
                   .recipesList![index];
-              return CustomRecipeCard(
-                title: recipe.title?.value ?? '',
-                description: recipe.description?.value ?? '',
-                imagePath: recipe.imagePath?.value ?? '',
-                onTap: () => controller.onRecipeCardTapped(recipe),
+              return Padding(
+                padding: EdgeInsets.only(bottom: 10.h),
+                child: CustomRecipeCard(
+                  title: recipe.title?.value ?? '',
+                  description: recipe.description?.value ?? '',
+                  imagePath: recipe.imagePath?.value ?? '',
+                  onTap: () => controller.onRecipeCardTapped(recipe),
+                ),
               );
             },
           ),
@@ -180,7 +185,6 @@ class WeeklyNutritionReportScreen
             ],
           ),
           child: Column(
-            spacing: 28.h,
             children: [
               Padding(
                 padding: EdgeInsets.only(left: 16.h),
@@ -194,7 +198,9 @@ class WeeklyNutritionReportScreen
                   ),
                 ),
               ),
+              SizedBox(height: 28.h),
               _buildNutritionChart(context),
+              SizedBox(height: 28.h),
               _buildNutritionLegend(context),
             ],
           ),

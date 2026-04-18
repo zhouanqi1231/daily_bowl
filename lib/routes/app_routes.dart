@@ -7,6 +7,8 @@ import '../presentation/settings_menu_screen/settings_menu_screen.dart';
 import '../presentation/allergy_setting_screen/allergy_setting_screen.dart';
 import '../presentation/recipe_detail_screen/recipe_detail_screen.dart';
 import '../presentation/recipe_search_results_screen/recipe_search_results_screen.dart';
+import '../presentation/main_container_screen/main_container_screen.dart';
+import '../presentation/category_screen/category_screen.dart';
 
 import '../presentation/recipe_creation_screen/binding/recipe_creation_binding.dart';
 import '../presentation/weekly_nutrition_report_screen/binding/weekly_nutrition_report_binding.dart';
@@ -21,6 +23,8 @@ import '../presentation/recipe_search_results_screen/binding/recipe_search_resul
 
 // ignore_for_file: must_be_immutable
 class AppRoutes {
+  static const String mainContainer = '/main_container';
+  static const String categoryScreen = '/category_screen';
   static const String recipeCreationScreen = '/recipe_creation_screen';
   static const String weeklyNutritionReportScreen =
       '/weekly_nutrition_report_screen';
@@ -38,6 +42,14 @@ class AppRoutes {
   static const String initialRoute = '/';
 
   static List<GetPage> pages = [
+    GetPage(
+      name: mainContainer,
+      page: () => MainContainerScreen(),
+    ),
+    GetPage(
+      name: categoryScreen,
+      page: () => CategoryScreen(),
+    ),
     GetPage(
       name: recipeCreationScreen,
       page: () => RecipeCreationScreen(),
@@ -85,8 +97,7 @@ class AppRoutes {
     ),
     GetPage(
       name: initialRoute,
-      page: () => AppNavigationScreen(),
-      bindings: [AppNavigationBinding()],
+      page: () => MainContainerScreen(),
     ),
   ];
 }
