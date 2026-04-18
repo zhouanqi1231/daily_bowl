@@ -93,4 +93,10 @@ class LightCodeColors {
   // Color Shades - Each shade has its own dedicated constant
   Color get grey200 => Colors.grey.shade200;
   Color get grey100 => Colors.grey.shade100;
+
+  Color get red_900 => Color(0xFFB3261E);
+  Color get deep_orange_200 => Color(0xFFFFAAA5);
+  Color get gray_600 => Color(0xFF828282);
+  Color get deep_purple_50_01 => Color(0xFFECE6F0);
+  Color get deep_purple_50_02 => Color(0xFFE8DEF8);
 }

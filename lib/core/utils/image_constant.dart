@@ -39,4 +39,16 @@ class ImageConstant {
 
   // Custom Image View Screen
   static String imgImageNotFound = '${_basePath}image_not_found.png';
+
+  static String imgIconGray800 = 'assets/images/img_icon_gray_800.svg';
+  static String imgIconGray80024x24 =
+      'assets/images/img_icon_gray_800_24x24.svg';
+  static String imgMedia188x364 = 'assets/images/img_media_188x364.png';
+  static String imgFab = 'assets/images/img_fab.svg';
+  static String imgFabDeepPurple800 =
+      'assets/images/img_fab_deep_purple_800.svg';
+  static String imgGenericAvatar = 'assets/images/img_generic_avatar.svg';
+  static String imgIcon = 'assets/images/img_icon.svg';
+  static String imgCreateARecipe = 'assets/images/img_create_a_recipe.svg';
+  static String imgIcon24x24 = 'assets/images/img_icon_24x24.svg';
 }

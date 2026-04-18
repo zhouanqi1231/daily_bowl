@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
-import '../../widgets/custom_bottom_navigation_bar.dart';
+import '../../widgets/custom_bottom_bar.dart';
 import '../../widgets/custom_floating_action_button.dart';
 import './controller/recipe_search_results_controller.dart';
 import './recipe_search_results_screen_initial_page.dart';
@@ -16,7 +16,7 @@ class RecipeSearchResultsScreen
       child: Scaffold(
         body: Navigator(
           key: Get.nestedKey(1),
-          initialRoute: AppRoutes.recipeSearchResultsScreenInitialPage,
+          initialRoute: AppRoutes.recipeSearchResultsScreen,
           onGenerateRoute: (routeSetting) => GetPageRoute(
             page: () => getCurrentPage(routeSetting.name!),
             transition: Transition.noTransition,
@@ -38,31 +38,31 @@ class RecipeSearchResultsScreen
   }
 
   Widget _buildBottomNavigation() {
-    var bottomBarItemList = <CustomBottomNavigationBarItem>[
-      CustomBottomNavigationBarItem(
+    var bottomBarItemList = <CustomBottomBarItem>[
+      CustomBottomBarItem(
         icon: ImageConstant.imgNavExplore,
         activeIcon: ImageConstant.imgNavExplore,
         title: 'Explore',
-        routeName: AppRoutes.recipeSearchResultsScreenInitialPage,
+        routeName: AppRoutes.recipeSearchResultsScreen,
       ),
-      CustomBottomNavigationBarItem(
+      CustomBottomBarItem(
         icon: ImageConstant.imgNavCatagory,
         title: 'Category',
-        routeName: AppRoutes.recipeSearchResultsScreenInitialPage,
+        routeName: AppRoutes.recipeSearchResultsScreen,
       ),
-      CustomBottomNavigationBarItem(
+      CustomBottomBarItem(
         icon: ImageConstant.imgIcon24x24,
         title: 'Saved',
-        routeName: AppRoutes.recipeSearchResultsScreenInitialPage,
+        routeName: AppRoutes.recipeSearchResultsScreen,
       ),
-      CustomBottomNavigationBarItem(
+      CustomBottomBarItem(
         icon: ImageConstant.imgNavMe,
         title: 'Me',
-        routeName: AppRoutes.recipeSearchResultsScreenInitialPage,
+        routeName: AppRoutes.recipeSearchResultsScreen,
       ),
     ];
 
-    return CustomBottomNavigationBar(
+    return CustomBottomBar(
       bottomBarItemList: bottomBarItemList,
       selectedIndex: 0,
       onChanged: (index) {
@@ -77,8 +77,8 @@ class RecipeSearchResultsScreen
 
   Widget getCurrentPage(String currentRoute) {
     switch (currentRoute) {
-      case AppRoutes.recipeSearchResultsScreenInitialPage:
-        return RecipeSearchResultsScreenInitialPage();
+      case AppRoutes.recipeSearchResultsScreen:
+        return recipeSearchResultsScreen();
       default:
         return Container();
     }

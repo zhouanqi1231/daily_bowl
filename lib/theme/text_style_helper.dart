@@ -139,4 +139,18 @@ class TextStyleHelper {
     fontFamily: 'Roboto',
     color: appTheme.white_A700,
   );
+
+  TextStyle get headline32RegularRoboto => TextStyle(
+    fontSize: 32.fSize,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Roboto',
+    color: appTheme.black_900,
+  );
+
+  TextStyle get label11MediumRoboto => TextStyle(
+    fontSize: 11.fSize,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Roboto',
+    color: appTheme.red_900,
+  );
 }
