@@ -38,12 +38,7 @@ class SavedRecipeListController extends GetxController {
   }
 
   void onRecipeTap(int index) {
-    // Navigate to recipe details or perform action
-    Get.snackbar(
-      "Recipe Selected",
-      "You selected: ${recipeList[index].title?.value}",
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    Get.toNamed(AppRoutes.recipeDetailScreen);
   }
 
   void refreshRecipes() async {

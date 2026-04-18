@@ -52,14 +52,7 @@ class WeeklyNutritionReportController extends GetxController {
   }
 
   void onRecipeCardTapped(RecipeItemModel recipe) {
-    // Navigate to recipe details or perform action
-    Get.snackbar(
-      'Recipe Selected',
-      'Tapped on ${recipe.title?.value ?? "recipe"}',
-      backgroundColor: appTheme.deep_purple_50,
-      colorText: appTheme.blue_gray_800,
-      duration: Duration(seconds: 2),
-    );
+    Get.toNamed(AppRoutes.recipeDetailScreen);
   }
 
   void onBackPressed() {
