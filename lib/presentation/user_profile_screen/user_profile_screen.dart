@@ -15,17 +15,22 @@ class UserProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appTheme.white_A700,
-      appBar: CustomAppBar(
-        leadingIcon: ImageConstant.imgMenu,
-        onLeadingTap: () => Get.toNamed(AppRoutes.settingsMenuScreen),
-        actionIcons: [
-          CustomAppBarAction(
-            iconPath: ImageConstant.imgShare,
-            onTap: () => controller.onSharePressed(),
-          ),
-        ],
-        backgroundColor: appTheme.white_A700,
-        horizontalPadding: 24.h,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(100.h),
+        child: CustomAppBar(
+          height: 100.h,
+          topPadding: 20.h,
+          leadingIcon: ImageConstant.imgMenu,
+          onLeadingTap: () => Get.toNamed(AppRoutes.settingsMenuScreen),
+          actionIcons: [
+            CustomAppBarAction(
+              iconPath: ImageConstant.imgShare,
+              onTap: () => controller.onSharePressed(),
+            ),
+          ],
+          backgroundColor: appTheme.white_A700,
+          horizontalPadding: 24.h,
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

@@ -32,13 +32,13 @@ class WeeklyNutritionReportScreen
   Widget _buildHeaderSection(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 134.h,
+      height: 200.h, // Increased height for the header region
       child: Stack(
         alignment: Alignment.center,
         children: [
           CustomImageView(
             imagePath: ImageConstant.imgCoverImage,
-            height: 134.h,
+            height: 200.h, // Increased image height
             width: double.infinity,
             fit: BoxFit.cover,
           ),
@@ -49,22 +49,35 @@ class WeeklyNutritionReportScreen
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 10.h),
+                SizedBox(height: 50.h), // Lowered the back button position
                 GestureDetector(
                   onTap: () => Get.back(),
-                  child: CustomImageView(
-                    imagePath: ImageConstant.imgArrowLeftWhiteA700,
-                    height: 24.h,
-                    width: 24.h,
+                  child: Padding(
+                    padding: EdgeInsets.all(8.h),
+                    child: CustomImageView(
+                      imagePath: ImageConstant.imgArrowLeftWhiteA700,
+                      height: 24.h,
+                      width: 24.h,
+                    ),
                   ),
                 ),
-                SizedBox(height: 64.h),
+                Spacer(), // Push title to the bottom of the expanded header
                 Padding(
-                  padding: EdgeInsets.only(left: 4.h),
+                  padding: EdgeInsets.only(left: 4.h, bottom: 20.h),
                   child: Text(
                     'Weekly Report: W16',
-                    style: TextStyleHelper.instance.headline28MediumRoboto
-                        .copyWith(height: 1.2),
+                    style: TextStyleHelper.instance.headline28MediumRoboto.copyWith(
+                      height: 1.2,
+                      color: Colors.white,
+                      shadows: [
+                        // Added shadow for the title
+                        Shadow(
+                          color: Colors.black.withOpacity(0.6),
+                          offset: Offset(0, 2),
+                          blurRadius: 6.h,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -90,6 +103,8 @@ class WeeklyNutritionReportScreen
           _buildNutritionAnalysisSection(context),
           SizedBox(height: 24.h),
           _buildCongratulationsSection(context),
+          // Added bottom empty spacing
+          SizedBox(height: 60.h),
         ],
       ),
     );

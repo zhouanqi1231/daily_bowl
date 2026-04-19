@@ -22,7 +22,6 @@ class RecipeCardItem extends StatelessWidget {
       onTap: onCardTap,
       child: Container(
         width: double.maxFinite,
-        padding: EdgeInsets.all(20.h),
         decoration: BoxDecoration(
           color: appTheme.gray_50,
           borderRadius: BorderRadius.circular(12.h),
@@ -32,11 +31,13 @@ class RecipeCardItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 20.h),
             _buildProfileSection(),
             SizedBox(height: 14.h),
             _buildRecipeImage(),
             SizedBox(height: 14.h),
             _buildRecipeInfo(),
+            SizedBox(height: 20.h),
           ],
         ),
       ),
@@ -45,7 +46,7 @@ class RecipeCardItem extends StatelessWidget {
 
   Widget _buildProfileSection() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.h),
+      padding: EdgeInsets.symmetric(horizontal: 20.h),
       child: Row(
         children: [
           Container(
@@ -97,7 +98,7 @@ class RecipeCardItem extends StatelessWidget {
 
   Widget _buildRecipeInfo() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.h),
+      padding: EdgeInsets.symmetric(horizontal: 20.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -109,10 +110,20 @@ class RecipeCardItem extends StatelessWidget {
           ),
           GestureDetector(
             onTap: onBookmarkTap,
-            child: CustomImageView(
-              imagePath: ImageConstant.imgIcon24x24,
-              height: 24.h,
-              width: 24.h,
+            behavior: HitTestBehavior.opaque,
+            child: Padding(
+              padding: EdgeInsets.all(12.h), // Increase tap area
+              child: Obx(
+                () => Icon(
+                  (recipeItemModel?.isBookmarked?.value ?? false)
+                      ? Icons.star
+                      : Icons.star_border,
+                  color: (recipeItemModel?.isBookmarked?.value ?? false)
+                      ? Colors.amber
+                      : Colors.grey,
+                  size: 24.h,
+                ),
+              ),
             ),
           ),
         ],

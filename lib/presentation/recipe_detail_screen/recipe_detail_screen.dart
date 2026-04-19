@@ -15,61 +15,70 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              _buildRecipeImageSection(context),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(top: 12.h, left: 16.h, right: 16.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      _buildRecipeHeaderSection(context),
-                      SizedBox(height: 16.h),
-                      _buildIngredientsSection(context),
-                      SizedBox(height: 16.h),
-                      _buildStepsSection(context),
-                      SizedBox(height: 16.h),
-                      _buildUpdatedDateSection(context),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          _buildFloatingActionButton(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRecipeImageSection(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 412.h,
-      child: Stack(
-        children: [
-          CustomImageView(
-            imagePath: ImageConstant.imgMedia,
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
-          ),
-          CustomAppBar(
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(100.h),
+        child: Obx(
+          () => CustomAppBar(
+            height: 100.h,
+            topPadding: 20.h,
             leadingIcon: ImageConstant.imgArrowLeft,
             onLeadingTap: () => Get.back(),
             actionIcons: [
               CustomAppBarAction(
-                iconPath: ImageConstant.imgIcon,
+                iconPath: ImageConstant.imgShare,
                 onTap: () => controller.onShareTap(),
                 margin: 2.h,
               ),
             ],
-            backgroundColor: appTheme.transparentCustom,
+            backgroundColor:
+                controller.scrollOffset.value > controller.imageHeight - 100.h
+                    ? appTheme.white_A700
+                    : Colors.transparent,
             horizontalPadding: 18.h,
           ),
+        ),
+      ),
+      body: Stack(
+        children: [
+          NotificationListener<ScrollNotification>(
+            onNotification: (scrollNotification) {
+              if (scrollNotification is ScrollUpdateNotification) {
+                controller.updateScrollOffset(scrollNotification.metrics.pixels);
+              }
+              return true;
+            },
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CustomImageView(
+                    imagePath: ImageConstant.imgMedia,
+                    width: double.infinity,
+                    height: controller.imageHeight,
+                    fit: BoxFit.cover,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 12.h, left: 16.h, right: 16.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        _buildRecipeHeaderSection(context),
+                        SizedBox(height: 16.h),
+                        _buildIngredientsSection(context),
+                        SizedBox(height: 16.h),
+                        _buildStepsSection(context),
+                        SizedBox(height: 16.h),
+                        _buildUpdatedDateSection(context),
+                        // Add significant bottom spacing so content isn't blocked by FABs
+                        SizedBox(height: 120.h),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          _buildFloatingActionButtons(context),
         ],
       ),
     );
@@ -95,7 +104,6 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
                 height: 40.h,
                 borderRadius: 20.h,
                 padding: EdgeInsets.all(4.h),
-                onTap: () => controller.onUserProfileTap(),
               ),
               SizedBox(width: 10.h),
               Text(
@@ -126,35 +134,29 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
           style: TextStyleHelper.instance.body14RegularRoboto,
         ),
         SizedBox(width: 8.h),
-        GestureDetector(
-          onTap: () => controller.onAllergyTagTap("Egg"),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: appTheme.deep_orange_200,
-              border: Border.all(color: appTheme.red_900, width: 1.h),
-              borderRadius: BorderRadius.circular(14.h),
-            ),
-            child: Text(
-              "#Egg",
-              style: TextStyleHelper.instance.label11MediumRoboto,
-            ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 6.h),
+          decoration: BoxDecoration(
+            color: appTheme.deep_orange_200,
+            border: Border.all(color: appTheme.red_900, width: 1.h),
+            borderRadius: BorderRadius.circular(14.h),
+          ),
+          child: Text(
+            "#Egg",
+            style: TextStyleHelper.instance.label11MediumRoboto,
           ),
         ),
         SizedBox(width: 8.h),
-        GestureDetector(
-          onTap: () => controller.onAllergyTagTap("Tamato"),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 6.h),
-            decoration: BoxDecoration(
-              border: Border.all(color: appTheme.blue_gray_100, width: 1.h),
-              borderRadius: BorderRadius.circular(14.h),
-            ),
-            child: Text(
-              "#Tamato",
-              style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
-                color: appTheme.gray_800,
-              ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 6.h),
+          decoration: BoxDecoration(
+            border: Border.all(color: appTheme.blue_gray_100, width: 1.h),
+            borderRadius: BorderRadius.circular(14.h),
+          ),
+          child: Text(
+            "#Tamato",
+            style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
+              color: appTheme.gray_800,
             ),
           ),
         ),
@@ -189,36 +191,23 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(right: 6.h),
-      child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Steps",
-                style: TextStyleHelper.instance.title16MediumRoboto,
-              ),
-              SizedBox(height: 16.h),
-              Obx(
-                () => CustomInstructionList(
-                  instructions:
-                      controller
-                          .recipeDetailModel
-                          .value
-                          ?.instructionsList
-                          ?.value ??
-                      [],
-                ),
-              ),
-            ],
+          Text(
+            "Steps",
+            style: TextStyleHelper.instance.title16MediumRoboto,
           ),
-          Positioned(
-            bottom: 20.h,
-            right: 0,
-            child: CustomFloatingActionButton(
-              onPressed: () => controller.onBookmarkTap(),
-              iconPath: ImageConstant.imgFab,
-              backgroundColor: appTheme.white_A700,
+          SizedBox(height: 16.h),
+          Obx(
+            () => CustomInstructionList(
+              instructions:
+                  controller
+                      .recipeDetailModel
+                      .value
+                      ?.instructionsList
+                      ?.value ??
+                      [],
             ),
           ),
         ],
@@ -228,7 +217,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
 
   Widget _buildUpdatedDateSection(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 46.h),
+      padding: EdgeInsets.only(bottom: 12.h),
       child: Text(
         "Updated on 2026-02-11",
         style: TextStyleHelper.instance.body12RegularRoboto,
@@ -236,14 +225,41 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     );
   }
 
-  Widget _buildFloatingActionButton(BuildContext context) {
+  Widget _buildFloatingActionButtons(BuildContext context) {
     return Positioned(
       bottom: 42.h,
       right: 24.h,
-      child: CustomFloatingActionButton(
-        onPressed: () => controller.onMainFabTap(),
-        iconPath: ImageConstant.imgFabDeepPurple800,
-        backgroundColor: appTheme.deep_purple_50,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Obx(
+            () => CustomFloatingActionButton(
+              onPressed: () => controller.onBookmarkTap(),
+              iconPath: ImageConstant.imgFab,
+              backgroundColor:
+                  controller.isBookmarked.value
+                      ? appTheme.orange_300 // Replaced amber_A400 with orange_300
+                      : appTheme.white_A700,
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Obx(
+            () => CustomFloatingActionButton(
+              onPressed: () => controller.onMainFabTap(),
+              child: Icon( // Changed child to the correct parameter name
+                controller.isSaved.value ? Icons.bookmark : Icons.bookmark_border,
+                color:
+                    controller.isSaved.value
+                        ? appTheme.white_A700
+                        : appTheme.deep_purple_800,
+              ),
+              backgroundColor:
+                  controller.isSaved.value
+                      ? appTheme.deep_purple_800
+                      : appTheme.deep_purple_50,
+            ),
+          ),
+        ],
       ),
     );
   }

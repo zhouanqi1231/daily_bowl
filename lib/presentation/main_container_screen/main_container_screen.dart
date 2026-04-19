@@ -24,6 +24,7 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Removed global SafeArea to allow Explore screen content to scroll behind status bar
       body: IndexedStack(
         index: _selectedIndex,
         children: _pages,

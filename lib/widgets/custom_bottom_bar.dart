@@ -78,7 +78,7 @@ class CustomBottomBar extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: isSelected ? 4.h : 8.h),
+        SizedBox(height: 4.h), // Fixed height to prevent text from jumping
         Text(
           item.title ?? '',
           style: TextStyleHelper.instance.body12MediumRoboto.copyWith(

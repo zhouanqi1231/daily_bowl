@@ -14,41 +14,46 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
     return Scaffold(
       backgroundColor: appTheme.white_A700,
       appBar: AppBar(
-        backgroundColor: appTheme.transparentCustom,
+        backgroundColor: appTheme.white_A700,
         elevation: 0,
+        title: Text("Create a Recipe", style: TextStyleHelper.instance.title22RegularRoboto),
+        centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: appTheme.blackCustom),
           onPressed: () => Get.back(),
         ),
       ),
-      body: Form(
-        key: controller.formKey,
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(14.h, 18.h, 14.h, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildPhotoUploadSection(),
-                        SizedBox(height: 20.h),
-                        _buildTitleField(),
-                        SizedBox(height: 20.h),
-                        _buildIngredientsSection(),
-                        SizedBox(height: 12.h),
-                        _buildStepsSection(),
-                      ],
-                    ),
-                  ],
+      body: SafeArea(
+        top: false, // AppBar handles top safety
+        child: Form(
+          key: controller.formKey,
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.fromLTRB(14.h, 18.h, 14.h, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildPhotoUploadSection(),
+                          SizedBox(height: 20.h),
+                          _buildTitleField(),
+                          SizedBox(height: 20.h),
+                          _buildIngredientsSection(),
+                          SizedBox(height: 12.h),
+                          _buildStepsSection(),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            _buildActionButtons(),
-          ],
+              _buildActionButtons(),
+            ],
+          ),
         ),
       ),
     );
@@ -61,7 +66,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
         child: Container(
           width: double.infinity,
           height: 148.h,
-          padding: EdgeInsets.symmetric(vertical: 74.h),
+          padding: EdgeInsets.symmetric(vertical: 0),
           decoration: BoxDecoration(
             border: Border.all(width: 2.h, color: appTheme.gray_500),
             borderRadius: BorderRadius.circular(18.h),

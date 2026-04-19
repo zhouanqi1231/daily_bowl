@@ -7,12 +7,23 @@ import '../../../core/app_export.dart';
 class RecipeDetailController extends GetxController {
   final recipeDetailModel = Rx<RecipeDetailModel?>(null);
   final isBookmarked = false.obs;
+  final isSaved = false.obs;
+  
+  // For scrolling app bar color change
+  final scrollOffset = 0.0.obs;
+  final imageHeight = 412.0; // Same as in the screen
 
   @override
   void onInit() {
     super.onInit();
     _initializeRecipeData();
   }
+
+  void updateScrollOffset(double offset) {
+    scrollOffset.value = offset;
+  }
+
+  bool get isImageScrolledOut => scrollOffset.value >= imageHeight - (70.h); // 70.h is app bar height
 
   void _initializeRecipeData() {
     recipeDetailModel.value = RecipeDetailModel(
@@ -72,53 +83,14 @@ class RecipeDetailController extends GetxController {
   }
 
   void onMainFabTap() {
-    Get.bottomSheet(
-      Container(
-        padding: EdgeInsets.all(20.h),
-        decoration: BoxDecoration(
-          color: appTheme.whiteCustom,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.h),
-            topRight: Radius.circular(20.h),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: Icon(Icons.favorite_outline),
-              title: Text('Add to Favorites'),
-              onTap: () {
-                Get.back();
-                onBookmarkTap();
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.share_outlined),
-              title: Text('Share Recipe'),
-              onTap: () {
-                Get.back();
-                onShareTap();
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.edit_outlined),
-              title: Text('Edit Recipe'),
-              onTap: () {
-                Get.back();
-                Get.snackbar(
-                  'Edit',
-                  'Edit functionality coming soon!',
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.black87,
-                  colorText: appTheme.whiteCustom,
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-      isScrollControlled: true,
+    isSaved.value = !isSaved.value;
+    Get.snackbar(
+      'Recipe',
+      isSaved.value ? 'Recipe saved!' : 'Recipe unsaved',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.black87,
+      colorText: appTheme.whiteCustom,
+      duration: Duration(seconds: 2),
     );
   }
 }

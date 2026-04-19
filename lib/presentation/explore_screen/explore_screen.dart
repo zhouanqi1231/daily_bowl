@@ -10,29 +10,29 @@ class ExploreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get status bar height
+    double statusBarHeight = MediaQuery.of(context).padding.top;
+
     return Scaffold(
       backgroundColor: appTheme.white_A700,
-      // Removed AppBar containing the "Explore" title as requested
-      body: Container(
-        width: double.maxFinite,
-        padding: EdgeInsets.symmetric(horizontal: 16.h, vertical: 20.h),
-        child: Obx(
-          () => ListView.separated(
-            itemCount: controller.exploreModelObj.value.recipeList?.length ?? 0,
-            separatorBuilder: (context, index) => SizedBox(height: 16.h),
-            itemBuilder: (context, index) {
-              var recipe = controller.exploreModelObj.value.recipeList?[index];
-              return RecipeCardItem(
-                recipeItemModel: recipe,
-                onCardTap: () {
-                  Get.toNamed(AppRoutes.recipeDetailScreen);
-                },
-                onBookmarkTap: () {
-                  controller.toggleBookmark(index);
-                },
-              );
-            },
-          ),
+      body: Obx(
+        () => ListView.separated(
+          // Added horizontal padding (16.h) between cards and screen edge
+          padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 20.h),
+          itemCount: controller.exploreModelObj.value.recipeList?.length ?? 0,
+          separatorBuilder: (context, index) => SizedBox(height: 16.h),
+          itemBuilder: (context, index) {
+            var recipe = controller.exploreModelObj.value.recipeList?[index];
+            return RecipeCardItem(
+              recipeItemModel: recipe,
+              onCardTap: () {
+                Get.toNamed(AppRoutes.recipeDetailScreen);
+              },
+              onBookmarkTap: () {
+                controller.toggleBookmark(index);
+              },
+            );
+          },
         ),
       ),
     );

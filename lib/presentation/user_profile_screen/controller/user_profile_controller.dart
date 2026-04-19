@@ -64,17 +64,8 @@ class UserProfileController extends GetxController {
   void onRecipeTap(int index) {
     final recipe = userProfileModel.value?.recipes?[index];
     if (recipe != null) {
-      Get.snackbar(
-        'Recipe Selected',
-        'Opening ${recipe.title?.value ?? "recipe"}...',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: appTheme.deep_purple_800,
-        colorText: appTheme.whiteCustom,
-        duration: Duration(seconds: 2),
-      );
-
-      // Navigate to recipe details or creation screen
-      Get.toNamed(AppRoutes.recipeCreationScreen);
+      // Navigate to the recipe detail screen as requested
+      Get.toNamed(AppRoutes.recipeDetailScreen);
     }
   }
 
