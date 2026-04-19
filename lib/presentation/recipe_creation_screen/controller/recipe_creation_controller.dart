@@ -12,11 +12,11 @@ class RecipeCreationController extends GetxController {
   final recipeCreationModel = Rx<RecipeCreationModel?>(null);
   final selectedImage = Rx<File?>(null);
   final ingredientControllers = <Map<String, TextEditingController>>[].obs;
+  final stepControllers = <TextEditingController>[].obs;
 
   // Form controllers
   final formKey = GlobalKey<FormState>();
   late TextEditingController titleController;
-  late List<TextEditingController> stepControllers;
 
   // Image picker
   final ImagePicker _imagePicker = ImagePicker();
@@ -36,11 +36,12 @@ class RecipeCreationController extends GetxController {
 
   void _initializeControllers() {
     titleController = TextEditingController();
-    stepControllers = List.generate(4, (index) => TextEditingController());
-
-    // Initialize with 2 ingredient rows by default
+    
+    // Initialize with 1 ingredient row by default
     addIngredientRow();
-    addIngredientRow();
+    
+    // Initialize with 1 step row by default
+    addStepRow();
   }
 
   void _disposeControllers() {
@@ -57,8 +58,12 @@ class RecipeCreationController extends GetxController {
     ingredientControllers.add({
       'name': TextEditingController(),
       'quantity': TextEditingController(),
-      'unit': TextEditingController(),
+      'unit': TextEditingController(text: 'g'), // Default unit to 'g'
     });
+  }
+
+  void addStepRow() {
+    stepControllers.add(TextEditingController());
   }
 
   Future<void> pickImage() async {
@@ -151,6 +156,9 @@ class RecipeCreationController extends GetxController {
   String? validateIngredientUnit(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Please enter unit';
+    }
+    if (value != 'g' && value != 'ml') {
+      return 'Invalid unit';
     }
     return null;
   }

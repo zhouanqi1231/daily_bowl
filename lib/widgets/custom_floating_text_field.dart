@@ -24,6 +24,8 @@ import '../core/app_export.dart';
  * @param width - Custom width for the field
  * @param topMargin - Top margin spacing
  * @param topPadding - Additional top padding for content
+ * @param textStyle - Optional custom text style
+ * @param labelStyle - Optional custom label style
  */
 class CustomFloatingTextField extends StatelessWidget {
   CustomFloatingTextField({
@@ -39,6 +41,8 @@ class CustomFloatingTextField extends StatelessWidget {
     this.width,
     this.topMargin,
     this.topPadding,
+    this.textStyle,
+    this.labelStyle,
   }) : super(key: key);
 
   /// Placeholder text that becomes the floating label
@@ -74,6 +78,12 @@ class CustomFloatingTextField extends StatelessWidget {
   /// Additional top padding for content area
   final double? topPadding;
 
+  /// Custom text style
+  final TextStyle? textStyle;
+
+  /// Custom label style
+  final TextStyle? labelStyle;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -87,67 +97,42 @@ class CustomFloatingTextField extends StatelessWidget {
         enabled: enabled ?? true,
         maxLines: maxLines ?? 1,
         onChanged: onChanged,
-        style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
-          color: appTheme.gray_900,
-        ),
+        style: textStyle ??
+            TextStyleHelper.instance.title16RegularRoboto.copyWith(
+              color: appTheme.gray_900,
+            ),
         decoration: InputDecoration(
           labelText: placeholder,
-          labelStyle: TextStyleHelper.instance.title16RegularRoboto.copyWith(
-            color: appTheme.gray_800,
-          ),
+          labelStyle: labelStyle ??
+              TextStyleHelper.instance.title16RegularRoboto.copyWith(
+                color: appTheme.gray_600,
+              ),
           floatingLabelStyle: TextStyleHelper.instance.body12RegularRoboto
-              .copyWith(color: appTheme.gray_800),
+              .copyWith(color: appTheme.gray_600),
           filled: true,
-          fillColor: appTheme.gray_300_01,
-          contentPadding: EdgeInsets.only(
-            top: (topPadding ?? 8.h) + 8.h,
-            right: 16.h,
-            bottom: 8.h,
-            left: 16.h,
+          fillColor: appTheme.gray_50,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.h,
+            vertical: 12.h,
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(4.h),
-              topRight: Radius.circular(4.h),
-              bottomLeft: Radius.zero,
-              bottomRight: Radius.zero,
-            ),
-            borderSide: BorderSide(color: appTheme.gray_800, width: 1.h),
+            borderRadius: BorderRadius.circular(12.h),
+            borderSide: BorderSide(color: appTheme.gray_50, width: 1.h),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(4.h),
-              topRight: Radius.circular(4.h),
-              bottomLeft: Radius.zero,
-              bottomRight: Radius.zero,
-            ),
-            borderSide: BorderSide(color: appTheme.gray_800, width: 1.h),
+            borderRadius: BorderRadius.circular(12.h),
+            borderSide: BorderSide(color: appTheme.gray_50, width: 1.h),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(4.h),
-              topRight: Radius.circular(4.h),
-              bottomLeft: Radius.zero,
-              bottomRight: Radius.zero,
-            ),
-            borderSide: BorderSide(color: appTheme.gray_800, width: 2.h),
+            borderRadius: BorderRadius.circular(12.h),
+            borderSide: BorderSide(color: appTheme.gray_50, width: 2.h),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(4.h),
-              topRight: Radius.circular(4.h),
-              bottomLeft: Radius.zero,
-              bottomRight: Radius.zero,
-            ),
+            borderRadius: BorderRadius.circular(12.h),
             borderSide: BorderSide(color: appTheme.redCustom, width: 1.h),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(4.h),
-              topRight: Radius.circular(4.h),
-              bottomLeft: Radius.zero,
-              bottomRight: Radius.zero,
-            ),
+            borderRadius: BorderRadius.circular(12.h),
             borderSide: BorderSide(color: appTheme.redCustom, width: 2.h),
           ),
         ),
