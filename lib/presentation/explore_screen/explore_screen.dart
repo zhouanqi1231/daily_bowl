@@ -1,39 +1,27 @@
 import 'package:flutter/material.dart';
-
 import '../../core/app_export.dart';
-import './controller/recipe_search_results_controller.dart';
-import './widgets/recipe_card_item.dart';
+import '../recipe_search_results_screen/widgets/recipe_card_item.dart';
+import './controller/explore_controller.dart';
 
-class RecipeSearchResultsScreenInitialPage extends StatelessWidget {
-  RecipeSearchResultsScreenInitialPage({Key? key}) : super(key: key);
+class ExploreScreen extends StatelessWidget {
+  ExploreScreen({Key? key}) : super(key: key);
 
-  final RecipeSearchResultsController controller = Get.put(
-    RecipeSearchResultsController(),
-  );
+  final ExploreController controller = Get.put(ExploreController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appTheme.white_A700,
-      // Removed the search bar (AppBar) as requested
+      // Removed AppBar containing the "Explore" title as requested
       body: Container(
         width: double.maxFinite,
         padding: EdgeInsets.symmetric(horizontal: 16.h, vertical: 20.h),
         child: Obx(
           () => ListView.separated(
-            itemCount:
-                controller
-                    .recipeSearchResultsModelObj
-                    .value
-                    .recipeList
-                    ?.length ??
-                0,
+            itemCount: controller.exploreModelObj.value.recipeList?.length ?? 0,
             separatorBuilder: (context, index) => SizedBox(height: 16.h),
             itemBuilder: (context, index) {
-              var recipe = controller
-                  .recipeSearchResultsModelObj
-                  .value
-                  .recipeList?[index];
+              var recipe = controller.exploreModelObj.value.recipeList?[index];
               return RecipeCardItem(
                 recipeItemModel: recipe,
                 onCardTap: () {

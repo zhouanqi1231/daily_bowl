@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/app_export.dart';
 import '../../widgets/custom_bottom_bar.dart';
-import '../recipe_search_results_screen/recipe_search_results_screen_initial_page.dart';
+import '../explore_screen/explore_screen.dart';
 import '../category_screen/category_screen.dart';
 import '../saved_recipe_list_screen/saved_recipe_list_initial_page.dart';
 import '../user_profile_screen/user_profile_screen.dart';
@@ -15,7 +15,7 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    RecipeSearchResultsScreenInitialPage(),
+    ExploreScreen(),
     CategoryScreen(),
     SavedRecipeListInitialPage(),
     UserProfileScreen(),
