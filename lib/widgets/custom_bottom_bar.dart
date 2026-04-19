@@ -54,18 +54,7 @@ class CustomBottomBar extends StatelessWidget {
                 )
               : null,
           child: Center(
-            child: (isSelected && item.activeIconData != null)
-                ? Icon(
-                    item.activeIconData,
-                    size: 24.h,
-                    color: appTheme.gray_900,
-                  )
-                : CustomImageView(
-                    imagePath: isSelected ? item.activeIcon ?? item.icon : item.icon,
-                    height: 24.h,
-                    width: 24.h,
-                    color: isSelected ? appTheme.gray_900 : appTheme.gray_800,
-                  ),
+            child: _buildIcon(item, isSelected),
           ),
         ),
         SizedBox(height: 4.h),
@@ -78,20 +67,54 @@ class CustomBottomBar extends StatelessWidget {
       ],
     );
   }
+
+  Widget _buildIcon(CustomBottomBarItem item, bool isSelected) {
+    if (isSelected) {
+      if (item.activeIconData != null) {
+        return Icon(
+          item.activeIconData,
+          size: 24.h,
+          color: appTheme.gray_900,
+        );
+      }
+      return CustomImageView(
+        imagePath: item.activeIcon ?? item.icon,
+        height: 24.h,
+        width: 24.h,
+        color: appTheme.gray_900,
+      );
+    } else {
+      if (item.inactiveIconData != null) {
+        return Icon(
+          item.inactiveIconData,
+          size: 24.h,
+          color: appTheme.gray_800,
+        );
+      }
+      return CustomImageView(
+        imagePath: item.icon,
+        height: 24.h,
+        width: 24.h,
+        color: appTheme.gray_800,
+      );
+    }
+  }
 }
 
 class CustomBottomBarItem {
   CustomBottomBarItem({
     this.icon,
     this.activeIcon,
-    this.activeIconData, // New field for Material Icons
+    this.activeIconData,
+    this.inactiveIconData, // New field for Material Icons
     this.title,
     this.routeName,
   });
 
   final String? icon;
   final String? activeIcon;
-  final IconData? activeIconData; // Added to support solid Material Icons
+  final IconData? activeIconData;
+  final IconData? inactiveIconData;
   final String? title;
   final String? routeName;
 }

@@ -37,23 +37,23 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
         },
         bottomBarItemList: [
           CustomBottomBarItem(
-            icon: ImageConstant.imgNavExplore,
-            activeIconData: Icons.explore, // Solid Material Icon for Explore
+            inactiveIconData: Icons.explore_outlined,
+            activeIconData: Icons.explore,
             title: 'Explore',
           ),
           CustomBottomBarItem(
-            icon: ImageConstant.imgNavCatagory,
-            activeIconData: Icons.category, // Solid Material Icon for Category
+            inactiveIconData: Icons.grid_view_outlined,
+            activeIconData: Icons.grid_view_rounded,
             title: 'Category',
           ),
           CustomBottomBarItem(
             icon: ImageConstant.imgNavSavedGray800,
-            activeIcon: ImageConstant.imgNavSaved, // This SVG is already solid
+            activeIcon: ImageConstant.imgNavSaved,
             title: 'Saved',
           ),
           CustomBottomBarItem(
             icon: ImageConstant.imgNavMe,
-            activeIcon: ImageConstant.imgNavMeBlack900, // This SVG is already solid
+            activeIcon: ImageConstant.imgNavMeBlack900,
             title: 'Me',
           ),
         ],
