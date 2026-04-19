@@ -1,11 +1,11 @@
 {
-    "name": "recipe_master",
-    "short_name": "recipe_master",
+    "name": "Daily Bowl",
+    "short_name": "Daily Bowl",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Daily Bowl - Your personal recipe and nutrition companion.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

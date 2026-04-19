@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
+import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_image_view.dart';
 import '../../widgets/custom_ingredient_list.dart';
 import '../../widgets/custom_recipe_card.dart';
@@ -16,29 +17,54 @@ class WeeklyNutritionReportScreen
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appTheme.white_A700,
-      body: Obx(() {
-        return SingleChildScrollView(
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(70.h),
+        child: Obx(
+          () {
+            // Calculate opacity based on scroll offset
+            double opacity = (controller.scrollOffset.value / (controller.headerHeight - 80.h)).clamp(0.0, 1.0);
+            
+            return CustomAppBar(
+              height: 70.h,
+              topPadding: 0.h,
+              leadingIcon: ImageConstant.imgArrowLeft,
+              onLeadingTap: () => Get.back(),
+              backgroundColor: appTheme.white_A700.withOpacity(opacity),
+              horizontalPadding: 18.h,
+            );
+          },
+        ),
+      ),
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (scrollNotification) {
+          if (scrollNotification is ScrollUpdateNotification) {
+            controller.updateScrollOffset(scrollNotification.metrics.pixels);
+          }
+          return true;
+        },
+        child: SingleChildScrollView(
           child: Column(
             children: [
               _buildHeaderSection(context),
               _buildContentSection(context),
             ],
           ),
-        );
-      }),
+        ),
+      ),
     );
   }
 
   Widget _buildHeaderSection(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 200.h, // Increased height for the header region
+      height: 200.h,
       child: Stack(
         alignment: Alignment.center,
         children: [
           CustomImageView(
             imagePath: ImageConstant.imgCoverImage,
-            height: 200.h, // Increased image height
+            height: 200.h,
             width: double.infinity,
             fit: BoxFit.cover,
           ),
@@ -46,22 +72,9 @@ class WeeklyNutritionReportScreen
             width: double.infinity,
             margin: EdgeInsets.symmetric(horizontal: 12.h),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 50.h), // Lowered the back button position
-                GestureDetector(
-                  onTap: () => Get.back(),
-                  child: Padding(
-                    padding: EdgeInsets.all(8.h),
-                    child: CustomImageView(
-                      imagePath: ImageConstant.imgArrowLeftWhiteA700,
-                      height: 24.h,
-                      width: 24.h,
-                    ),
-                  ),
-                ),
-                Spacer(), // Push title to the bottom of the expanded header
                 Padding(
                   padding: EdgeInsets.only(left: 4.h, bottom: 20.h),
                   child: Text(
@@ -70,7 +83,6 @@ class WeeklyNutritionReportScreen
                       height: 1.2,
                       color: Colors.white,
                       shadows: [
-                        // Added shadow for the title
                         Shadow(
                           color: Colors.black.withOpacity(0.6),
                           offset: Offset(0, 2),
@@ -103,7 +115,6 @@ class WeeklyNutritionReportScreen
           _buildNutritionAnalysisSection(context),
           SizedBox(height: 24.h),
           _buildCongratulationsSection(context),
-          // Added bottom empty spacing
           SizedBox(height: 60.h),
         ],
       ),

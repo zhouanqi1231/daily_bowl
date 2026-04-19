@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import '../../../core/app_export.dart';
 import '../models/ingredient_item_model.dart';
 import '../models/recipe_item_model.dart';
@@ -6,11 +7,19 @@ import '../models/weekly_nutrition_report_model.dart';
 class WeeklyNutritionReportController extends GetxController {
   final weeklyNutritionReportModel = Rx<WeeklyNutritionReportModel?>(null);
   final isLoading = false.obs;
+  
+  // For scrolling app bar color change
+  final scrollOffset = 0.0.obs;
+  final headerHeight = 200.0;
 
   @override
   void onInit() {
     super.onInit();
     _initializeData();
+  }
+
+  void updateScrollOffset(double offset) {
+    scrollOffset.value = offset;
   }
 
   void _initializeData() {
@@ -53,6 +62,17 @@ class WeeklyNutritionReportController extends GetxController {
 
   void onRecipeCardTapped(RecipeItemModel recipe) {
     Get.toNamed(AppRoutes.recipeDetailScreen);
+  }
+
+  void onShareTap() {
+    // Basic share functionality for the report
+    Get.snackbar(
+      'Share',
+      'Sharing your weekly nutrition report...',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.black87,
+      colorText: Colors.white,
+    );
   }
 
   void onBackPressed() {

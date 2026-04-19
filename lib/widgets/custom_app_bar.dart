@@ -55,6 +55,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       elevation: 0,
+      scrolledUnderElevation: 0, // Prevents color change on scroll
+      surfaceTintColor: Colors.transparent, // Ensures no tint is applied
       backgroundColor: backgroundColor ?? appTheme.transparentCustom,
       automaticallyImplyLeading: false,
       toolbarHeight: appBarHeight,

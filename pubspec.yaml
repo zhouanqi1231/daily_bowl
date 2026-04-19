@@ -1,5 +1,5 @@
-name: recipe_master
-description: A new Flutter project.
+name: daily_bowl
+description: Daily Bowl - Your personal recipe and nutrition companion.
 version: 1.0.0+1
 environment: 
   sdk: '>=3.0.0 <4.0.0'
@@ -23,6 +23,12 @@ dependencies:
 dev_dependencies: 
   flutter_test: 
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/bowl.png"
+  min_sdk_android: 21
 flutter: 
   uses-material-design: true 
   assets: 

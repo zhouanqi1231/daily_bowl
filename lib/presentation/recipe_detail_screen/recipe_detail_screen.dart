@@ -17,26 +17,29 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80.h),
+        preferredSize: Size.fromHeight(70.h),
         child: Obx(
-          () => CustomAppBar(
-            height: 80.h,
-            topPadding: 0.h,
-            leadingIcon: ImageConstant.imgArrowLeft,
-            onLeadingTap: () => Get.back(),
-            actionIcons: [
-              CustomAppBarAction(
-                iconPath: ImageConstant.imgShare,
-                onTap: () => controller.onShareTap(),
-                margin: 2.h,
-              ),
-            ],
-            backgroundColor:
-                controller.scrollOffset.value > controller.imageHeight - 80.h
-                    ? appTheme.white_A700
-                    : Colors.transparent,
-            horizontalPadding: 18.h,
-          ),
+          () {
+            // Calculate opacity based on scroll offset
+            // We want it to be fully white when user has scrolled past the image
+            double opacity = (controller.scrollOffset.value / (controller.imageHeight - 80.h)).clamp(0.0, 1.0);
+            
+            return CustomAppBar(
+              height: 70.h,
+              topPadding: 0.h,
+              leadingIcon: ImageConstant.imgArrowLeft,
+              onLeadingTap: () => Get.back(),
+              actionIcons: [
+                CustomAppBarAction(
+                  iconPath: ImageConstant.imgShare,
+                  onTap: () => controller.onShareTap(),
+                  margin: 2.h,
+                ),
+              ],
+              backgroundColor: appTheme.white_A700.withOpacity(opacity),
+              horizontalPadding: 18.h,
+            );
+          },
         ),
       ),
       body: Stack(

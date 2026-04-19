@@ -16,10 +16,10 @@ class UserProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: appTheme.white_A700,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100.h),
+        preferredSize: Size.fromHeight(70.h),
         child: CustomAppBar(
-          height: 100.h,
-          topPadding: 20.h,
+          height: 70.h,
+          topPadding: 0.h, // Removed extra top padding to bring it up
           leadingIcon: ImageConstant.imgMenu,
           onLeadingTap: () => Get.toNamed(AppRoutes.settingsMenuScreen),
           actionIcons: [
@@ -50,7 +50,8 @@ class UserProfileScreen extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: appTheme.white_A700,
-      padding: EdgeInsets.all(24.h),
+      padding:
+          EdgeInsets.fromLTRB(24.h, 4.h, 24.h, 24.h), // Reduced top padding
       child: Row(
         children: [
           Container(
@@ -180,8 +181,8 @@ class UserProfileScreen extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               CustomImageView(
-                imagePath:
-                    "https://cdn.britannica.com/36/123536-050-138B212A/Variety-fruits-vegetables.jpg",
+                imagePath: ImageConstant
+                    .imgCoverImage, // Updated to use the same image as report
                 width: double.infinity,
                 height: 80.h,
                 fit: BoxFit.cover,
