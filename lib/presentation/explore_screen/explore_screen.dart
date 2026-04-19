@@ -12,38 +12,60 @@ class ExploreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get status bar height
     double statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
       backgroundColor: appTheme.white_A700,
       body: Stack(
         children: [
-          Obx(
-            () => ListView.separated(
-              // Added horizontal padding (16.h) between cards and screen edge
-              padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 20.h),
-              itemCount: controller.exploreModelObj.value.recipeList?.length ?? 0,
-              separatorBuilder: (context, index) => SizedBox(height: 16.h),
-              itemBuilder: (context, index) {
-                var recipe = controller.exploreModelObj.value.recipeList?[index];
-                return RecipeCardItem(
-                  recipeItemModel: recipe,
-                  onCardTap: () {
-                    Get.toNamed(AppRoutes.recipeDetailScreen);
-                  },
-                  onBookmarkTap: () {
-                    controller.toggleBookmark(index);
-                  },
-                );
-              },
-            ),
+          // add NotificationListener for scroll event
+          NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification scrollInfo) {
+              // is bottom?
+              if (!controller.isLoading.value &&
+                  scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 50) {
+                // load before reach bottom
+                controller.fetchRecipes();
+                return true;
+              }
+              return false;
+            },
+            child: Obx(() {
+              int recipeCount = controller.exploreModelObj.value.recipeList?.length ?? 0;
+              
+              return ListView.separated(
+                padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 20.h),
+                // if have more data, add a loading icon
+                itemCount: recipeCount + (controller.hasMoreData.value ? 1 : 0),
+                separatorBuilder: (context, index) => SizedBox(height: 16.h),
+                itemBuilder: (context, index) {
+                  if (index == recipeCount) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  
+                  var recipe = controller.exploreModelObj.value.recipeList?[index];
+                  return RecipeCardItem(
+                    recipeItemModel: recipe,
+                    onCardTap: () {
+                      Get.toNamed(AppRoutes.recipeDetailScreen);
+                    },
+                    onBookmarkTap: () {
+                      controller.toggleBookmark(index);
+                    },
+                  );
+                },
+              );
+            }),
           ),
           _buildFloatingActionButtons(context),
         ],
       ),
     );
   }
+
 
   Widget _buildFloatingActionButtons(BuildContext context) {
     return Positioned(
@@ -56,11 +78,11 @@ class ExploreScreen extends StatelessWidget {
             onPressed: () {
               Get.toNamed(AppRoutes.recipeCreationScreen);
             },
+            backgroundColor: appTheme.deep_purple_800,
             child: CustomImageView(
               imagePath: ImageConstant.imgCreateARecipe,
               color: appTheme.white_A700,
             ),
-            backgroundColor: appTheme.deep_purple_800,
           ),
         ],
       ),
