@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../core/app_export.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_floating_text_field.dart';
-import '../../widgets/custom_image_view.dart';
 import './controller/recipe_creation_controller.dart';
 
 class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
@@ -135,7 +134,6 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
           () => Column(
             children: [
               ...controller.ingredientControllers.asMap().entries.map((entry) {
-                int index = entry.key;
                 var controllers = entry.value;
                 return Container(
                   margin: EdgeInsets.only(bottom: 12.h),
