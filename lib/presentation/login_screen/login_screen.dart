@@ -5,10 +5,7 @@ import '../../widgets/custom_floating_text_field.dart';
 import './controller/login_controller.dart';
 
 class LoginScreen extends GetWidget<LoginController> {
-  final VoidCallback? onLoginSuccess;
-  final VoidCallback? onRegisterPressed;
-
-  const LoginScreen({Key? key, this.onLoginSuccess, this.onRegisterPressed}) : super(key: key);
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +44,7 @@ class LoginScreen extends GetWidget<LoginController> {
                       width: double.infinity,
                       backgroundColor: appTheme.gray_700,
                       textColor: appTheme.white_A700,
-                      onPressed: onRegisterPressed,
+                      onPressed: () => controller.onRegisterPressed(),
                     ),
                   ),
                   SizedBox(width: 20.h),
@@ -57,11 +54,7 @@ class LoginScreen extends GetWidget<LoginController> {
                       width: double.infinity,
                       backgroundColor: appTheme.deep_purple_800,
                       textColor: appTheme.white_A700,
-                      onPressed: () {
-                        if (onLoginSuccess != null) {
-                          controller.login(onLoginSuccess!);
-                        }
-                      },
+                      onPressed: () => controller.login(),
                     ),
                   ),
                 ],

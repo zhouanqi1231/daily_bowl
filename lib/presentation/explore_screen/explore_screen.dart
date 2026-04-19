@@ -47,15 +47,16 @@ class ExploreScreen extends StatelessWidget {
                   }
                   
                   var recipe = controller.exploreModelObj.value.recipeList?[index];
-                  return RecipeCardItem(
+                  return Obx(() => RecipeCardItem(
                     recipeItemModel: recipe,
                     onCardTap: () {
                       Get.toNamed(AppRoutes.recipeDetailScreen, arguments: {'id': recipe?.id});
                     },
-                    onBookmarkTap: () {
-                      controller.toggleBookmark(index);
-                    },
-                  );
+                    onBookmarkTap: controller.isLoggedIn.value 
+                        ? () => controller.toggleBookmark(index) 
+                        : null,
+                    showBookmark: controller.isLoggedIn.value,
+                  ));
                 },
               );
             }),

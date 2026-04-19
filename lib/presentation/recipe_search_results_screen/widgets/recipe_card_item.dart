@@ -8,12 +8,14 @@ class RecipeCardItem extends StatelessWidget {
   final RecipeItemModel? recipeItemModel;
   final VoidCallback? onCardTap;
   final VoidCallback? onBookmarkTap;
+  final bool showBookmark;
 
   RecipeCardItem({
     Key? key,
     this.recipeItemModel,
     this.onCardTap,
     this.onBookmarkTap,
+    this.showBookmark = true,
   }) : super(key: key);
 
   @override
@@ -108,24 +110,27 @@ class RecipeCardItem extends StatelessWidget {
               color: appTheme.gray_900,
             ),
           ),
-          GestureDetector(
-            onTap: onBookmarkTap,
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              padding: EdgeInsets.all(12.h), // Increase tap area
-              child: Obx(
-                () => Icon(
-                  (recipeItemModel?.isBookmarked?.value ?? false)
-                      ? Icons.star
-                      : Icons.star_border,
-                  color: (recipeItemModel?.isBookmarked?.value ?? false)
-                      ? Colors.amber
-                      : Colors.grey,
-                  size: 24.h,
+          if (showBookmark)
+            GestureDetector(
+              onTap: onBookmarkTap,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: EdgeInsets.all(12.h), // Increase tap area
+                child: Obx(
+                  () => Icon(
+                    (recipeItemModel?.isBookmarked?.value ?? false)
+                        ? Icons.star
+                        : Icons.star_border,
+                    color: (recipeItemModel?.isBookmarked?.value ?? false)
+                        ? Colors.amber
+                        : Colors.grey,
+                    size: 24.h,
+                  ),
                 ),
               ),
-            ),
-          ),
+            )
+          else
+            const SizedBox.shrink(),
         ],
       ),
     );

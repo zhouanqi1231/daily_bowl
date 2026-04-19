@@ -53,6 +53,7 @@ class ApiClient {
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.body.isEmpty) return null;
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to post data. Status Code: ${response.statusCode}, Body: ${response.body}');
