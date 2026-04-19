@@ -11,7 +11,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>recipe_master</string>
+	<string>Daily Bowl</string>
+	<key>CFBundleDisplayName</key>
+	<string>Daily Bowl</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -48,5 +50,9 @@
         <key>NSAllowsArbitraryLoads</key>
         <true />
     </dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Daily Bowl needs access to your camera to take recipe photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Daily Bowl needs access to your photo library to select recipe images.</string>
 </dict>
 </plist>
