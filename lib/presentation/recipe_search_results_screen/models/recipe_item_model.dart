@@ -2,6 +2,7 @@ import '../../../core/app_export.dart';
 
 /// This class is used for individual recipe items in the recipe search results screen.
 class RecipeItemModel {
+  int? id;
   Rx<String>? userInitial;
   Rx<String>? userName;
   Rx<String>? userInfo;
@@ -10,6 +11,7 @@ class RecipeItemModel {
   Rx<bool>? isBookmarked;
 
   RecipeItemModel({
+    this.id,
     this.userInitial,
     this.userName,
     this.userInfo,

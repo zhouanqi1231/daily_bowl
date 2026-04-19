@@ -36,6 +36,7 @@ class ExploreController extends GetxController {
       } else {
         List<RecipeItemModel> newRecipes = data.map((json) {
           return RecipeItemModel(
+            id: json['id'],
             recipeName: (json['title'] ?? 'Unknown Recipe').toString().obs,
             
             userName: "User ${json['created_by']}".obs,

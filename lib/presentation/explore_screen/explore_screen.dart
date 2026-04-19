@@ -50,7 +50,7 @@ class ExploreScreen extends StatelessWidget {
                   return RecipeCardItem(
                     recipeItemModel: recipe,
                     onCardTap: () {
-                      Get.toNamed(AppRoutes.recipeDetailScreen);
+                      Get.toNamed(AppRoutes.recipeDetailScreen, arguments: {'id': recipe?.id});
                     },
                     onBookmarkTap: () {
                       controller.toggleBookmark(index);
