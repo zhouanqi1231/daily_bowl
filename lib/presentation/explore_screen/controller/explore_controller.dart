@@ -51,6 +51,11 @@ class ExploreController extends GetxController {
         exploreModelObj.refresh();
         
         offset += limit;
+
+        // if length less than single page, stop loading
+        if (data.length < limit) {
+          hasMoreData.value = false;
+        }
       }
     } catch (e) {
       print("Error fetching recipes: $e");
