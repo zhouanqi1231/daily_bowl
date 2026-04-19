@@ -7,7 +7,7 @@ import './controller/saved_recipe_list_controller.dart';
 class SavedRecipeListInitialPage extends StatelessWidget {
   SavedRecipeListInitialPage({Key? key}) : super(key: key);
 
-  SavedRecipeListController controller = Get.put(SavedRecipeListController());
+  final SavedRecipeListController controller = Get.put(SavedRecipeListController());
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +25,8 @@ class SavedRecipeListInitialPage extends StatelessWidget {
                     Expanded(
                       child: Obx(
                         () => ListView.separated(
+                          // Added bottom padding to the list
+                          padding: EdgeInsets.only(bottom: 40.h),
                           itemCount: controller.recipeList.length,
                           separatorBuilder: (context, index) =>
                               SizedBox(height: 10.h),

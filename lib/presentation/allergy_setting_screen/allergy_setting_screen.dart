@@ -44,6 +44,7 @@ class AllergySettingScreen extends GetWidget<AllergySettingController> {
             return CustomCheckBox(
               text: item.name?.value ?? "",
               value: item.isSelected?.value ?? false,
+              height: 54.h, // Matches the height of menu items (16+16+22 approx)
               onChanged: (value) {
                 controller.toggleAllergy(index, value ?? false);
               },

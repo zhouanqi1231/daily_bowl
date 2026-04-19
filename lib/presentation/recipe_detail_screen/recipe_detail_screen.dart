@@ -17,11 +17,11 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100.h),
+        preferredSize: Size.fromHeight(80.h),
         child: Obx(
           () => CustomAppBar(
-            height: 100.h,
-            topPadding: 20.h,
+            height: 80.h,
+            topPadding: 0.h,
             leadingIcon: ImageConstant.imgArrowLeft,
             onLeadingTap: () => Get.back(),
             actionIcons: [
@@ -32,7 +32,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               ),
             ],
             backgroundColor:
-                controller.scrollOffset.value > controller.imageHeight - 100.h
+                controller.scrollOffset.value > controller.imageHeight - 80.h
                     ? appTheme.white_A700
                     : Colors.transparent,
             horizontalPadding: 18.h,
@@ -69,8 +69,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
                         _buildStepsSection(context),
                         SizedBox(height: 16.h),
                         _buildUpdatedDateSection(context),
-                        // Add significant bottom spacing so content isn't blocked by FABs
-                        SizedBox(height: 120.h),
+                        SizedBox(height: 180.h),
                       ],
                     ),
                   ),
@@ -220,7 +219,9 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
       padding: EdgeInsets.only(bottom: 12.h),
       child: Text(
         "Updated on 2026-02-11",
-        style: TextStyleHelper.instance.body12RegularRoboto,
+        style: TextStyleHelper.instance.body12RegularRoboto.copyWith(
+          color: appTheme.gray_600, // Changed color to gray
+        ),
       ),
     );
   }
@@ -235,19 +236,24 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
           Obx(
             () => CustomFloatingActionButton(
               onPressed: () => controller.onBookmarkTap(),
-              iconPath: ImageConstant.imgFab,
               backgroundColor:
                   controller.isBookmarked.value
-                      ? appTheme.orange_300 // Replaced amber_A400 with orange_300
+                      ? appTheme.deep_purple_800
                       : appTheme.white_A700,
+              child: CustomImageView(
+                imagePath: ImageConstant.imgFab,
+                color: controller.isBookmarked.value
+                    ? appTheme.white_A700
+                    : null,
+              ),
             ),
           ),
           SizedBox(height: 16.h),
           Obx(
             () => CustomFloatingActionButton(
               onPressed: () => controller.onMainFabTap(),
-              child: Icon( // Changed child to the correct parameter name
-                controller.isSaved.value ? Icons.bookmark : Icons.bookmark_border,
+              child: Icon( 
+                controller.isSaved.value ? Icons.star : Icons.star_border, // Changed to star icon
                 color:
                     controller.isSaved.value
                         ? appTheme.white_A700

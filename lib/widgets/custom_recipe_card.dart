@@ -5,14 +5,6 @@ import './custom_image_view.dart';
 
 /**
  * CustomRecipeCard - A reusable card component for displaying recipe information
- * Features a title, description, and recipe image in a consistent Material Design layout
- * with configurable tap handling and responsive design
- * 
- * @param title - The recipe title text (required)
- * @param description - The recipe description text (required) 
- * @param imagePath - Path to the recipe image (required)
- * @param onTap - Optional callback when card is tapped
- * @param width - Optional card width, defaults to full available width
  */
 class CustomRecipeCard extends StatelessWidget {
   CustomRecipeCard({
@@ -39,7 +31,7 @@ class CustomRecipeCard extends StatelessWidget {
         height: 80.h,
         decoration: BoxDecoration(
           color: appTheme.gray_50,
-          border: Border.all(color: appTheme.blue_gray_100, width: 1),
+          border: Border.all(color: appTheme.blue_gray_100, width: 1.h),
           borderRadius: BorderRadius.circular(12.h),
         ),
         child: Row(
@@ -69,11 +61,18 @@ class CustomRecipeCard extends StatelessWidget {
                 ),
               ),
             ),
-            CustomImageView(
-              imagePath: imagePath,
-              height: 80.h,
-              width: 80.h,
-              fit: BoxFit.cover,
+            // Use ClipRRect to prevent the image from overflowing the card's rounded corners
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(11.h),
+                bottomRight: Radius.circular(11.h),
+              ),
+              child: CustomImageView(
+                imagePath: imagePath,
+                height: 80.h,
+                width: 80.h,
+                fit: BoxFit.cover,
+              ),
             ),
           ],
         ),

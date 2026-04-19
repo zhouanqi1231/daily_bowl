@@ -50,13 +50,7 @@ class RecipeDetailController extends GetxController {
   }
 
   void onUserProfileTap() {
-    Get.snackbar(
-      'Profile',
-      'User profile tapped',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.black87,
-      colorText: appTheme.whiteCustom,
-    );
+    // No-op or minimal action as requested previously
   }
 
   void onAllergyTagTap(String allergen) {
@@ -72,25 +66,33 @@ class RecipeDetailController extends GetxController {
 
   void onBookmarkTap() {
     isBookmarked.value = !isBookmarked.value;
-    Get.snackbar(
-      'Recipe',
-      isBookmarked.value ? 'Recipe bookmarked!' : 'Bookmark removed',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.black87,
-      colorText: appTheme.whiteCustom,
-      duration: Duration(seconds: 2),
-    );
+    if (isBookmarked.value) {
+      Get.showSnackbar(
+        GetSnackBar(
+          message: 'cooked',
+          duration: Duration(milliseconds: 1000),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.black87,
+          margin: EdgeInsets.all(16.h),
+          borderRadius: 8.h,
+        ),
+      );
+    }
   }
 
   void onMainFabTap() {
     isSaved.value = !isSaved.value;
-    Get.snackbar(
-      'Recipe',
-      isSaved.value ? 'Recipe saved!' : 'Recipe unsaved',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.black87,
-      colorText: appTheme.whiteCustom,
-      duration: Duration(seconds: 2),
-    );
+    if (isSaved.value) {
+      Get.showSnackbar(
+        GetSnackBar(
+          message: 'saved',
+          duration: Duration(milliseconds: 1000),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.black87,
+          margin: EdgeInsets.all(16.h),
+          borderRadius: 8.h,
+        ),
+      );
+    }
   }
 }
