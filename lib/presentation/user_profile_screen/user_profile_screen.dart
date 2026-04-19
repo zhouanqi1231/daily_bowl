@@ -168,33 +168,38 @@ class UserProfileScreen extends StatelessWidget {
       child: Container(
         width: double.infinity,
         height: 80.h,
-        margin: EdgeInsets.fromLTRB(16.h, 18.h, 16.h, 0),
-        child: Stack(
-          alignment: Alignment.centerLeft,
-          children: [
-            CustomImageView(
-              imagePath: ImageConstant.imgRectangle4,
-              width: double.infinity,
-              height: 80.h,
-              fit: BoxFit.cover,
-            ),
-            Positioned(
-              left: 38.h,
-              child: Text(
-                "Check Your Weekly Report!",
-                style: TextStyleHelper.instance.headline24RegularRozhaOne
-                    .copyWith(
-                      shadows: [
-                        Shadow(
-                          color: appTheme.color990000,
-                          offset: Offset(0, 4),
-                          blurRadius: 3.h,
-                        ),
-                      ],
-                    ),
+        margin: EdgeInsets.symmetric(horizontal: 16.h, vertical: 16.h),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12.h),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              CustomImageView(
+                imagePath:
+                    "https://cdn.britannica.com/36/123536-050-138B212A/Variety-fruits-vegetables.jpg",
+                width: double.infinity,
+                height: 80.h,
+                fit: BoxFit.cover,
               ),
-            ),
-          ],
+              Container(
+                color: Colors.black.withOpacity(0.3),
+              ),
+              Text(
+                "Check Your Weekly Report!",
+                style:
+                    TextStyleHelper.instance.headline24RegularRozhaOne.copyWith(
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black,
+                      offset: Offset(0, 2),
+                      blurRadius: 4.h,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -226,8 +231,7 @@ class UserProfileScreen extends StatelessWidget {
                     child: CustomRecipeCard(
                       title:
                           recipe?.title?.value ?? "Stir-fried Tomato and Eggs",
-                      description:
-                          recipe?.description?.value ??
+                      description: recipe?.description?.value ??
                           "This is a simple and classic dish ...",
                       imagePath:
                           recipe?.imagePath?.value ?? ImageConstant.imgMedia,
