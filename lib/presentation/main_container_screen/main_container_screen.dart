@@ -24,7 +24,6 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Removed global SafeArea to allow Explore screen content to scroll behind status bar
       body: IndexedStack(
         index: _selectedIndex,
         children: _pages,
@@ -39,20 +38,22 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
         bottomBarItemList: [
           CustomBottomBarItem(
             icon: ImageConstant.imgNavExplore,
+            activeIconData: Icons.explore, // Solid Material Icon for Explore
             title: 'Explore',
           ),
           CustomBottomBarItem(
             icon: ImageConstant.imgNavCatagory,
+            activeIconData: Icons.category, // Solid Material Icon for Category
             title: 'Category',
           ),
           CustomBottomBarItem(
             icon: ImageConstant.imgNavSavedGray800,
-            activeIcon: ImageConstant.imgNavSaved,
+            activeIcon: ImageConstant.imgNavSaved, // This SVG is already solid
             title: 'Saved',
           ),
           CustomBottomBarItem(
             icon: ImageConstant.imgNavMe,
-            activeIcon: ImageConstant.imgNavMeBlack900,
+            activeIcon: ImageConstant.imgNavMeBlack900, // This SVG is already solid
             title: 'Me',
           ),
         ],

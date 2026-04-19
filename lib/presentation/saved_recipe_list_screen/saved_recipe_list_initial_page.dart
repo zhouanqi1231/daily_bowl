@@ -11,6 +11,9 @@ class SavedRecipeListInitialPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get status bar height to provide initial padding
+    double statusBarHeight = MediaQuery.of(context).padding.top;
+
     return Scaffold(
       backgroundColor: appTheme.white_A700,
       body: Container(
@@ -18,31 +21,23 @@ class SavedRecipeListInitialPage extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              child: Container(
-                padding: EdgeInsets.fromLTRB(16.h, 22.h, 16.h, 0),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Obx(
-                        () => ListView.separated(
-                          // Added bottom padding to the list
-                          padding: EdgeInsets.only(bottom: 40.h),
-                          itemCount: controller.recipeList.length,
-                          separatorBuilder: (context, index) =>
-                              SizedBox(height: 10.h),
-                          itemBuilder: (context, index) {
-                            final recipe = controller.recipeList[index];
-                            return CustomRecipeCard(
-                              title: recipe.title?.value ?? "",
-                              description: recipe.description?.value ?? "",
-                              imagePath: recipe.imagePath?.value ?? "",
-                              onTap: () => controller.onRecipeTap(index),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
+              child: Obx(
+                () => ListView.separated(
+                  // Use status bar height in padding to prevent coverage initially,
+                  // but allow content to scroll behind status bar.
+                  padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 40.h),
+                  itemCount: controller.recipeList.length,
+                  separatorBuilder: (context, index) =>
+                      SizedBox(height: 10.h),
+                  itemBuilder: (context, index) {
+                    final recipe = controller.recipeList[index];
+                    return CustomRecipeCard(
+                      title: recipe.title?.value ?? "",
+                      description: recipe.description?.value ?? "",
+                      imagePath: recipe.imagePath?.value ?? "",
+                      onTap: () => controller.onRecipeTap(index),
+                    );
+                  },
                 ),
               ),
             ),
