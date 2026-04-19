@@ -1,45 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
 
 class LoginController extends GetxController {
-  TextEditingController idController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   @override
   void onClose() {
-    idController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     super.onClose();
   }
 
   Future<void> login(VoidCallback onSuccess) async {
-    if (idController.text.isEmpty || passwordController.text.isEmpty) {
-      Get.snackbar('Error', 'Please enter both username and password');
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      Get.snackbar('Error', 'Please enter both email and password');
       return;
     }
 
     try {
-      // The swagger shows POST /users/ for registration, 
-      // but typical login might be a different endpoint if not using API keys directly.
-      // Based on the provided swagger, it seems the system uses API keys for protected endpoints.
-      // If there's no specific 'login' endpoint, we might just try to fetch user info 
-      // using the provided credentials or assume a 'session' if applicable.
-      // However, usually login would return an API key.
-      
-      // Since a specific login endpoint isn't defined in the swagger (only registration), 
-      // I will implement a placeholder that navigates on success as requested.
-      // In a real scenario, we'd call an auth endpoint here.
-      
-      // For now, let's assume successful login for any non-empty input to allow testing.
-      onSuccess();
-      
+      final response = await ApiClient.post('/tokens/', {
+        'email': emailController.text,
+        'pwd': passwordController.text,
+      });
+
+      if (response != null && response['token'] != null) {
+        // Persist session token
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('api_key', response['token']);
+        // We might want to store the email too
+        await prefs.setString('user_email', emailController.text);
+
+        // Fetch user profile to get the username and ID
+        try {
+          final usersResponse = await ApiClient.get('/users/');
+          if (usersResponse is List) {
+            final currentUser = usersResponse.firstWhere(
+              (u) => u['email'] == emailController.text,
+              orElse: () => null,
+            );
+            if (currentUser != null) {
+              if (currentUser['username'] != null) {
+                await prefs.setString('user_name', currentUser['username']);
+              }
+              if (currentUser['id'] != null) {
+                await prefs.setInt('user_id', currentUser['id']);
+              }
+            }
+          }
+        } catch (e) {
+          print("Error fetching user profile after login: $e");
+        }
+
+        Get.snackbar('Success', 'Login successful!');
+        onSuccess();
+      }
     } catch (e) {
-      Get.snackbar('Login Failed', e.toString());
+      Get.snackbar('Login Failed', 'Invalid email or password.');
     }
   }
 
   void onLoginPressed() {
-    Get.offAllNamed(AppRoutes.mainContainer);
+    // This is handled by the parent
   }
 }

@@ -37,11 +37,15 @@ class RegisterController extends GetxController {
         'pwd': passwordController.text,
       });
 
-      // According to swagger, the response contains an api_key
-      if (response != null && response['api_key'] != null) {
-        // In a real app, we would save this API key securely (e.g., Flutter Secure Storage)
-        // and update the ApiClient's header.
-        Get.snackbar('Success', 'Registration successful!');
+      if (response != null) {
+        Get.snackbar('Success', 'Registration successful! Please login.');
+        // Clear fields for next use
+        usernameController.clear();
+        emailController.clear();
+        passwordController.clear();
+        repeatPasswordController.clear();
+        
+        // This callback should trigger the switch back to LoginScreen
         onSuccess();
       }
     } catch (e) {
@@ -49,7 +53,5 @@ class RegisterController extends GetxController {
     }
   }
 
-  void onLoginPressed() {
-    // This is handled by the parent AnimatedSwitcher in MainContainer
-  }
+  void onLoginPressed() {}
 }

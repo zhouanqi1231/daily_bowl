@@ -22,8 +22,8 @@ class LoginScreen extends GetWidget<LoginController> {
             children: [
               SizedBox(height: 100.h),
               CustomFloatingTextField(
-                placeholder: "Your ID",
-                controller: controller.idController,
+                placeholder: "Email",
+                controller: controller.emailController,
                 textStyle: TextStyleHelper.instance.body14RegularRoboto
                     .copyWith(color: appTheme.gray_900),
                 labelStyle: TextStyleHelper.instance.body14RegularRoboto

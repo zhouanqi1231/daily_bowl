@@ -1,17 +1,30 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
   static String? _baseUrl;
-  static String? _apiKey;
+  static String? _defaultApiKey;
 
   // init environment vars
   static Future<void> init() async {
     final String envString = await rootBundle.loadString('env.json');
     final Map<String, dynamic> envVars = jsonDecode(envString);
     _baseUrl = envVars['DBMS_BASE_URL'];
-    _apiKey = envVars['DBMS_API_KEY'];
+    _defaultApiKey = envVars['DBMS_API_KEY'];
+  }
+
+  static Future<Map<String, String>> _getHeaders() async {
+    if (_baseUrl == null) await init();
+    
+    final prefs = await SharedPreferences.getInstance();
+    final userApiKey = prefs.getString('api_key');
+    
+    return {
+      'Content-Type': 'application/json',
+      'dbms-api-key': userApiKey ?? _defaultApiKey ?? '', 
+    };
   }
 
   // encapsule GET
@@ -19,10 +32,7 @@ class ApiClient {
     if (_baseUrl == null) await init();
     
     final url = Uri.parse('$_baseUrl$endpoint');
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'dbms-api-key': _apiKey ?? '', 
-    });
+    final response = await http.get(url, headers: await _getHeaders());
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -38,10 +48,7 @@ class ApiClient {
     final url = Uri.parse('$_baseUrl$endpoint');
     final response = await http.post(
       url, 
-      headers: {
-        'Content-Type': 'application/json',
-        'dbms-api-key': _apiKey ?? '',
-      },
+      headers: await _getHeaders(),
       body: jsonEncode(body),
     );
 
@@ -59,15 +66,11 @@ class ApiClient {
     final url = Uri.parse('$_baseUrl$endpoint');
     final response = await http.put(
       url, 
-      headers: {
-        'Content-Type': 'application/json',
-        'dbms-api-key': _apiKey ?? '', 
-      },
+      headers: await _getHeaders(),
       body: jsonEncode(body),
     );
 
     if (response.statusCode == 200 || response.statusCode == 204) {
-      // if 204 return null to avoid json decode error
       if (response.body.isEmpty) return null; 
       return jsonDecode(response.body);
     } else {
@@ -82,10 +85,7 @@ class ApiClient {
     final url = Uri.parse('$_baseUrl$endpoint');
     final response = await http.delete(
       url, 
-      headers: {
-        'Content-Type': 'application/json',
-        'dbms-api-key': _apiKey ?? '', 
-      },
+      headers: await _getHeaders(),
     );
 
     if (response.statusCode == 200 || response.statusCode == 204) {
