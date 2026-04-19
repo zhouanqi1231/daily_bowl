@@ -21,10 +21,19 @@ class RegisterScreen extends GetWidget<RegisterController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 100.h), // Top padding to avoid status bar
+              SizedBox(height: 100.h),
               CustomFloatingTextField(
-                placeholder: "Your ID",
-                controller: controller.idController,
+                placeholder: "Username",
+                controller: controller.usernameController,
+                textStyle: TextStyleHelper.instance.body14RegularRoboto
+                    .copyWith(color: appTheme.gray_900),
+                labelStyle: TextStyleHelper.instance.body14RegularRoboto
+                    .copyWith(color: appTheme.gray_600),
+              ),
+              SizedBox(height: 16.h),
+              CustomFloatingTextField(
+                placeholder: "Email",
+                controller: controller.emailController,
                 textStyle: TextStyleHelper.instance.body14RegularRoboto
                     .copyWith(color: appTheme.gray_900),
                 labelStyle: TextStyleHelper.instance.body14RegularRoboto
@@ -67,7 +76,11 @@ class RegisterScreen extends GetWidget<RegisterController> {
                       width: double.infinity,
                       backgroundColor: appTheme.deep_purple_800,
                       textColor: appTheme.white_A700,
-                      onPressed: onRegisterSuccess,
+                      onPressed: () {
+                        if (onRegisterSuccess != null) {
+                          controller.register(onRegisterSuccess!);
+                        }
+                      },
                     ),
                   ),
                 ],

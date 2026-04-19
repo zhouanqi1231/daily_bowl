@@ -20,7 +20,7 @@ class LoginScreen extends GetWidget<LoginController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 100.h), // Top padding to avoid status bar
+              SizedBox(height: 100.h),
               CustomFloatingTextField(
                 placeholder: "Your ID",
                 controller: controller.idController,
@@ -57,7 +57,11 @@ class LoginScreen extends GetWidget<LoginController> {
                       width: double.infinity,
                       backgroundColor: appTheme.deep_purple_800,
                       textColor: appTheme.white_A700,
-                      onPressed: onLoginSuccess,
+                      onPressed: () {
+                        if (onLoginSuccess != null) {
+                          controller.login(onLoginSuccess!);
+                        }
+                      },
                     ),
                   ),
                 ],

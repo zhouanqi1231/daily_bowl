@@ -36,6 +36,7 @@ flutter:
   assets: 
     - assets/
     - assets/images/
+    - env.json
   fonts: 
     - family: Roboto
       fonts: 
