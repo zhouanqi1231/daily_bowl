@@ -22,7 +22,8 @@ class ExploreScreen extends StatelessWidget {
           Obx(
             () => ListView.separated(
               // Added horizontal padding (16.h) between cards and screen edge
-              padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 20.h),
+              // Increased bottom padding to 100.h to provide more empty space at the bottom
+              padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 100.h),
               itemCount: controller.exploreModelObj.value.recipeList?.length ?? 0,
               separatorBuilder: (context, index) => SizedBox(height: 16.h),
               itemBuilder: (context, index) {
