@@ -9,6 +9,8 @@ import '../presentation/recipe_detail_screen/recipe_detail_screen.dart';
 import '../presentation/recipe_search_results_screen/recipe_search_results_screen.dart';
 import '../presentation/main_container_screen/main_container_screen.dart';
 import '../presentation/category_screen/category_screen.dart';
+import '../presentation/login_screen/login_screen.dart';
+import '../presentation/register_screen/register_screen.dart';
 
 import '../presentation/recipe_creation_screen/binding/recipe_creation_binding.dart';
 import '../presentation/weekly_nutrition_report_screen/binding/weekly_nutrition_report_binding.dart';
@@ -20,6 +22,8 @@ import '../presentation/app_navigation_screen/app_navigation_screen.dart';
 import '../presentation/app_navigation_screen/binding/app_navigation_binding.dart';
 import '../presentation/recipe_detail_screen/binding/recipe_detail_binding.dart';
 import '../presentation/recipe_search_results_screen/binding/recipe_search_results_binding.dart';
+import '../presentation/login_screen/binding/login_binding.dart';
+import '../presentation/register_screen/binding/register_binding.dart';
 
 // ignore_for_file: must_be_immutable
 class AppRoutes {
@@ -37,6 +41,8 @@ class AppRoutes {
   static const String recipeDetailScreen = '/recipe_detail_screen';
   static const String recipeSearchResultsScreen =
       '/recipe_search_results_screen';
+  static const String loginScreen = '/login_screen';
+  static const String registerScreen = '/register_screen';
 
   static const String appNavigationScreen = '/app_navigation_screen';
   static const String initialRoute = '/';
@@ -45,6 +51,10 @@ class AppRoutes {
     GetPage(
       name: mainContainer,
       page: () => MainContainerScreen(),
+      bindings: [
+        LoginBinding(),
+        RegisterBinding(), // Added RegisterBinding here
+      ],
     ),
     GetPage(
       name: categoryScreen,
@@ -91,6 +101,16 @@ class AppRoutes {
       bindings: [RecipeSearchResultsBinding()],
     ),
     GetPage(
+      name: loginScreen,
+      page: () => LoginScreen(),
+      bindings: [LoginBinding()],
+    ),
+    GetPage(
+      name: registerScreen,
+      page: () => RegisterScreen(),
+      bindings: [RegisterBinding()],
+    ),
+    GetPage(
       name: appNavigationScreen,
       page: () => AppNavigationScreen(),
       bindings: [AppNavigationBinding()],
@@ -98,6 +118,10 @@ class AppRoutes {
     GetPage(
       name: initialRoute,
       page: () => MainContainerScreen(),
+      bindings: [
+        LoginBinding(),
+        RegisterBinding(), // Added RegisterBinding here as well
+      ],
     ),
   ];
 }

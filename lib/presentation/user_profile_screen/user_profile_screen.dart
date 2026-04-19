@@ -19,7 +19,7 @@ class UserProfileScreen extends StatelessWidget {
         preferredSize: Size.fromHeight(70.h),
         child: CustomAppBar(
           height: 70.h,
-          topPadding: 0.h, // Removed extra top padding to bring it up
+          topPadding: 0.h,
           leadingIcon: ImageConstant.imgMenu,
           onLeadingTap: () => Get.toNamed(AppRoutes.settingsMenuScreen),
           actionIcons: [
@@ -50,19 +50,19 @@ class UserProfileScreen extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: appTheme.white_A700,
-      padding:
-          EdgeInsets.fromLTRB(24.h, 4.h, 24.h, 24.h), // Reduced top padding
+      padding: EdgeInsets.fromLTRB(24.h, 4.h, 24.h, 24.h),
       child: Row(
         children: [
-          Container(
-            width: 104.h,
+          CustomImageView(
+            imagePath: ImageConstant.imgGenericAvatar,
             height: 104.h,
-            margin: EdgeInsets.only(top: 6.h),
-            decoration: BoxDecoration(
-              color: appTheme.orange_200,
-              shape: BoxShape.circle,
-              border: Border.all(color: appTheme.gray_900_01, width: 1.h),
+            width: 104.h,
+            radius: BorderRadius.circular(52.h),
+            border: Border.all(
+              color: appTheme.deep_purple_800,
+              width: 1.h,
             ),
+            margin: EdgeInsets.only(top: 6.h),
           ),
           SizedBox(width: 32.h),
           Expanded(
@@ -181,8 +181,7 @@ class UserProfileScreen extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               CustomImageView(
-                imagePath: ImageConstant
-                    .imgCoverImage, // Updated to use the same image as report
+                imagePath: ImageConstant.imgCoverImage,
                 width: double.infinity,
                 height: 80.h,
                 fit: BoxFit.cover,

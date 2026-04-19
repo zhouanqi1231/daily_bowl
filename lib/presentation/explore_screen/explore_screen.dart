@@ -34,7 +34,7 @@ class ExploreScreen extends StatelessWidget {
               int recipeCount = controller.exploreModelObj.value.recipeList?.length ?? 0;
               
               return ListView.separated(
-                padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 20.h),
+                padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 100.h),
                 // if have more data, add a loading icon
                 itemCount: recipeCount + (controller.hasMoreData.value ? 1 : 0),
                 separatorBuilder: (context, index) => SizedBox(height: 16.h),
