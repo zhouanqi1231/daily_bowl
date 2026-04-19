@@ -5,6 +5,8 @@ import '../explore_screen/explore_screen.dart';
 import '../category_screen/category_screen.dart';
 import '../saved_recipe_list_screen/saved_recipe_list_initial_page.dart';
 import '../user_profile_screen/user_profile_screen.dart';
+import '../login_screen/login_screen.dart';
+import '../register_screen/register_screen.dart';
 
 class MainContainerScreen extends StatefulWidget {
   @override
@@ -12,14 +14,56 @@ class MainContainerScreen extends StatefulWidget {
 }
 
 class _MainContainerScreenState extends State<MainContainerScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 3; 
+  bool _isLoggedIn = false;
+  bool _showRegister = false;
 
-  final List<Widget> _pages = [
-    ExploreScreen(),
-    CategoryScreen(),
-    SavedRecipeListInitialPage(),
-    UserProfileScreen(),
-  ];
+  Widget _buildMeTab() {
+    if (_isLoggedIn) {
+      return UserProfileScreen();
+    }
+    
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+      child: _showRegister
+          ? RegisterScreen(
+              key: const ValueKey('Register'),
+              onLoginPressed: () {
+                setState(() {
+                  _showRegister = false;
+                });
+              },
+              onRegisterSuccess: () {
+                setState(() {
+                  _isLoggedIn = true;
+                });
+              },
+            )
+          : LoginScreen(
+              key: const ValueKey('Login'),
+              onLoginSuccess: () {
+                setState(() {
+                  _isLoggedIn = true;
+                });
+              },
+              onRegisterPressed: () {
+                setState(() {
+                  _showRegister = true;
+                });
+              },
+            ),
+    );
+  }
+
+  List<Widget> get _pages => [
+        ExploreScreen(),
+        CategoryScreen(),
+        SavedRecipeListInitialPage(),
+        _buildMeTab(),
+      ];
 
   @override
   Widget build(BuildContext context) {
