@@ -23,7 +23,8 @@ class ExploreScreen extends StatelessWidget {
             onNotification: (ScrollNotification scrollInfo) {
               // is bottom?
               if (!controller.isLoading.value &&
-                  scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 50) {
+                  scrollInfo.metrics.pixels >=
+                      scrollInfo.metrics.maxScrollExtent - 50) {
                 // load before reach bottom
                 controller.fetchRecipes();
                 return true;
@@ -31,10 +32,12 @@ class ExploreScreen extends StatelessWidget {
               return false;
             },
             child: Obx(() {
-              int recipeCount = controller.exploreModelObj.value.recipeList?.length ?? 0;
-              
+              int recipeCount =
+                  controller.exploreModelObj.value.recipeList?.length ?? 0;
+
               return ListView.separated(
-                padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 100.h),
+                padding: EdgeInsets.fromLTRB(
+                    16.h, statusBarHeight + 20.h, 16.h, 100.h),
                 // if have more data, add a loading icon
                 itemCount: recipeCount + (controller.hasMoreData.value ? 1 : 0),
                 separatorBuilder: (context, index) => SizedBox(height: 16.h),
@@ -45,18 +48,20 @@ class ExploreScreen extends StatelessWidget {
                       child: Center(child: CircularProgressIndicator()),
                     );
                   }
-                  
-                  var recipe = controller.exploreModelObj.value.recipeList?[index];
+
+                  var recipe =
+                      controller.exploreModelObj.value.recipeList?[index];
                   return Obx(() => RecipeCardItem(
-                    recipeItemModel: recipe,
-                    onCardTap: () {
-                      Get.toNamed(AppRoutes.recipeDetailScreen, arguments: {'id': recipe?.id});
-                    },
-                    onBookmarkTap: controller.isLoggedIn.value 
-                        ? () => controller.toggleBookmark(index) 
-                        : null,
-                    showBookmark: controller.isLoggedIn.value,
-                  ));
+                        recipeItemModel: recipe,
+                        onCardTap: () {
+                          Get.toNamed(AppRoutes.recipeDetailScreen,
+                              arguments: {'id': recipe?.id});
+                        },
+                        onBookmarkTap: controller.isLoggedIn.value
+                            ? () => controller.toggleBookmark(index)
+                            : null,
+                        showBookmark: controller.isLoggedIn.value,
+                      ));
                 },
               );
             }),
@@ -67,26 +72,31 @@ class ExploreScreen extends StatelessWidget {
     );
   }
 
-
   Widget _buildFloatingActionButtons(BuildContext context) {
-    return Positioned(
-      bottom: 24.h,
-      right: 16.h,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CustomFloatingActionButton(
-            onPressed: () {
-              Get.toNamed(AppRoutes.recipeCreationScreen);
-            },
-            backgroundColor: appTheme.deep_purple_800,
-            child: CustomImageView(
-              imagePath: ImageConstant.imgCreateARecipe,
-              color: appTheme.white_A700,
+    return Obx(() {
+      if (!controller.isLoggedIn.value) {
+        return const SizedBox.shrink();
+      }
+
+      return Positioned(
+        bottom: 24.h,
+        right: 16.h,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CustomFloatingActionButton(
+              onPressed: () {
+                Get.toNamed(AppRoutes.recipeCreationScreen);
+              },
+              backgroundColor: appTheme.deep_purple_800,
+              child: CustomImageView(
+                imagePath: ImageConstant.imgCreateARecipe,
+                color: appTheme.white_A700,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 }

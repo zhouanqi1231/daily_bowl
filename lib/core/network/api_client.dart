@@ -17,75 +17,91 @@ class ApiClient {
 
   static Future<Map<String, String>> _getHeaders() async {
     if (_baseUrl == null) await init();
-    
+
     final prefs = await SharedPreferences.getInstance();
     final userApiKey = prefs.getString('api_key');
-    
+
     return {
       'Content-Type': 'application/json',
-      'dbms-api-key': userApiKey ?? _defaultApiKey ?? '', 
+      'dbms-api-key': userApiKey ?? _defaultApiKey ?? '',
     };
   }
 
   // encapsule GET
   static Future<dynamic> get(String endpoint) async {
     if (_baseUrl == null) await init();
-    
+
     final url = Uri.parse('$_baseUrl$endpoint');
     final response = await http.get(url, headers: await _getHeaders());
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      throw Exception('Failed to load data. Status Code: ${response.statusCode}, Body: ${response.body}');
+      throw Exception(
+          'Failed to load data. Status Code: ${response.statusCode}, Body: ${response.body}');
     }
   }
 
   // encapsule POST
-  static Future<dynamic> post(String endpoint, Map<String, dynamic> body) async {
+  static Future<dynamic> post(
+      String endpoint, Map<String, dynamic> body) async {
     if (_baseUrl == null) await init();
-    
+
     final url = Uri.parse('$_baseUrl$endpoint');
     final response = await http.post(
-      url, 
+      url,
       headers: await _getHeaders(),
       body: jsonEncode(body),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      if (response.body.isEmpty) return null;
-      return jsonDecode(response.body);
+      if (response.body.isEmpty) {
+        if (response.headers.containsKey('location')) {
+          return {'location': response.headers['location']};
+        }
+        return null;
+      }
+      var decodedData = jsonDecode(response.body);
+
+      if (decodedData is Map<String, dynamic> &&
+          response.headers.containsKey('location')) {
+        decodedData['location'] = response.headers['location'];
+      }
+
+      return decodedData;
     } else {
-      throw Exception('Failed to post data. Status Code: ${response.statusCode}, Body: ${response.body}');
+      throw Exception(
+          'Failed to post data. Status Code: ${response.statusCode}, Body: ${response.body}');
     }
   }
 
   // encapsule PUT
   static Future<dynamic> put(String endpoint, Map<String, dynamic> body) async {
     if (_baseUrl == null) await init();
-    
+
     final url = Uri.parse('$_baseUrl$endpoint');
     final response = await http.put(
-      url, 
+      url,
       headers: await _getHeaders(),
       body: jsonEncode(body),
     );
 
     if (response.statusCode == 200 || response.statusCode == 204) {
-      if (response.body.isEmpty) return null; 
+      if (response.body.isEmpty) return null;
       return jsonDecode(response.body);
     } else {
-      throw Exception('Failed to update (PUT) data. Status: ${response.statusCode}, Body: ${response.body}');
+      throw Exception(
+          'Failed to update (PUT) data. Status: ${response.statusCode}, Body: ${response.body}');
     }
   }
 
   // encapsule DELETE
   static Future<dynamic> delete(String endpoint) async {
     if (_baseUrl == null) await init();
-    
+
     final url = Uri.parse('$_baseUrl$endpoint');
     final response = await http.delete(
-      url, 
+      url,
       headers: await _getHeaders(),
     );
 
@@ -93,7 +109,8 @@ class ApiClient {
       if (response.body.isEmpty) return null;
       return jsonDecode(response.body);
     } else {
-      throw Exception('Failed to delete data. Status: ${response.statusCode}, Body: ${response.body}');
+      throw Exception(
+          'Failed to delete data. Status: ${response.statusCode}, Body: ${response.body}');
     }
   }
 }

@@ -42,6 +42,8 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                           SizedBox(height: 20.h),
                           _buildTitleField(),
                           SizedBox(height: 20.h),
+                          _buildDetailsSection(),
+                          SizedBox(height: 20.h),
                           _buildIngredientsSection(),
                           SizedBox(height: 12.h),
                           _buildStepsSection(),
@@ -118,6 +120,58 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
     );
   }
 
+  Widget _buildDetailsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 4.h),
+          child: Text(
+            "Recipe Details",
+            style: TextStyleHelper.instance.title22RegularRoboto,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Row(
+          children: [
+            Expanded(
+              child: CustomFloatingTextField(
+                placeholder: "Cuisine Type",
+                controller: controller.cuisineTypeController,
+                textStyle: TextStyleHelper.instance.body14RegularRoboto
+                    .copyWith(color: appTheme.gray_900),
+                labelStyle: TextStyleHelper.instance.body14RegularRoboto
+                    .copyWith(color: appTheme.gray_600),
+              ),
+            ),
+            SizedBox(width: 10.h),
+            SizedBox(
+              width: 100.h,
+              child: CustomFloatingTextField(
+                placeholder: "Servings",
+                controller: controller.servingsController,
+                keyboardType: TextInputType.number,
+                textStyle: TextStyleHelper.instance.body14RegularRoboto
+                    .copyWith(color: appTheme.gray_900),
+                labelStyle: TextStyleHelper.instance.body14RegularRoboto
+                    .copyWith(color: appTheme.gray_600),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 16.h),
+        CustomFloatingTextField(
+          placeholder: "Cooking Method (e.g. Frying, Steaming)",
+          controller: controller.cookingMethodController,
+          textStyle: TextStyleHelper.instance.body14RegularRoboto
+              .copyWith(color: appTheme.gray_900),
+          labelStyle: TextStyleHelper.instance.body14RegularRoboto
+              .copyWith(color: appTheme.gray_600),
+        ),
+      ],
+    );
+  }
+
   Widget _buildIngredientsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,7 +198,8 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                           placeholder: "Name",
                           controller: controllers['name'],
                           validator: controller.validateIngredientName,
-                          textStyle: TextStyleHelper.instance.body14RegularRoboto
+                          textStyle: TextStyleHelper
+                              .instance.body14RegularRoboto
                               .copyWith(color: appTheme.gray_900),
                           labelStyle: TextStyleHelper
                               .instance.body14RegularRoboto
@@ -165,7 +220,8 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                             "NUMBER_ONLY",
                           ),
                           validator: controller.validateIngredientQuantity,
-                          textStyle: TextStyleHelper.instance.body14RegularRoboto
+                          textStyle: TextStyleHelper
+                              .instance.body14RegularRoboto
                               .copyWith(color: appTheme.gray_900),
                           labelStyle: TextStyleHelper
                               .instance.body14RegularRoboto
