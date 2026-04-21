@@ -81,7 +81,7 @@ class UserProfileScreen extends StatelessWidget {
                   children: [
                     Obx(
                       () => Text(
-                        "${controller.userProfileModel.value?.recipeCount?.value ?? 4} Recipes",
+                        "${controller.userProfileModel.value?.recipeCount?.value ?? 0} Recipes",
                         style: TextStyleHelper.instance.body14MediumRoboto
                             .copyWith(color: appTheme.blue_gray_400),
                       ),
@@ -89,7 +89,7 @@ class UserProfileScreen extends StatelessWidget {
                     SizedBox(width: 24.h),
                     Obx(
                       () => Text(
-                        "${controller.userProfileModel.value?.saveCount?.value ?? 128} Saves",
+                        "${controller.userProfileModel.value?.saveCount?.value ?? 0} Saves",
                         style: TextStyleHelper.instance.body14MediumRoboto
                             .copyWith(color: appTheme.blue_gray_400),
                       ),
@@ -121,47 +121,94 @@ class UserProfileScreen extends StatelessWidget {
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 6.h),
-            Row(
-              children: [
-                _buildMonthLabel("Jan"),
-                SizedBox(width: 50.h),
-                _buildMonthLabel("Feb"),
-                SizedBox(width: 48.h),
-                _buildMonthLabel("Mar"),
-                SizedBox(width: 64.h),
-                _buildMonthLabel("Apr"),
-                SizedBox(width: 50.h),
-                _buildMonthLabel("May"),
-                SizedBox(width: 64.h),
-                _buildMonthLabel("Jun"),
-                SizedBox(width: 50.h),
-                _buildMonthLabel("Jul"),
-                SizedBox(width: 50.h),
-                _buildMonthLabel("Aug"),
-                SizedBox(width: 64.h),
-                _buildMonthLabel("Sep"),
-                SizedBox(width: 50.h),
-                _buildMonthLabel("Oct"),
-                SizedBox(width: 50.h),
-                _buildMonthLabel("Nov"),
-                SizedBox(width: 64.h),
-                _buildMonthLabel("Dec"),
-              ],
-            ),
-            SizedBox(height: 4.h),
-            CustomImageView(
-              imagePath: ImageConstant.imgMap,
-              width: 952.h,
-              height: 124.h,
-            ),
-          ],
-        ),
+        child: Obx(() {
+          final data = controller.activityData;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 6.h),
+              Row(
+                children: [
+                  _buildMonthLabel("Jan"),
+                  SizedBox(width: 50.h),
+                  _buildMonthLabel("Feb"),
+                  SizedBox(width: 48.h),
+                  _buildMonthLabel("Mar"),
+                  SizedBox(width: 64.h),
+                  _buildMonthLabel("Apr"),
+                  SizedBox(width: 50.h),
+                  _buildMonthLabel("May"),
+                  SizedBox(width: 64.h),
+                  _buildMonthLabel("Jun"),
+                  SizedBox(width: 50.h),
+                  _buildMonthLabel("Jul"),
+                  SizedBox(width: 50.h),
+                  _buildMonthLabel("Aug"),
+                  SizedBox(width: 64.h),
+                  _buildMonthLabel("Sep"),
+                  SizedBox(width: 50.h),
+                  _buildMonthLabel("Oct"),
+                  SizedBox(width: 50.h),
+                  _buildMonthLabel("Nov"),
+                  SizedBox(width: 64.h),
+                  _buildMonthLabel("Dec"),
+                ],
+              ),
+              SizedBox(height: 12.h),
+              _buildHeatMapGrid(data),
+              SizedBox(height: 8.h),
+            ],
+          );
+        }),
       ),
     );
+  }
+
+  Widget _buildHeatMapGrid(Map<DateTime, int> data) {
+    // Generate grid for the last 365 days
+    final today = DateTime.now();
+    final firstDay = today.subtract(Duration(days: 364));
+
+    // Group days into weeks
+    List<List<DateTime>> weeks = [];
+    List<DateTime> currentWeek = [];
+
+    for (int i = 0; i <= 365; i++) {
+      final date = firstDay.add(Duration(days: i));
+      currentWeek.add(date);
+      if (currentWeek.length == 7 || i == 365) {
+        weeks.add(currentWeek);
+        currentWeek = [];
+      }
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: weeks.map((week) {
+        return Column(
+          children: week.map((date) {
+            final day = DateTime(date.year, date.month, date.day);
+            final score = data[day] ?? 0;
+            return Container(
+              width: 16.h,
+              height: 16.h,
+              margin: EdgeInsets.all(2.h),
+              decoration: BoxDecoration(
+                color: _getHeatMapColor(score),
+                borderRadius: BorderRadius.circular(2.h),
+              ),
+            );
+          }).toList(),
+        );
+      }).toList(),
+    );
+  }
+
+  Color _getHeatMapColor(int score) {
+    if (score == 0) return Color(0xFFF1F1F1);
+    if (score <= 2) return Color(0xFFFFE3BA);
+    if (score <= 6) return Color(0xFFFFBC48);
+    return Color(0xFFFF7607);
   }
 
   Widget _buildMonthLabel(String month) {
