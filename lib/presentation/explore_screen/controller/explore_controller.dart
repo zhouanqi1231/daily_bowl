@@ -4,6 +4,7 @@ import '../../../core/network/api_client.dart';
 import '../../recipe_search_results_screen/models/recipe_item_model.dart';
 import '../models/explore_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/global_save_manager.dart';
 
 class ExploreController extends GetxController {
   Rx<ExploreModel> exploreModelObj = ExploreModel().obs;
@@ -17,13 +18,22 @@ class ExploreController extends GetxController {
   // user login status vars
   RxBool isLoggedIn = false.obs;
   int currentUserId = 0;
-  RxSet<int> savedRecipeIds = <int>{}.obs;
 
   @override
   void onInit() {
     super.onInit();
     exploreModelObj.value.recipeList = [];
     _initializeData();
+
+    ever(Get.find<GlobalSaveManager>().savedIds, (Set<int> globalSavedIds) {
+      if (exploreModelObj.value.recipeList != null) {
+        for (var recipe in exploreModelObj.value.recipeList!) {
+          if (recipe.id != null) {
+            recipe.isBookmarked?.value = globalSavedIds.contains(recipe.id);
+          }
+        }
+      }
+    });
   }
 
   Future<void> _initializeData() async {
@@ -41,7 +51,6 @@ class ExploreController extends GetxController {
 
       if (isLoggedIn.value) {
         currentUserId = prefs.getInt('user_id') ?? 0;
-        await _fetchUserSaves();
 
         offset = 0;
         hasMoreData.value = true;
@@ -49,29 +58,9 @@ class ExploreController extends GetxController {
         await fetchRecipes();
       } else {
         currentUserId = 0;
-        savedRecipeIds.clear();
+        Get.find<GlobalSaveManager>().savedIds.clear();
         exploreModelObj.refresh();
       }
-    }
-  }
-
-  Future<void> _fetchUserSaves() async {
-    if (currentUserId == 0) return;
-    try {
-      var response = await ApiClient.get('/users/$currentUserId/saves/');
-
-      if (response is List) {
-        final Set<int> fetchedIds = {};
-        for (var item in response) {
-          if (item is Map && item['recipe_id'] != null) {
-            fetchedIds.add(int.parse(item['recipe_id'].toString()));
-          }
-        }
-        savedRecipeIds.value = fetchedIds;
-      }
-    } catch (e) {
-      print("Error fetching saves: $e");
-      savedRecipeIds.clear();
     }
   }
 
@@ -97,7 +86,7 @@ class ExploreController extends GetxController {
             userInitial: "U".obs,
             userInfo: (json['cuisine_type'] ?? 'Home Chef').toString().obs,
             recipeImage: ImageConstant.imgMedia188x364.obs,
-            isBookmarked: (savedRecipeIds.contains(rId)).obs,
+            isBookmarked: Get.find<GlobalSaveManager>().savedIds.contains(rId).obs,
           );
         }).toList();
 
@@ -118,6 +107,14 @@ class ExploreController extends GetxController {
       isLoading.value = false;
     }
   }
+  Future<void> refreshData() async {
+    offset = 0;
+    hasMoreData.value = true;
+    
+    exploreModelObj.value.recipeList?.clear();
+    
+    await fetchRecipes();
+  }
 
   void toggleBookmark(int index) async {
     // if not logged in, disable this button
@@ -126,32 +123,6 @@ class ExploreController extends GetxController {
     var recipe = exploreModelObj.value.recipeList?[index];
     if (recipe == null || recipe.id == null) return;
 
-    int rId = recipe.id!;
-    bool isCurrentlySaved = recipe.isBookmarked?.value ?? false;
-
-    try {
-      if (isCurrentlySaved) {
-        await ApiClient.delete('/users/$currentUserId/saves/$rId/');
-        recipe.isBookmarked?.value = false;
-        savedRecipeIds.remove(rId);
-      } else {
-        try {
-          await ApiClient.post(
-              '/users/$currentUserId/saves/', {'recipe_id': rId});
-        } catch (e) {
-          // if return 409 means repeat request
-          if (e.toString().contains('409')) {
-            print("Server already has this save, syncing UI...");
-          } else {
-            rethrow;
-          }
-        }
-        recipe.isBookmarked?.value = true;
-        savedRecipeIds.add(rId);
-      }
-      exploreModelObj.refresh();
-    } catch (e) {
-      Get.snackbar("Error", "Failed to save this: {$e}");
-    }
+    Get.find<GlobalSaveManager>().toggleSave(recipe.id!);
   }
 }

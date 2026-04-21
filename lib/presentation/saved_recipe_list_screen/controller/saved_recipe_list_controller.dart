@@ -1,3 +1,6 @@
+import 'package:daily_bowl/core/global_save_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/network/api_client.dart';
 import '../../../core/app_export.dart';
 import '../models/saved_recipe_list_model.dart';
 
@@ -9,92 +12,59 @@ class SavedRecipeListController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    
+    ever(Get.find<GlobalSaveManager>().savedIds, (_) {
+      initializeRecipeList();
+    });
+
     initializeRecipeList();
   }
 
-  void initializeRecipeList() {
-    recipeList.value = [
-      SavedRecipeListModel(
-        title: "Stir-fried Tomato and Eggs".obs,
-        description: "This is a simple and classic dish ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Stir-fried Tomato and Eggs".obs,
-        description: "This is a simple and classic dish ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Stir-fried Tomato and Eggs".obs,
-        description: "This is a simple and classic dish ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Stir-fried Tomato and Eggs".obs,
-        description: "This is a simple and classic dish ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Beef and Broccoli".obs,
-        description: "A quick and healthy stir-fry ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Kung Pao Chicken".obs,
-        description: "Spicy and savory classic ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Mapo Tofu".obs,
-        description: "Soft tofu in a spicy sauce ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Sweet and Sour Pork".obs,
-        description: "Crispy pork with tangy sauce ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Dumplings".obs,
-        description: "Handmade pockets of joy ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Fried Rice".obs,
-        description: "Golden rice with veggies ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Spring Rolls".obs,
-        description: "Crispy and light appetizers ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Hot and Sour Soup".obs,
-        description: "Hearty soup with a kick ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Wonton Soup".obs,
-        description: "Clear broth with stuffed wontons ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-      SavedRecipeListModel(
-        title: "Chow Mein".obs,
-        description: "Stir-fried noodles with protein ...".obs,
-        imagePath: ImageConstant.imgMedia.obs,
-      ),
-    ];
-  }
+  Future<void> initializeRecipeList() async {
+    final savedIds = Get.find<GlobalSaveManager>().savedIds.toList();
+    
+    if (savedIds.isEmpty) {
+      recipeList.clear(); 
+      return;
+    }
 
-  void onRecipeTap(int index) {
-    Get.toNamed(AppRoutes.recipeDetailScreen);
-  }
-
-  void refreshRecipes() async {
     isLoading.value = true;
-    await Future.delayed(Duration(seconds: 1));
-    initializeRecipeList();
-    isLoading.value = false;
+    try {
+      List<SavedRecipeListModel> fetchedRecipes = [];
+
+      for (int recipeId in savedIds) {
+        try {
+          final recipeDetail = await ApiClient.get('/recipes/$recipeId/');
+          if (recipeDetail != null) {
+            fetchedRecipes.add(
+              SavedRecipeListModel(
+                id: recipeDetail['id'], 
+                title: (recipeDetail['title'] as String? ?? "No Title").obs,
+                description: (recipeDetail['procedure'] as String? ?? "").obs, 
+                imagePath: ImageConstant.imgMedia.obs,
+              )
+            );
+          }
+        } catch (e) {
+          print("Failed to load details for recipe $recipeId: $e");
+        }
+      }
+
+      recipeList.value = fetchedRecipes;
+    } catch (e) {
+      print("Error fetching saved recipes details: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  void onRecipeTap(int index) {
+    final recipe = recipeList[index];
+    if (recipe.id != null) {
+      Get.toNamed(AppRoutes.recipeDetailScreen, arguments: {'id': recipe.id});
+    }
+  }
+
+  Future<void> refreshRecipes() async {
+    await Get.find<GlobalSaveManager>().fetchInitialSaves();
   }
 }

@@ -5,6 +5,7 @@ import '../../../widgets/custom_ingredients_list.dart';
 import '../models/recipe_detail_model.dart';
 import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/global_save_manager.dart';
 
 class RecipeDetailController extends GetxController {
   final recipeDetailModel = Rx<RecipeDetailModel?>(null);
@@ -33,6 +34,10 @@ class RecipeDetailController extends GetxController {
     // get id from prev page
     if (Get.arguments != null && Get.arguments['id'] != null) {
       recipeId = Get.arguments['id'];
+      isSaved.value = Get.find<GlobalSaveManager>().savedIds.contains(recipeId);
+      ever(Get.find<GlobalSaveManager>().savedIds, (Set<int> savedIds) {
+        isSaved.value = savedIds.contains(recipeId);
+      });
       _fetchRecipeDetail(recipeId);
     } else {
       isLoading.value = false;
@@ -141,11 +146,14 @@ class RecipeDetailController extends GetxController {
   }
 
   void onMainFabTap() {
-    isSaved.value = !isSaved.value;
-    if (isSaved.value) {
+    if (recipeId != -1) {
+      bool willBeSaved = !isSaved.value; 
+
+      Get.find<GlobalSaveManager>().toggleSave(recipeId);
+
       Get.showSnackbar(
         GetSnackBar(
-          message: 'saved',
+          message: willBeSaved ? 'Recipe saved to your collection' : 'Recipe removed from your collection',
           duration: Duration(milliseconds: 1000),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.black87,

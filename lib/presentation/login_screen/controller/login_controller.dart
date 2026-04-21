@@ -5,6 +5,7 @@ import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
 import '../../explore_screen/controller/explore_controller.dart';
 import '../../user_profile_screen/controller/user_profile_controller.dart';
+import '../../../core/global_save_manager.dart';
 
 class LoginController extends GetxController {
   TextEditingController emailController = TextEditingController();
@@ -68,6 +69,8 @@ class LoginController extends GetxController {
         }
         emailController.clear();
         passwordController.clear();
+
+        await Get.find<GlobalSaveManager>().fetchInitialSaves();
 
         // trigger ExploreController status check
         if (Get.isRegistered<ExploreController>()) {

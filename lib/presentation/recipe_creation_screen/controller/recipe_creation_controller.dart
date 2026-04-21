@@ -305,7 +305,7 @@ class RecipeCreationController extends GetxController {
         Get.find<UserProfileController>().refreshUserProfile();
       }
       if (Get.isRegistered<ExploreController>()) {
-         Get.find<ExploreController>().fetchRecipes(); 
+         Get.find<ExploreController>().refreshData(); 
       }
 
       _clearForm();

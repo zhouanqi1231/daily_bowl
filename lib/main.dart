@@ -1,7 +1,7 @@
 import 'dart:io';
+import 'package:daily_bowl/core/global_save_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'core/app_export.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -13,9 +13,13 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-void main() {
+void main() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+
+  Get.put(GlobalSaveManager(), permanent: true);
+  await Get.find<GlobalSaveManager>().fetchInitialSaves();
+
   // 🚨 CRITICAL: Device orientation lock - DO NOT REMOVE
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
     value,
