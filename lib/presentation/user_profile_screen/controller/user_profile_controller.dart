@@ -1,6 +1,8 @@
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/app_export.dart';
+import '../../../core/network/api_client.dart';
 import '../models/recipe_item_model.dart';
 import '../models/user_profile_model.dart';
 
@@ -14,36 +16,165 @@ class UserProfileController extends GetxController {
     _initializeUserProfile();
   }
 
-  void _initializeUserProfile() {
-    userProfileModel.value = UserProfileModel(
-      userName: "Amy Perkins".obs,
-      recipeCount: 4.obs,
-      saveCount: 128.obs,
-      recipes: [
-        RecipeItemModel(
-          title: "Stir-fried Tomato and Eggs".obs,
-          description: "This is a simple and classic dish ...".obs,
-          imagePath: ImageConstant.imgMedia.obs,
-        ),
-        RecipeItemModel(
-          title: "Stir-fried Tomato and Eggs".obs,
-          description: "This is a simple and classic dish ...".obs,
-          imagePath: ImageConstant.imgMedia.obs,
-        ),
-        RecipeItemModel(
-          title: "Stir-fried Tomato and Eggs".obs,
-          description: "This is a simple and classic dish ...".obs,
-          imagePath: ImageConstant.imgMedia.obs,
-        ),
-        RecipeItemModel(
-          title: "Stir-fried Tomato and Eggs".obs,
-          description: "This is a simple and classic dish ...".obs,
-          imagePath: ImageConstant.imgMedia.obs,
-        ),
-      ].obs,
-    );
-  }
+  // Future<void> _initializeUserProfile() async {
+  //   isLoading.value = true;
+  //   final prefs = await SharedPreferences.getInstance();
+  //   String? storedName = prefs.getString('user_name');
+  //   String? email = prefs.getString('user_email');
+  //   int? userId = prefs.getInt('user_id');
+    
+  //   String displayName = "Amy Perkins";
 
+  //   String? token = prefs.getString('api_key');
+    
+  //   if (storedName != null && storedName.isNotEmpty) {
+  //     displayName = storedName;
+  //   } else if (email != null && email.isNotEmpty) {
+  //     displayName = email.split('@')[0];
+  //     displayName = displayName[0].toUpperCase() + displayName.substring(1);
+  //   }
+
+  //   if (token != null && token.isNotEmpty && userId != null) {
+  //     try {
+  //       int recipeCount = 0;
+  //       int saveCount = 0;
+  //       List<RecipeItemModel> userRecipes = [];
+
+  //       // Fetch recipes created by user (My Recipes)
+  //       final recipesResponse = await ApiClient.get('/users/$userId/recipes/');
+  //       if (recipesResponse is List) {
+  //         recipeCount = recipesResponse.length;
+  //         userRecipes = recipesResponse.map((r) {
+  //           return RecipeItemModel(
+  //             title: (r['title'] as String? ?? "No Title").obs,
+  //             description: (r['procedure'] as String? ?? "No Procedure").obs,
+  //             imagePath: ImageConstant.imgMedia.obs,
+  //           );
+  //         }).toList();
+  //       }
+
+  //       // Fetch saved recipes for user (Saves)
+  //       final savesResponse = await ApiClient.get('/users/$userId/saves/');
+  //       if (savesResponse is List) {
+  //         saveCount = savesResponse.length;
+  //       }
+
+  //       userProfileModel.value = UserProfileModel(
+  //         userName: displayName.obs,
+  //         recipeCount: recipeCount.obs,
+  //         saveCount: saveCount.obs,
+  //         recipes: userRecipes.obs,
+  //       );
+  //     } catch (e) {
+  //       print("Error fetching profile details: $e");
+  //       _loadMockData(displayName);
+  //     }
+  //   } else {
+  //     _loadMockData(displayName);
+  //   }
+  //   isLoading.value = false;
+  // }
+  
+  // void _loadMockData(String displayName) {
+  //    userProfileModel.value = UserProfileModel(
+  //     userName: displayName.obs,
+  //     recipeCount: 4.obs,
+  //     saveCount: 128.obs,
+  //     recipes: [
+  //       RecipeItemModel(
+  //         title: "Stir-fried Tomato and Eggs".obs,
+  //         description: "This is a simple and classic dish ...".obs,
+  //         imagePath: ImageConstant.imgMedia.obs,
+  //       ),
+  //       RecipeItemModel(
+  //         title: "Stir-fried Tomato and Eggs".obs,
+  //         description: "This is a simple and classic dish ...".obs,
+  //         imagePath: ImageConstant.imgMedia.obs,
+  //       ),
+  //       RecipeItemModel(
+  //         title: "Stir-fried Tomato and Eggs".obs,
+  //         description: "This is a simple and classic dish ...".obs,
+  //         imagePath: ImageConstant.imgMedia.obs,
+  //       ),
+  //       RecipeItemModel(
+  //         title: "Stir-fried Tomato and Eggs".obs,
+  //         description: "This is a simple and classic dish ...".obs,
+  //         imagePath: ImageConstant.imgMedia.obs,
+  //       ),
+  //     ].obs,
+  //   );
+  // }
+
+  Future<void> _initializeUserProfile() async {
+    isLoading.value = true;
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('api_key');
+    int? userId = prefs.getInt('user_id');
+    String? storedName = prefs.getString('user_name');
+    
+    if (token == null || token.isEmpty || userId == null) {
+      userProfileModel.value = UserProfileModel(
+        userName: "Guest User".obs,
+        recipeCount: 0.obs,
+        saveCount: 0.obs,
+        recipes: <RecipeItemModel>[].obs,
+      );
+      userProfileModel.refresh();
+      isLoading.value = false;
+      return;
+    }
+
+    String displayName = storedName ?? "User $userId";
+
+    try {
+      int recipeCount = 0;
+      int saveCount = 0;
+      List<RecipeItemModel> userRecipes = [];
+
+      // Fetch recipes created by user
+      final recipesResponse = await ApiClient.get('/users/$userId/recipes/');
+      if (recipesResponse is List) {
+        recipeCount = recipesResponse.length;
+        userRecipes = recipesResponse.map((r) {
+          return RecipeItemModel(
+            title: (r['title'] as String? ?? "No Title").obs,
+            description: (r['procedure'] as String? ?? "No Procedure").obs,
+            imagePath: ImageConstant.imgMedia.obs,
+          );
+        }).toList();
+      }
+
+      // Fetch saved recipes
+      final savesResponse = await ApiClient.get('/users/$userId/saves/');
+      if (savesResponse is List) {
+        saveCount = savesResponse.length;
+      }
+
+      userProfileModel.value = UserProfileModel(
+        userName: displayName.obs,
+        recipeCount: recipeCount.obs,
+        saveCount: saveCount.obs,
+        recipes: userRecipes.obs,
+      );
+      userProfileModel.refresh();
+    } catch (e) {
+      print("Error fetching profile details: $e");
+      _loadMockData(displayName);
+    }
+    
+    isLoading.value = false;
+  }
+  
+  void _loadMockData(String displayName) {
+     userProfileModel.value = UserProfileModel(
+      userName: displayName.obs,
+      recipeCount: 0.obs,
+      saveCount: 0.obs,
+      recipes: <RecipeItemModel>[].obs,
+    );
+    userProfileModel.refresh();
+  }
+  
   void onSharePressed() async {
     try {
       await Share.share(
@@ -64,27 +195,12 @@ class UserProfileController extends GetxController {
   void onRecipeTap(int index) {
     final recipe = userProfileModel.value?.recipes?[index];
     if (recipe != null) {
-      // Navigate to the recipe detail screen as requested
       Get.toNamed(AppRoutes.recipeDetailScreen);
     }
   }
 
   void refreshUserProfile() {
-    isLoading.value = true;
-
-    // Simulate API call
-    Future.delayed(Duration(seconds: 1), () {
-      _initializeUserProfile();
-      isLoading.value = false;
-
-      Get.snackbar(
-        'Profile Updated',
-        'Your profile has been refreshed successfully!',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: appTheme.deep_purple_800,
-        colorText: appTheme.whiteCustom,
-      );
-    });
+    _initializeUserProfile();
   }
 
   @override

@@ -1,10 +1,25 @@
+import 'dart:io';
+import 'package:daily_bowl/core/global_save_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'core/app_export.dart';
 
-void main() {
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
+void main() async {
+  HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+
+  Get.put(GlobalSaveManager(), permanent: true);
+  await Get.find<GlobalSaveManager>().fetchInitialSaves();
+
   // 🚨 CRITICAL: Device orientation lock - DO NOT REMOVE
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
     value,

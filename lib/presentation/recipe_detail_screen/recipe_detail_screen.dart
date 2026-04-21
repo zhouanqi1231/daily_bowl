@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../core/app_export.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_floating_action_button.dart';
@@ -20,10 +19,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
         preferredSize: Size.fromHeight(70.h),
         child: Obx(
           () {
-            // Calculate opacity based on scroll offset
-            // We want it to be fully white when user has scrolled past the image
             double opacity = (controller.scrollOffset.value / (controller.imageHeight - 80.h)).clamp(0.0, 1.0);
-            
             return CustomAppBar(
               height: 70.h,
               topPadding: 0.h,
@@ -42,47 +38,53 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
           },
         ),
       ),
-      body: Stack(
-        children: [
-          NotificationListener<ScrollNotification>(
-            onNotification: (scrollNotification) {
-              if (scrollNotification is ScrollUpdateNotification) {
-                controller.updateScrollOffset(scrollNotification.metrics.pixels);
-              }
-              return true;
-            },
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  CustomImageView(
-                    imagePath: ImageConstant.imgMedia,
-                    width: double.infinity,
-                    height: controller.imageHeight,
-                    fit: BoxFit.cover,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 12.h, left: 16.h, right: 16.h),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        _buildRecipeHeaderSection(context),
-                        SizedBox(height: 16.h),
-                        _buildIngredientsSection(context),
-                        SizedBox(height: 16.h),
-                        _buildStepsSection(context),
-                        SizedBox(height: 16.h),
-                        _buildUpdatedDateSection(context),
-                        SizedBox(height: 180.h),
-                      ],
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return Center(child: CircularProgressIndicator(color: appTheme.deep_purple_800));
+        }
+
+        return Stack(
+          children: [
+            NotificationListener<ScrollNotification>(
+              onNotification: (scrollNotification) {
+                if (scrollNotification is ScrollUpdateNotification) {
+                  controller.updateScrollOffset(scrollNotification.metrics.pixels);
+                }
+                return true;
+              },
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CustomImageView(
+                      imagePath: ImageConstant.imgMedia, // TODO: if return img
+                      width: double.infinity,
+                      height: controller.imageHeight,
+                      fit: BoxFit.cover,
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: EdgeInsets.only(top: 12.h, left: 16.h, right: 16.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          _buildRecipeHeaderSection(context),
+                          SizedBox(height: 16.h),
+                          _buildIngredientsSection(context),
+                          SizedBox(height: 16.h),
+                          _buildStepsSection(context),
+                          SizedBox(height: 16.h),
+                          _buildUpdatedDateSection(context),
+                          SizedBox(height: 180.h),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          _buildFloatingActionButtons(context),
-        ],
-      ),
+            _buildFloatingActionButtons(context),
+          ],
+        );
+      }),
     );
   }
 
@@ -93,7 +95,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Stir-fried Tomato and Eggs",
+            controller.recipeTitle.value,
             style: TextStyleHelper.instance.headline32RegularRoboto,
           ),
           SizedBox(height: 12.h),
@@ -109,7 +111,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               ),
               SizedBox(width: 10.h),
               Text(
-                "User Name",
+                controller.authorName.value,
                 style: TextStyleHelper.instance.title16MediumRoboto.copyWith(
                   color: appTheme.black_900,
                 ),
@@ -118,7 +120,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
           ),
           SizedBox(height: 12.h),
           Text(
-            "This is a simple and classic dish that is easy to make and perfect for a quick meal.",
+            controller.recipeDescription.value,
             style: TextStyleHelper.instance.body14RegularRoboto,
           ),
           SizedBox(height: 18.h),
@@ -129,6 +131,8 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
   }
 
   Widget _buildAllergyAlertSection(BuildContext context) {
+    // render this only if have tag
+    if (controller.allergyTags.isEmpty) return SizedBox.shrink();
     return Row(
       children: [
         Text(
@@ -136,32 +140,22 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
           style: TextStyleHelper.instance.body14RegularRoboto,
         ),
         SizedBox(width: 8.h),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 6.h),
-          decoration: BoxDecoration(
-            color: appTheme.deep_orange_200,
-            border: Border.all(color: appTheme.red_900, width: 1.h),
-            borderRadius: BorderRadius.circular(14.h),
-          ),
-          child: Text(
-            "#Egg",
-            style: TextStyleHelper.instance.label11MediumRoboto,
-          ),
-        ),
-        SizedBox(width: 8.h),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 6.h),
-          decoration: BoxDecoration(
-            border: Border.all(color: appTheme.blue_gray_100, width: 1.h),
-            borderRadius: BorderRadius.circular(14.h),
-          ),
-          child: Text(
-            "#Tamato",
-            style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
-              color: appTheme.gray_800,
+        // 动态生成过敏源标签
+        ...controller.allergyTags.map((tag) => Padding(
+          padding: EdgeInsets.only(right: 8.h),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 6.h),
+            decoration: BoxDecoration(
+              color: appTheme.deep_orange_200,
+              border: Border.all(color: appTheme.red_900, width: 1.h),
+              borderRadius: BorderRadius.circular(14.h),
+            ),
+            child: Text(
+              "#$tag",
+              style: TextStyleHelper.instance.label11MediumRoboto,
             ),
           ),
-        ),
+        )).toList(),
       ],
     );
   }
@@ -177,19 +171,15 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
             style: TextStyleHelper.instance.title16MediumRoboto,
           ),
           SizedBox(height: 14.h),
-          Obx(
-            () => CustomIngredientsList(
-              ingredientsList:
-                  controller.recipeDetailModel.value?.ingredientsList?.value ??
-                  [],
-            ),
+          CustomIngredientsList(
+            ingredientsList: controller.recipeDetailModel.value?.ingredientsList?.value ?? <CustomIngredientsItem>[],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildStepsSection(BuildContext context) {
+ Widget _buildStepsSection(BuildContext context) {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(right: 6.h),
@@ -201,16 +191,8 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
             style: TextStyleHelper.instance.title16MediumRoboto,
           ),
           SizedBox(height: 16.h),
-          Obx(
-            () => CustomInstructionList(
-              instructions:
-                  controller
-                      .recipeDetailModel
-                      .value
-                      ?.instructionsList
-                      ?.value ??
-                      [],
-            ),
+          CustomInstructionList(
+            instructions: controller.recipeDetailModel.value?.instructionsList?.value ?? <String>[],
           ),
         ],
       ),
@@ -221,9 +203,9 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     return Padding(
       padding: EdgeInsets.only(bottom: 12.h),
       child: Text(
-        "Updated on 2026-02-11",
+        controller.updateDate.value,
         style: TextStyleHelper.instance.body12RegularRoboto.copyWith(
-          color: appTheme.gray_600, // Changed color to gray
+          color: appTheme.gray_600,
         ),
       ),
     );

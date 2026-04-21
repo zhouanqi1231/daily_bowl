@@ -6,9 +6,15 @@ import '../../../core/app_export.dart';
 class SettingsMenuModel {
   Rx<String>? profileSettingsText;
   Rx<String>? myAllergiesText;
+  Rx<String>? logoutText;
 
-  SettingsMenuModel({this.profileSettingsText, this.myAllergiesText}) {
+  SettingsMenuModel({
+    this.profileSettingsText,
+    this.myAllergiesText,
+    this.logoutText,
+  }) {
     profileSettingsText = profileSettingsText ?? Rx("Profile Settings");
     myAllergiesText = myAllergiesText ?? Rx("My Allergies");
+    logoutText = logoutText ?? Rx("Logout");
   }
 }

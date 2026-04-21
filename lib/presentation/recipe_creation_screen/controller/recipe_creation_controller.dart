@@ -1,7 +1,10 @@
+import 'package:daily_bowl/presentation/explore_screen/controller/explore_controller.dart';
+import 'package:daily_bowl/presentation/user_profile_screen/controller/user_profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../../core/network/api_client.dart';
 import '../models/recipe_creation_model.dart';
 import '../../../core/app_export.dart';
 
@@ -17,6 +20,10 @@ class RecipeCreationController extends GetxController {
   // Form controllers
   final formKey = GlobalKey<FormState>();
   late TextEditingController titleController;
+  late TextEditingController cuisineTypeController;
+  late TextEditingController servingsController;
+  late TextEditingController cookingMethodController;
+  
 
   // Image picker
   final ImagePicker _imagePicker = ImagePicker();
@@ -36,6 +43,9 @@ class RecipeCreationController extends GetxController {
 
   void _initializeControllers() {
     titleController = TextEditingController();
+    cuisineTypeController = TextEditingController();
+    servingsController = TextEditingController();
+    cookingMethodController = TextEditingController();
     
     // Initialize with 1 ingredient row by default
     addIngredientRow();
@@ -220,37 +230,64 @@ class RecipeCreationController extends GetxController {
   }
 
   void confirmRecipe() async {
-    if (!_validateForm()) {
-      return;
-    }
+    if (!_validateForm()) return;
 
     isLoading.value = true;
 
     try {
-      // Simulate recipe creation process
-      await Future.delayed(Duration(seconds: 2));
+      String procedureStr = stepControllers
+          .map((c) => c.text.trim())
+          .where((step) => step.isNotEmpty)
+          .toList()
+          .asMap()
+          .entries
+          .map((e) => "${e.key + 1}. ${e.value}")
+          .join('\n');
 
-      // Update model with form data
-      recipeCreationModel.value?.title?.value = titleController.text.trim();
+      final recipePayload = {
+        'title': titleController.text.trim(),
+        'cuisine_type': cuisineTypeController.text.trim(),
+        'servings': int.tryParse(servingsController.text.trim()) ?? 1,
+        'cooking_method': cookingMethodController.text.trim(),
+        'procedure': procedureStr,
+        'description': '', 
+      };
 
-      // Collect ingredients
-      List<Map<String, String>> ingredients = [];
+      final recipeResponse = await ApiClient.post('/recipes/', recipePayload);
+      
+      String? recipeLoc = recipeResponse?['location'];
+      if (recipeLoc == null) throw Exception("No Location header returned from API.");
+      
+      int recipeId = int.parse(recipeLoc.split('/').lastWhere((e) => e.isNotEmpty));
+      print("Extracted Recipe ID: $recipeId");
+
       for (var controllerMap in ingredientControllers) {
         String name = controllerMap['name']!.text.trim();
-        String quantity = controllerMap['quantity']!.text.trim();
+        String quantityStr = controllerMap['quantity']!.text.trim();
         String unit = controllerMap['unit']!.text.trim();
 
-        if (name.isNotEmpty && quantity.isNotEmpty && unit.isNotEmpty) {
-          ingredients.add({'name': name, 'quantity': quantity, 'unit': unit});
-        }
-      }
+        if (name.isNotEmpty && quantityStr.isNotEmpty) {
+          double amount = double.tryParse(quantityStr) ?? 0.0;
 
-      // Collect steps
-      List<String> steps = [];
-      for (int i = 0; i < stepControllers.length; i++) {
-        String step = stepControllers[i].text.trim();
-        if (step.isNotEmpty) {
-          steps.add('${i + 1}. $step');
+          final ingredientResponse = await ApiClient.post('/ingredients/', {'name': name});
+          
+          String? ingredientLoc = ingredientResponse?['location'];
+          if (ingredientLoc != null) {
+            int ingredientId = int.parse(ingredientLoc.split('/').lastWhere((e) => e.isNotEmpty));
+            
+            final bindingPayload = {
+              'ingredient_id': ingredientId,
+              'amount': amount,
+              'unit': unit,
+            };
+            
+            try {
+              await ApiClient.post('/recipes/$recipeId/ingredients/', bindingPayload);
+              print("Bound ingredient $ingredientId to recipe $recipeId");
+            } catch (e) {
+              print("Ingredient binding warning (maybe duplicate): $e");
+            }
+          }
         }
       }
 
@@ -258,29 +295,34 @@ class RecipeCreationController extends GetxController {
       isSuccess.value = true;
 
       Get.snackbar(
-        'Success',
+        'Success', 
         'Recipe created successfully!',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: appTheme.greenCustom,
-        colorText: appTheme.whiteCustom,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
       );
 
-      // Clear form and navigate back
+      if (Get.isRegistered<UserProfileController>()) {
+        Get.find<UserProfileController>().refreshUserProfile();
+      }
+      if (Get.isRegistered<ExploreController>()) {
+         Get.find<ExploreController>().refreshData(); 
+      }
+
       _clearForm();
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Duration(milliseconds: 800));
       Get.back();
+
     } catch (e) {
       isLoading.value = false;
+      print("Create Recipe Error: $e");
       Get.snackbar(
-        'Error',
-        'Failed to create recipe. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: appTheme.redCustom,
-        colorText: appTheme.whiteCustom,
+        'Error', 
+        'Failed to create recipe. Check console.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
       );
     }
   }
-
   void discardRecipe() {
     Get.dialog(
       AlertDialog(
@@ -305,6 +347,9 @@ class RecipeCreationController extends GetxController {
 
   void _clearForm() {
     titleController.clear();
+    cuisineTypeController.clear();
+    servingsController.clear();
+    cookingMethodController.clear();
     for (var controller in stepControllers) {
       controller.clear();
     }
