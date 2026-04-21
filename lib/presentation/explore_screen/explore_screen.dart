@@ -85,6 +85,7 @@ class ExploreScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             CustomFloatingActionButton(
+              heroTag: 'explore_create_recipe_fab',
               onPressed: () {
                 Get.toNamed(AppRoutes.recipeCreationScreen);
               },

@@ -220,6 +220,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
         children: [
           Obx(
             () => CustomFloatingActionButton(
+              heroTag: 'detail_bookmark_fab',
               onPressed: () => controller.onBookmarkTap(),
               backgroundColor:
                   controller.isBookmarked.value
@@ -236,6 +237,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
           SizedBox(height: 16.h),
           Obx(
             () => CustomFloatingActionButton(
+              heroTag: 'detail_main_fab',
               onPressed: () => controller.onMainFabTap(),
               child: Icon( 
                 controller.isSaved.value ? Icons.star : Icons.star_border, // Changed to star icon
