@@ -41,7 +41,9 @@ class RecipeDetailController extends GetxController {
       _fetchRecipeDetail(recipeId);
     } else {
       isLoading.value = false;
-      Get.snackbar("Error", "Cannot get recipe ID");
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.snackbar("Error", "Cannot get recipe ID");
+      });
     }
   }
 
