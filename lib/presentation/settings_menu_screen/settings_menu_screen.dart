@@ -49,22 +49,13 @@ class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
     );
   }
 
-  Widget _buildLogoutCard() {
+  Widget _buildMenuButton({
+    required String text,
+    required VoidCallback onTap,
+    Color? textColor,
+  }) {
     return GestureDetector(
-      onTap: () {
-        Get.defaultDialog(
-          title: "Logout",
-          middleText: "Are you sure you want to log out?",
-          textConfirm: "Logout",
-          confirmTextColor: Colors.white,
-          buttonColor: Colors.red,
-          onConfirm: () {
-            Get.back(); // close prompt
-            controller.onLogoutTap();
-          },
-          textCancel: "Cancel",
-        );
-      },
+      onTap: onTap,
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 18.h),
@@ -80,9 +71,9 @@ class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
           ],
         ),
         child: Text(
-          'Logout',
+          text,
           style: TextStyleHelper.instance.title16MediumRoboto.copyWith(
-            color: Colors.red,
+            color: textColor,
             height: 1.19,
           ),
         ),
@@ -90,90 +81,54 @@ class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
     );
   }
 
-  Widget _buildLoginPromptCard() {
-    return GestureDetector(
+  Widget _buildLogoutCard() {
+    return _buildMenuButton(
+      text: 'Logout',
+      textColor: Colors.red,
       onTap: () {
-        Get.delete<LoginController>(); 
+        Get.dialog(
+          AlertDialog(
+            title: Text('Logout'),
+            content: Text(
+              'Are you sure you want to log out?',
+            ),
+            actions: [
+              TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
+              TextButton(
+                onPressed: () {
+                  Get.back(); // close dialog
+                  controller.onLogoutTap();
+                },
+                child: Text('Logout'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLoginPromptCard() {
+    return _buildMenuButton(
+      text: "Please Login to access settings",
+      onTap: () {
+        Get.delete<LoginController>();
         Get.toNamed(AppRoutes.loginScreen);
       },
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(20.h),
-        decoration: BoxDecoration(
-          color: appTheme.white_A700,
-          borderRadius: BorderRadius.circular(12.h),
-        ),
-        child: Center(
-          child: Text("Please Login to access settings",
-              style: TextStyleHelper.instance.title16MediumRoboto),
-        ),
-      ),
     );
   }
 
   Widget _buildProfileSettingsCard() {
-    return GestureDetector(
+    return _buildMenuButton(
+      text: 'Profile Settings',
       onTap: () => controller.onProfileSettingsTap(),
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.only(top: 16.h, bottom: 16.h, left: 18.h),
-        decoration: BoxDecoration(
-          color: appTheme.white_A700,
-          borderRadius: BorderRadius.circular(12.h),
-          boxShadow: [
-            BoxShadow(
-              color: appTheme.deep_purple_300,
-              offset: Offset(0, 1),
-              blurRadius: 5,
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Profile Settings',
-              style: TextStyleHelper.instance.title16MediumRoboto.copyWith(
-                height: 1.19,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
   Widget _buildMyAllergiesCard() {
-    return GestureDetector(
+    return _buildMenuButton(
+      text: 'My Allergies',
       onTap: () => controller.onMyAllergiesTap(),
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.only(top: 16.h, bottom: 16.h, left: 18.h),
-        decoration: BoxDecoration(
-          color: appTheme.white_A700,
-          borderRadius: BorderRadius.circular(12.h),
-          boxShadow: [
-            BoxShadow(
-              color: appTheme.deep_purple_300,
-              offset: Offset(0, 1),
-              blurRadius: 5,
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'My Allergies',
-              style: TextStyleHelper.instance.title16MediumRoboto.copyWith(
-                height: 1.19,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
