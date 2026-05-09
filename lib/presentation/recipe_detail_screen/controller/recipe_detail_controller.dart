@@ -61,7 +61,21 @@ class RecipeDetailController extends GetxController {
       
       recipeTitle.value = recipeData['title'] ?? 'Unknown Recipe';
       recipeDescription.value = "Cuisine Type: ${recipeData['cuisine_type'] ?? 'Default Type'} • Portion: ${recipeData['servings'] ?? 1} pax";
-      authorName.value = "User ${recipeData['created_by']}";
+      
+      // Fetch author name using creator ID
+      int creatorId = recipeData['created_by'] ?? 0;
+      authorName.value = "User $creatorId"; // Default fallback
+      
+      if (creatorId != 0) {
+        try {
+          var userData = await ApiClient.get('/users/$creatorId/');
+          if (userData != null && userData['username'] != null) {
+            authorName.value = userData['username'];
+          }
+        } catch (e) {
+          print("Error fetching creator info: $e");
+        }
+      }
 
       if (recipeData['created_at'] != null) {
          DateTime date = DateTime.parse(recipeData['created_at']);
@@ -103,7 +117,9 @@ class RecipeDetailController extends GetxController {
 
     } catch (e) {
       print("Failed to fetch recipe details: $e");
-      Get.snackbar("Failed to load", "Please check internet connections");
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.snackbar("Failed to load", "Please check internet connections");
+      });
     } finally {
       isLoading.value = false;
     }
