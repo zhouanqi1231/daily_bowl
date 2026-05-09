@@ -16,7 +16,7 @@ class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
         leadingIcon: ImageConstant.imgArrowLeft,
         onLeadingTap: () => Get.back(),
         backgroundColor: appTheme.transparentCustom,
-        horizontalPadding: 18.h,
+        horizontalPadding: 16.h,
       ),
       body: _buildMainContent(),
     );

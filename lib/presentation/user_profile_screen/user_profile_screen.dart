@@ -30,7 +30,7 @@ class UserProfileScreen extends StatelessWidget {
             ),
           ],
           backgroundColor: appTheme.white_A700,
-          horizontalPadding: 24.h,
+          horizontalPadding: 16.h,
         ),
       ),
       body: SingleChildScrollView(

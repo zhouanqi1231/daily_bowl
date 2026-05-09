@@ -31,7 +31,7 @@ class WeeklyNutritionReportScreen
               leadingIcon: ImageConstant.imgArrowLeft,
               onLeadingTap: () => Get.back(),
               backgroundColor: appTheme.white_A700.withOpacity(opacity),
-              horizontalPadding: 18.h,
+              horizontalPadding: 16.h,
             );
           },
         ),
