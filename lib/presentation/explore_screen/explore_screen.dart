@@ -31,40 +31,39 @@ class ExploreScreen extends StatelessWidget {
               }
               return false;
             },
-            child: Obx(() {
-              int recipeCount =
-                  controller.exploreModelObj.value.recipeList?.length ?? 0;
+            child: RefreshIndicator(
+              onRefresh: () => controller.refreshData(),
+              color: appTheme.deep_purple_800,
+              child: Obx(() {
+                int recipeCount =
+                    controller.exploreModelObj.value.recipeList?.length ?? 0;
 
-              return ListView.separated(
-                padding: EdgeInsets.fromLTRB(
-                    16.h, statusBarHeight + 20.h, 16.h, 100.h),
-                // if have more data, add a loading icon
-                itemCount: recipeCount + (controller.hasMoreData.value ? 1 : 0),
-                separatorBuilder: (context, index) => SizedBox(height: 16.h),
-                itemBuilder: (context, index) {
-                  if (index == recipeCount) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-
-                  var recipe =
-                      controller.exploreModelObj.value.recipeList?[index];
-                  return Obx(() => RecipeCardItem(
-                        recipeItemModel: recipe,
-                        onCardTap: () {
-                          Get.toNamed(AppRoutes.recipeDetailScreen,
-                              arguments: {'id': recipe?.id});
-                        },
-                        onBookmarkTap: controller.isLoggedIn.value
-                            ? () => controller.toggleBookmark(index)
-                            : null,
-                        showBookmark: controller.isLoggedIn.value,
-                      ));
-                },
-              );
-            }),
+                return ListView.separated(
+                  padding: EdgeInsets.fromLTRB(
+                      16.h, statusBarHeight + 20.h, 16.h, 100.h),
+                  // Use alwaysScrollableScrollPhysics to ensure pull-to-refresh works even with few items
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  // if have more data, we still fetch in background but removed the bottom spinner
+                  itemCount: recipeCount,
+                  separatorBuilder: (context, index) => SizedBox(height: 16.h),
+                  itemBuilder: (context, index) {
+                    var recipe =
+                        controller.exploreModelObj.value.recipeList?[index];
+                    return Obx(() => RecipeCardItem(
+                          recipeItemModel: recipe,
+                          onCardTap: () {
+                            Get.toNamed(AppRoutes.recipeDetailScreen,
+                                arguments: {'id': recipe?.id});
+                          },
+                          onBookmarkTap: controller.isLoggedIn.value
+                              ? () => controller.toggleBookmark(index)
+                              : null,
+                          showBookmark: controller.isLoggedIn.value,
+                        ));
+                  },
+                );
+              }),
+            ),
           ),
           _buildFloatingActionButtons(context),
         ],
