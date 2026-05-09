@@ -21,7 +21,7 @@ class RecipeDetailController extends GetxController {
   final authorName = "".obs;
   final updateDate = "".obs;
   final allergyTags = <String>[].obs;
-  
+
   // For scrolling app bar color change
   final scrollOffset = 0.0.obs;
   final imageHeight = 412.0; // Same as in the screen
@@ -51,55 +51,57 @@ class RecipeDetailController extends GetxController {
     scrollOffset.value = offset;
   }
 
-  bool get isImageScrolledOut => scrollOffset.value >= imageHeight - (70.h); // 70.h is app bar height
+  bool get isImageScrolledOut => scrollOffset.value >= imageHeight - (70.h);
 
   Future<void> _fetchRecipeDetail(int id) async {
     try {
       isLoading.value = true;
 
-      var recipeData = await ApiClient.get('/recipes/$id/');
-      
+      var responses = await Future.wait([
+        ApiClient.get('/recipes/$id/'),
+        ApiClient.get('/recipes/$id/ingredients/'),
+      ]);
+
+      var recipeData = responses[0];
+      var ingredientsAssoc = responses[1];
+
       recipeTitle.value = recipeData['title'] ?? 'Unknown Recipe';
       recipeDescription.value = "Cuisine Type: ${recipeData['cuisine_type'] ?? 'Default Type'} • Portion: ${recipeData['servings'] ?? 1} pax";
-      
-      // Fetch author name using creator ID
-      int creatorId = recipeData['created_by'] ?? 0;
-      authorName.value = "User $creatorId"; // Default fallback
-      
-      if (creatorId != 0) {
-        try {
-          var userData = await ApiClient.get('/users/$creatorId/');
-          if (userData != null && userData['username'] != null) {
-            authorName.value = userData['username'];
-          }
-        } catch (e) {
-          print("Error fetching creator info: $e");
-        }
-      }
+
+      authorName.value = recipeData['creator_username'] ?? "Unknown User";
 
       if (recipeData['created_at'] != null) {
-         DateTime date = DateTime.parse(recipeData['created_at']);
-         updateDate.value = "Updated on ${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+        DateTime date = DateTime.parse(recipeData['created_at']);
+        updateDate.value = "Updated on ${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
       }
 
       List<String> steps = [];
       String procedure = recipeData['procedure'] ?? '';
       if (procedure.isNotEmpty) {
-         steps = procedure.split(RegExp(r'\d+\.\s*')).where((s) => s.trim().isNotEmpty).toList();
-         if (steps.isEmpty) steps = [procedure];
+        steps = procedure.split(RegExp(r'\d+\.\s*')).where((s) => s.trim().isNotEmpty).toList();
+        if (steps.isEmpty) steps = [procedure];
       }
 
-      var ingredientsAssoc = await ApiClient.get('/recipes/$id/ingredients/');
-      
+      var ingredientFutures = ingredientsAssoc.map<Future<Map<String, dynamic>>>((assoc) async {
+        int ingId = assoc['ingredient_id'];
+        var ingDetail = await ApiClient.get('/ingredients/$ingId/');
+        return {
+          'assoc': assoc,
+          'detail': ingDetail,
+        };
+      }).toList();
+
+      var results = await Future.wait(ingredientFutures);
+
       List<CustomIngredientsItem> loadedIngredients = [];
       Set<String> allergies = {};
 
-      for (var assoc in ingredientsAssoc) {
-        int ingId = assoc['ingredient_id'];
-        var ingDetail = await ApiClient.get('/ingredients/$ingId/');
+      for (var result in results) {
+        var assoc = result['assoc'];
+        var ingDetail = result['detail'];
 
         loadedIngredients.add(CustomIngredientsItem(
-          name: ingDetail['name'].toString(),
+          name: ingDetail['name']?.toString() ?? 'Unknown Ingredient',
           quantity: "${assoc['amount']} ${assoc['unit'] ?? ''}",
         ));
 
@@ -165,7 +167,7 @@ class RecipeDetailController extends GetxController {
 
   void onMainFabTap() {
     if (recipeId != -1) {
-      bool willBeSaved = !isSaved.value; 
+      bool willBeSaved = !isSaved.value;
 
       Get.find<GlobalSaveManager>().toggleSave(recipeId);
 
