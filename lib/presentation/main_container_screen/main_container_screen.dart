@@ -29,10 +29,14 @@ class MainContainerScreen extends StatelessWidget {
                 key: const ValueKey('Register'),
                 onLoginPressed: () => controller.toggleRegister(false),
                 onRegisterSuccess: () {
+                  controller.toggleRegister(false);
                   controller.checkLoginStatus();
                 },
               )
-            : const LoginScreen(),
+            : LoginScreen(
+                key: const ValueKey('Login'),
+                onRegisterPressed: () => controller.toggleRegister(true),
+              ),
       );
     });
   }
