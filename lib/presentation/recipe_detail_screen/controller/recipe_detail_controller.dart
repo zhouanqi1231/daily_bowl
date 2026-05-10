@@ -39,13 +39,17 @@ class RecipeDetailController extends GetxController {
       recipeId = Get.arguments['id'];
       isSaved.value = Get.find<GlobalSaveManager>().savedIds.contains(recipeId);
       ever(Get.find<GlobalSaveManager>().savedIds, (Set<int> savedIds) {
-        isSaved.value = savedIds.contains(recipeId);
+        if (!isClosed) {
+          isSaved.value = savedIds.contains(recipeId);
+        }
       });
       _initializeData();
     } else {
       isLoading.value = false;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Get.snackbar("Error", "Cannot get recipe ID");
+        if (!isClosed) {
+          Get.snackbar("Error", "Cannot get recipe ID");
+        }
       });
     }
   }
@@ -64,8 +68,9 @@ class RecipeDetailController extends GetxController {
       if (userId == null) return;
 
       final userData = await ApiClient.get('/users/$userId/');
+      if (isClosed) return;
+
       if (userData != null) {
-        // Field name is 'allergies' in swagger, but check 'allergy' as fallback
         var allergiesValue = userData['allergies'] ?? userData['allergy'];
         if (allergiesValue != null) {
           String allergyStr = allergiesValue.toString();
@@ -91,6 +96,8 @@ class RecipeDetailController extends GetxController {
         ApiClient.get('/recipes/$id/'),
         ApiClient.get('/recipes/$id/ingredients/'),
       ]);
+
+      if (isClosed) return;
 
       var recipeData = responses[0];
       var ingredientsAssoc = responses[1];
@@ -124,6 +131,8 @@ class RecipeDetailController extends GetxController {
       }).toList();
 
       var results = await Future.wait(ingredientFutures);
+      
+      if (isClosed) return;
 
       List<CustomIngredientsItem> loadedIngredients = [];
       Set<String> allergiesSet = {};
@@ -139,7 +148,6 @@ class RecipeDetailController extends GetxController {
 
         if (ingDetail['allergy'] != null && ingDetail['allergy'].toString().isNotEmpty) {
           String allergyField = ingDetail['allergy'].toString();
-          // Split by comma in case there are multiple allergies for one ingredient
           List<String> splitAllergies = allergyField.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
           allergiesSet.addAll(splitAllergies);
         }
@@ -154,11 +162,17 @@ class RecipeDetailController extends GetxController {
 
     } catch (e) {
       print("Failed to fetch recipe details: $e");
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Get.snackbar("Failed to load", "Please check internet connections");
-      });
+      if (!isClosed) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!isClosed) {
+            Get.snackbar("Failed to load", "Please check internet connections");
+          }
+        });
+      }
     } finally {
-      isLoading.value = false;
+      if (!isClosed) {
+        isLoading.value = false;
+      }
     }
   }
 

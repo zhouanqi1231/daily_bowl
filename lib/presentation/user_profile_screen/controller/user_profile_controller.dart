@@ -22,7 +22,7 @@ class UserProfileController extends GetxController {
     
     // Listen to changes in savedIds to update saveCount and refresh heatmap
     ever(_saveManager.savedIds, (Set<int> ids) {
-      if (userProfileModel.value != null) {
+      if (userProfileModel.value != null && !isClosed) {
         userProfileModel.value!.saveCount?.value = ids.length;
         _initializeUserProfile(); // Refresh to update heatmap scores
       }
@@ -54,12 +54,16 @@ class UserProfileController extends GetxController {
 
         // Fetch user detail for allergies
         final userData = await ApiClient.get('/users/$userId/');
+        if (isClosed) return;
+        
         if (userData != null) {
           allergiesStr = (userData['allergies'] ?? userData['allergy'] ?? "").toString();
         }
 
         // Fetch recipes created by user (My Recipes)
         final recipesResponse = await ApiClient.get('/users/$userId/recipes/');
+        if (isClosed) return;
+
         if (recipesResponse is List) {
           recipeCount = recipesResponse.length;
           userRecipes = recipesResponse.map((r) {
@@ -85,6 +89,8 @@ class UserProfileController extends GetxController {
 
         // Fetch saved recipes for user (Saves)
         final savesResponse = await ApiClient.get('/users/$userId/saves/');
+        if (isClosed) return;
+
         if (savesResponse is List) {
           for (var s in savesResponse) {
              if (s['created_at'] != null) {
@@ -95,23 +101,28 @@ class UserProfileController extends GetxController {
           }
         }
         
-        activityData.value = tempActivity;
+        if (!isClosed) {
+          activityData.value = tempActivity;
 
-        userProfileModel.value = UserProfileModel(
-          userName: displayName.obs,
-          recipeCount: recipeCount.obs,
-          saveCount: _saveManager.savedIds.length.obs,
-          allergies: allergiesStr.obs,
-          recipes: userRecipes.obs,
-        );
+          userProfileModel.value = UserProfileModel(
+            userName: displayName.obs,
+            recipeCount: recipeCount.obs,
+            saveCount: _saveManager.savedIds.length.obs,
+            allergies: allergiesStr.obs,
+            recipes: userRecipes.obs,
+          );
+        }
       } catch (e) {
         print("Error fetching profile details: $e");
-        _loadMockData(displayName);
+        if (!isClosed) _loadMockData(displayName);
       }
     } else {
-      _loadMockData(displayName);
+      if (!isClosed) _loadMockData(displayName);
     }
-    isLoading.value = false;
+    
+    if (!isClosed) {
+      isLoading.value = false;
+    }
   }
   
   void _loadMockData(String displayName) {
@@ -138,6 +149,7 @@ class UserProfileController extends GetxController {
         subject: 'Recipe Master - User Profile',
       );
     } catch (e) {
+      if (isClosed) return;
       Get.snackbar(
         'Share Error',
         'Unable to share at the moment. Please try again.',
