@@ -4,6 +4,7 @@ import '../models/allergy_setting_model.dart';
 import '../models/allergy_item_model.dart';
 import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
+import '../../user_profile_screen/controller/user_profile_controller.dart';
 
 class AllergySettingController extends GetxController {
   Rx<AllergySettingModel> allergySettingModelObj = AllergySettingModel().obs;
@@ -14,11 +15,10 @@ class AllergySettingController extends GetxController {
   void onInit() {
     super.onInit();
     _initializeAllergyItems();
-    _loadUserAllergies();
+    _loadAllergies();
   }
 
   void _initializeAllergyItems() {
-    // Standard list of common allergies
     allergyItems.value = [
       AllergyItemModel(name: "Peanut".obs, isSelected: false.obs),
       AllergyItemModel(name: "Tree Nut".obs, isSelected: false.obs),
@@ -37,25 +37,30 @@ class AllergySettingController extends GetxController {
     ];
   }
 
-  Future<void> _loadUserAllergies() async {
+  Future<void> _loadAllergies() async {
     try {
       isLoading.value = true;
       final prefs = await SharedPreferences.getInstance();
-      int? userId = prefs.getInt('user_id');
       
-      if (userId == null) return;
+      // 1. Try to load from local cache first for speed
+      String? cachedAllergies = prefs.getString('user_allergies');
+      if (cachedAllergies != null && cachedAllergies.isNotEmpty) {
+        _applyAllergiesToItems(cachedAllergies);
+      }
 
-      final userData = await ApiClient.get('/users/$userId/');
-      if (userData != null && userData['allergy'] != null) {
-        String allergyStr = userData['allergy'].toString();
-        List<String> userAllergies = allergyStr.split(',').map((e) => e.trim()).toList();
-
-        for (var item in allergyItems) {
-          if (userAllergies.contains(item.name?.value)) {
-            item.isSelected?.value = true;
+      // 2. Then sync with API
+      int? userId = prefs.getInt('user_id');
+      if (userId != null) {
+        final userData = await ApiClient.get('/users/$userId/');
+        if (userData != null) {
+          var allergiesValue = userData['allergies'] ?? userData['allergy'];
+          if (allergiesValue != null) {
+            String allergyStr = allergiesValue.toString();
+            _applyAllergiesToItems(allergyStr);
+            // Update cache with latest server data
+            await prefs.setString('user_allergies', allergyStr);
           }
         }
-        allergyItems.refresh();
       }
     } catch (e) {
       print("Error loading allergies: $e");
@@ -64,11 +69,18 @@ class AllergySettingController extends GetxController {
     }
   }
 
+  void _applyAllergiesToItems(String allergyStr) {
+    List<String> userAllergies = allergyStr.split(',').map((e) => e.trim().toLowerCase()).toList();
+    for (var item in allergyItems) {
+      item.isSelected?.value = userAllergies.contains(item.name?.value.toLowerCase());
+    }
+    allergyItems.refresh();
+  }
+
   void toggleAllergy(int index, bool value) {
     if (index >= 0 && index < allergyItems.length) {
       allergyItems[index].isSelected?.value = value;
       allergyItems.refresh();
-      // Auto-save when toggled
       saveAllergySettings();
     }
   }
@@ -80,35 +92,45 @@ class AllergySettingController extends GetxController {
       String? username = prefs.getString('user_name');
       String? email = prefs.getString('user_email');
       
-      if (userId == null) {
-        Get.snackbar("Error", "Please login to save settings");
-        return;
-      }
-
-      if (email == null || email.isEmpty) {
-        Get.snackbar("Error", "User email not found. Please login again.");
-        return;
-      }
+      if (userId == null || email == null) return;
 
       List<String> selectedAllergies = getSelectedAllergies();
       String allergyString = selectedAllergies.join(', ');
 
-      // Update the user profile with email, username and allergy
+      // 1. Update local storage immediately
+      await prefs.setString('user_allergies', allergyString);
+
+      // 2. Update the user profile on backend
       Map<String, dynamic> updateBody = {
         'email': email,
-        'allergy': allergyString,
+        'allergies': allergyString,
       };
 
-      // If we have a username, include it in the update body
       if (username != null && username.isNotEmpty) {
         updateBody['username'] = username;
       }
 
       await ApiClient.put('/users/$userId/', updateBody);
 
+      // 3. Refresh other controllers
+      if (Get.isRegistered<UserProfileController>()) {
+        Get.find<UserProfileController>().refreshUserProfile();
+      }
+
+      // 4. Success feedback
+      Get.showSnackbar(GetSnackBar(
+        message: 'Allergy settings updated',
+        duration: Duration(milliseconds: 800),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.black87,
+        borderRadius: 8.h,
+        margin: EdgeInsets.all(16.h),
+      ));
+
     } catch (e) {
       print("Error saving allergies: $e");
-      Get.snackbar("Error", "Failed to update allergy settings");
+      Get.snackbar("Error", "Failed to sync settings with server", 
+        backgroundColor: Colors.red[900], colorText: Colors.white);
     }
   }
 

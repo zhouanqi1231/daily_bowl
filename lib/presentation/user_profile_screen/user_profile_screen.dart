@@ -33,15 +33,20 @@ class UserProfileScreen extends StatelessWidget {
           horizontalPadding: 16.h,
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildUserProfileSection(),
-            _buildActivityCalendarSection(),
-            _buildWeeklyReportBanner(),
-            _buildMyRecipesSection(),
-          ],
+      body: RefreshIndicator(
+        onRefresh: () async => controller.refreshUserProfile(),
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildUserProfileSection(),
+              _buildAllergiesSection(),
+              _buildActivityCalendarSection(),
+              _buildWeeklyReportBanner(),
+              _buildMyRecipesSection(),
+            ],
+          ),
         ),
       ),
     );
@@ -51,7 +56,7 @@ class UserProfileScreen extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: appTheme.white_A700,
-      padding: EdgeInsets.fromLTRB(24.h, 4.h, 24.h, 24.h),
+      padding: EdgeInsets.fromLTRB(24.h, 4.h, 24.h, 16.h),
       child: Row(
         children: [
           CustomImageView(
@@ -105,6 +110,50 @@ class UserProfileScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildAllergiesSection() {
+    return Obx(() {
+      String allergies = controller.userProfileModel.value?.allergies?.value ?? "";
+      if (allergies.isEmpty) return SizedBox.shrink();
+
+      List<String> allergyList = allergies.split(',').map((e) => e.trim()).toList();
+
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 8.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "My Allergies",
+              style: TextStyleHelper.instance.title16MediumRoboto,
+            ),
+            SizedBox(height: 8.h),
+            Wrap(
+              spacing: 8.h,
+              runSpacing: 8.h,
+              children: allergyList.map((allergy) => Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 6.h),
+                decoration: BoxDecoration(
+                  color: appTheme.red_900.withOpacity(0.1),
+                  border: Border.all(color: appTheme.red_900, width: 0.5.h),
+                  borderRadius: BorderRadius.circular(16.h),
+                ),
+                child: Text(
+                  allergy,
+                  style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
+                    color: appTheme.red_900,
+                  ),
+                ),
+              )).toList(),
+            ),
+            SizedBox(height: 8.h),
+            Divider(color: appTheme.gray_200),
+          ],
+        ),
+      );
+    });
+  }
+
   Widget _buildActivityCalendarSection() {
     return Container(
       margin: EdgeInsets.fromLTRB(16.h, 10.h, 16.h, 0),
@@ -134,7 +183,6 @@ class UserProfileScreen extends StatelessWidget {
           List<DateTime> currentWeek = [];
           DateTime iter = startDate;
 
-          // Generate weeks for the WHOLE year to allow drawing the poly outlines
           final lastDayOfYear = DateTime(today.year, 12, 31);
           while (iter.isBefore(lastDayOfYear) || (iter.year == lastDayOfYear.year && iter.month == lastDayOfYear.month && iter.day == lastDayOfYear.day)) {
             currentWeek.add(iter);
@@ -366,7 +414,6 @@ class MonthBorderPainter extends CustomPainter {
       Path path = Path();
       List<Offset> points = [];
 
-      // Find all grid coordinates (column, row) that belong to this month
       List<Point<int>> monthCells = [];
       for (int x = 0; x < weeks.length; x++) {
         for (int y = 0; y < weeks[x].length; y++) {
@@ -378,33 +425,24 @@ class MonthBorderPainter extends CustomPainter {
 
       if (monthCells.isEmpty) continue;
 
-      // Draw dashed border around the month cells
       _drawDashedMonthBorder(canvas, monthCells, step, paint);
     }
   }
 
   void _drawDashedMonthBorder(Canvas canvas, List<Point<int>> cells, double step, Paint paint) {
-    // A month in the heatmap is a contiguous block of cells across multiple weeks.
-    // It's usually a rectangle with potentially "ears" at the start and end.
-    
-    // We can find the boundary by checking edges.
     final Set<String> cellSet = Set.from(cells.map((c) => "${c.x},${c.y}"));
     
     List<Line> edges = [];
     for (var cell in cells) {
-      // Check top
       if (!cellSet.contains("${cell.x},${cell.y - 1}")) {
         edges.add(Line(Offset(cell.x * step, cell.y * step), Offset((cell.x + 1) * step, cell.y * step)));
       }
-      // Check bottom
       if (!cellSet.contains("${cell.x},${cell.y + 1}")) {
         edges.add(Line(Offset(cell.x * step, (cell.y + 1) * step), Offset((cell.x + 1) * step, (cell.y + 1) * step)));
       }
-      // Check left
       if (!cellSet.contains("${cell.x - 1},${cell.y}")) {
         edges.add(Line(Offset(cell.x * step, cell.y * step), Offset(cell.x * step, (cell.y + 1) * step)));
       }
-      // Check right
       if (!cellSet.contains("${cell.x + 1},${cell.y}")) {
         edges.add(Line(Offset((cell.x + 1) * step, cell.y * step), Offset((cell.x + 1) * step, (cell.y + 1) * step)));
       }

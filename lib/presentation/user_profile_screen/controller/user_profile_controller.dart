@@ -50,6 +50,13 @@ class UserProfileController extends GetxController {
         int recipeCount = 0;
         List<RecipeItemModel> userRecipes = [];
         Map<DateTime, int> tempActivity = {};
+        String allergiesStr = "";
+
+        // Fetch user detail for allergies
+        final userData = await ApiClient.get('/users/$userId/');
+        if (userData != null) {
+          allergiesStr = (userData['allergies'] ?? userData['allergy'] ?? "").toString();
+        }
 
         // Fetch recipes created by user (My Recipes)
         final recipesResponse = await ApiClient.get('/users/$userId/recipes/');
@@ -94,6 +101,7 @@ class UserProfileController extends GetxController {
           userName: displayName.obs,
           recipeCount: recipeCount.obs,
           saveCount: _saveManager.savedIds.length.obs,
+          allergies: allergiesStr.obs,
           recipes: userRecipes.obs,
         );
       } catch (e) {
@@ -111,6 +119,7 @@ class UserProfileController extends GetxController {
       userName: displayName.obs,
       recipeCount: 4.obs,
       saveCount: 128.obs,
+      allergies: "".obs,
       recipes: [
         RecipeItemModel(
           id: 1,
@@ -118,35 +127,8 @@ class UserProfileController extends GetxController {
           description: "This is a simple and classic dish ...".obs,
           imagePath: ImageConstant.imgMedia.obs,
         ),
-        RecipeItemModel(
-          id: 2,
-          title: "Stir-fried Tomato and Eggs".obs,
-          description: "This is a simple and classic dish ...".obs,
-          imagePath: ImageConstant.imgMedia.obs,
-        ),
-        RecipeItemModel(
-          id: 3,
-          title: "Stir-fried Tomato and Eggs".obs,
-          description: "This is a simple and classic dish ...".obs,
-          imagePath: ImageConstant.imgMedia.obs,
-        ),
-        RecipeItemModel(
-          id: 4,
-          title: "Stir-fried Tomato and Eggs".obs,
-          description: "This is a simple and classic dish ...".obs,
-          imagePath: ImageConstant.imgMedia.obs,
-        ),
       ].obs,
     );
-    
-    // Mock heatmap data for demonstration
-    final today = DateTime.now();
-    activityData.value = {
-      DateTime(today.year, today.month, today.day): 5,
-      DateTime(today.year, today.month, today.day - 1): 2,
-      DateTime(today.year, today.month, today.day - 3): 7,
-      DateTime(today.year, today.month, today.day - 5): 1,
-    };
   }
 
   void onSharePressed() async {

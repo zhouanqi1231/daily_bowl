@@ -64,9 +64,13 @@ class RecipeDetailController extends GetxController {
       if (userId == null) return;
 
       final userData = await ApiClient.get('/users/$userId/');
-      if (userData != null && userData['allergy'] != null) {
-        String allergyStr = userData['allergy'].toString();
-        userAllergies.value = allergyStr.split(',').map((e) => e.trim().toLowerCase()).where((e) => e.isNotEmpty).toList();
+      if (userData != null) {
+        // Field name is 'allergies' in swagger, but check 'allergy' as fallback
+        var allergiesValue = userData['allergies'] ?? userData['allergy'];
+        if (allergiesValue != null) {
+          String allergyStr = allergiesValue.toString();
+          userAllergies.value = allergyStr.split(',').map((e) => e.trim().toLowerCase()).where((e) => e.isNotEmpty).toList();
+        }
       }
     } catch (e) {
       print("Error loading user allergies: $e");
@@ -160,7 +164,6 @@ class RecipeDetailController extends GetxController {
 
   bool isUserAllergicTo(String tag) {
     String normalizedTag = tag.toLowerCase();
-    // Simple match or partial match for safety (e.g., "Nut" matches "Peanut" or "Tree Nut")
     return userAllergies.any((userAllergy) {
       return normalizedTag.contains(userAllergy) || userAllergy.contains(normalizedTag);
     });
