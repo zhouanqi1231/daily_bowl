@@ -169,63 +169,141 @@ class UserProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Obx(() {
-          final data = controller.activityData;
-          final today = DateTime.now();
-          final firstDayOfYear = DateTime(today.year, 1, 1);
-          
-          int startOffset = firstDayOfYear.weekday % 7;
-          DateTime startDate = firstDayOfYear.subtract(Duration(days: startOffset));
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Obx(() {
+              final data = controller.activityData;
+              final today = DateTime.now();
+              final firstDayOfYear = DateTime(today.year, 1, 1);
+              
+              int startOffset = firstDayOfYear.weekday % 7;
+              DateTime startDate = firstDayOfYear.subtract(Duration(days: startOffset));
 
-          List<List<DateTime>> weeks = [];
-          List<DateTime> currentWeek = [];
-          DateTime iter = startDate;
+              List<List<DateTime>> weeks = [];
+              List<DateTime> currentWeek = [];
+              DateTime iter = startDate;
 
-          final lastDayOfYear = DateTime(today.year, 12, 31);
-          while (iter.isBefore(lastDayOfYear) || (iter.year == lastDayOfYear.year && iter.month == lastDayOfYear.month && iter.day == lastDayOfYear.day)) {
-            currentWeek.add(iter);
-            if (currentWeek.length == 7) {
-              weeks.add(currentWeek);
-              currentWeek = [];
-            }
-            iter = iter.add(Duration(days: 1));
-          }
-          if (currentWeek.isNotEmpty) {
-            DateTime fillIter = currentWeek.last.add(Duration(days: 1));
-            while (currentWeek.length < 7) {
-              currentWeek.add(fillIter);
-              fillIter = fillIter.add(Duration(days: 1));
-            }
-            weeks.add(currentWeek);
-          }
+              final lastDayOfYear = DateTime(today.year, 12, 31);
+              while (iter.isBefore(lastDayOfYear) || (iter.year == lastDayOfYear.year && iter.month == lastDayOfYear.month && iter.day == lastDayOfYear.day)) {
+                currentWeek.add(iter);
+                if (currentWeek.length == 7) {
+                  weeks.add(currentWeek);
+                  currentWeek = [];
+                }
+                iter = iter.add(Duration(days: 1));
+              }
+              if (currentWeek.isNotEmpty) {
+                DateTime fillIter = currentWeek.last.add(Duration(days: 1));
+                while (currentWeek.length < 7) {
+                  currentWeek.add(fillIter);
+                  fillIter = fillIter.add(Duration(days: 1));
+                }
+                weeks.add(currentWeek);
+              }
 
-          return Column(
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 4.h),
+                  _buildDynamicMonthLabels(weeks, today),
+                  SizedBox(height: 4.h),
+                  Stack(
+                    children: [
+                      _buildHeatMapGridFromWeeks(weeks, data, today),
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: CustomPaint(
+                            painter: MonthBorderPainter(
+                              weeks: weeks,
+                              cellSize: 16.h,
+                              cellMargin: 1.h,
+                              today: today,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8.h),
+                ],
+              );
+            }),
+          ),
+          Obx(() => _buildActivityPopup()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActivityPopup() {
+    if (controller.popupDate.value == null || controller.popupActivity.value == null) {
+      return SizedBox.shrink();
+    }
+
+    final date = controller.popupDate.value!;
+    final activity = controller.popupActivity.value!;
+    String dateStr = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+
+    return Positioned(
+      top: 0,
+      right: 0,
+      child: AnimatedOpacity(
+        opacity: controller.showPopup.value ? 1.0 : 0.0,
+        duration: Duration(milliseconds: 300),
+        child: Container(
+          width: 140.h,
+          padding: EdgeInsets.all(8.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8.h),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4.h,
+                offset: Offset(0, 2),
+              ),
+            ],
+            border: Border.all(color: appTheme.gray_200),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 4.h),
-              _buildDynamicMonthLabels(weeks, today),
-              SizedBox(height: 4.h),
-              Stack(
-                children: [
-                  _buildHeatMapGridFromWeeks(weeks, data, today),
-                  Positioned.fill(
-                    child: CustomPaint(
-                      painter: MonthBorderPainter(
-                        weeks: weeks,
-                        cellSize: 16.h,
-                        cellMargin: 1.h,
-                        today: today,
-                      ),
-                    ),
-                  ),
-                ],
+              Text(
+                dateStr,
+                style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
+                  color: appTheme.blue_gray_400,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              SizedBox(height: 8.h),
+              Divider(height: 8.h, thickness: 0.5.h),
+              _buildPopupRow(Icons.create, "Created: ${activity.created}"),
+              _buildPopupRow(Icons.bookmark, "Saved: ${activity.saved}"),
+              _buildPopupRow(Icons.restaurant, "Cooked: ${activity.cooked}"),
             ],
-          );
-        }),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPopupRow(IconData icon, String text) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 2.h),
+      child: Row(
+        children: [
+          Icon(icon, size: 10.h, color: appTheme.deep_purple_800),
+          SizedBox(width: 4.h),
+          Text(
+            text,
+            style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
+              fontSize: 10.h,
+              color: appTheme.gray_700,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -265,7 +343,7 @@ class UserProfileScreen extends StatelessWidget {
     return months[month - 1];
   }
 
-  Widget _buildHeatMapGridFromWeeks(List<List<DateTime>> weeks, Map<DateTime, int> data, DateTime today) {
+  Widget _buildHeatMapGridFromWeeks(List<List<DateTime>> weeks, Map<DateTime, DailyActivity> data, DateTime today) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: weeks.map((week) {
@@ -274,16 +352,29 @@ class UserProfileScreen extends StatelessWidget {
             final day = DateTime(date.year, date.month, date.day);
             bool isCurrentYear = day.year == today.year;
             bool isNotFuture = !day.isAfter(today);
-            final score = (isCurrentYear && isNotFuture) ? (data[day] ?? 0) : -1;
             
-            return Container(
-              width: 16.h,
-              height: 16.h,
-              margin: EdgeInsets.all(1.h),
-              decoration: BoxDecoration(
-                color: _getHeatMapColor(score),
-                borderRadius: BorderRadius.circular(0.h),
-              ),
+            final activity = data[day] ?? DailyActivity();
+            final score = (isCurrentYear && isNotFuture) ? activity.total : -1;
+            
+            return GestureDetector(
+              onTap: score != -1 ? () => controller.onActivityTap(day, activity) : null,
+              child: Obx(() {
+                bool isSelected = controller.popupDate.value == day && controller.showPopup.value;
+                return AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  width: 16.h,
+                  height: 16.h,
+                  margin: EdgeInsets.all(1.h),
+                  decoration: BoxDecoration(
+                    color: _getHeatMapColor(score),
+                    borderRadius: BorderRadius.circular(0.h),
+                    border: Border.all(
+                      color: isSelected ? appTheme.blue_gray_400 : Colors.transparent,
+                      width: 1.8.h,
+                    ),
+                  ),
+                );
+              }),
             );
           }).toList(),
         );
@@ -294,8 +385,8 @@ class UserProfileScreen extends StatelessWidget {
   Color _getHeatMapColor(int score) {
     if (score == -1) return Colors.transparent;
     if (score == 0) return Color(0xB0F3F3F3);
-    if (score <= 2) return Color(0xFFACAAFF);
-    if (score <= 6) return Color(0xFF7A56FF);
+    if (score <= 1) return Color(0xFFACAAFF);
+    if (score <= 3) return Color(0xFF7A56FF);
     return Color(0xFF5609C8);
   }
 

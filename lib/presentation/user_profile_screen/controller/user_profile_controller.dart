@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
 import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
@@ -7,24 +9,38 @@ import '../../../core/global_save_manager.dart';
 import '../models/recipe_item_model.dart';
 import '../models/user_profile_model.dart';
 
+class DailyActivity {
+  int created = 0;
+  int saved = 0;
+  int cooked = 0;
+
+  int get total => created + saved + cooked;
+}
+
 class UserProfileController extends GetxController {
   final isLoading = false.obs;
   final userProfileModel = Rx<UserProfileModel?>(null);
   final GlobalSaveManager _saveManager = Get.find<GlobalSaveManager>();
   
-  // Heatmap data: Map<DateTime, int> (score)
-  final activityData = <DateTime, int>{}.obs;
+  // Detailed activity data
+  final activityData = <DateTime, DailyActivity>{}.obs;
+
+  // Popup state
+  final showPopup = false.obs;
+  final popupActivity = Rx<DailyActivity?>(null);
+  final popupDate = Rx<DateTime?>(null);
+  Timer? _popupTimer;
 
   @override
   void onInit() {
     super.onInit();
     _initializeUserProfile();
     
-    // Listen to changes in savedIds to update saveCount and refresh heatmap
+    // Listen to changes in savedIds
     ever(_saveManager.savedIds, (Set<int> ids) {
       if (userProfileModel.value != null && !isClosed) {
         userProfileModel.value!.saveCount?.value = ids.length;
-        _initializeUserProfile(); // Refresh to update heatmap scores
+        _initializeUserProfile(); 
       }
     });
   }
@@ -45,37 +61,44 @@ class UserProfileController extends GetxController {
       displayName = displayName[0].toUpperCase() + displayName.substring(1);
     }
 
+    Map<DateTime, DailyActivity> tempActivity = {};
+
+    // Load cooked dates from local storage
+    List<String> cookedDates = prefs.getStringList('cooked_dates') ?? [];
+    for (var dateStr in cookedDates) {
+      try {
+        DateTime date = DateTime.parse(dateStr);
+        DateTime day = DateTime(date.year, date.month, date.day);
+        tempActivity.putIfAbsent(day, () => DailyActivity()).cooked++;
+      } catch (e) {}
+    }
+
     if (userId != null) {
       try {
         int recipeCount = 0;
         List<RecipeItemModel> userRecipes = [];
-        Map<DateTime, int> tempActivity = {};
         String allergiesStr = "";
 
-        // Fetch user detail for allergies
+        // Fetch user detail
         final userData = await ApiClient.get('/users/$userId/');
         if (isClosed) return;
-        
         if (userData != null) {
           allergiesStr = (userData['allergies'] ?? userData['allergy'] ?? "").toString();
         }
 
-        // Fetch recipes created by user (My Recipes)
+        // Fetch created recipes
         final recipesResponse = await ApiClient.get('/users/$userId/recipes/');
         if (isClosed) return;
-
         if (recipesResponse is List) {
           recipeCount = recipesResponse.length;
           userRecipes = recipesResponse.map((r) {
-            // Process creation date for heatmap
             if (r['created_at'] != null) {
               DateTime date = DateTime.parse(r['created_at']).toLocal();
               DateTime day = DateTime(date.year, date.month, date.day);
-              tempActivity[day] = (tempActivity[day] ?? 0) + 1;
+              tempActivity.putIfAbsent(day, () => DailyActivity()).created++;
             }
             
             String? imageUrl = r['img_url'];
-            
             return RecipeItemModel(
               id: r['id'],
               title: (r['title'] as String? ?? "No Title").obs,
@@ -87,23 +110,21 @@ class UserProfileController extends GetxController {
           }).toList();
         }
 
-        // Fetch saved recipes for user (Saves)
+        // Fetch saved recipes
         final savesResponse = await ApiClient.get('/users/$userId/saves/');
         if (isClosed) return;
-
         if (savesResponse is List) {
           for (var s in savesResponse) {
              if (s['created_at'] != null) {
               DateTime date = DateTime.parse(s['created_at']).toLocal();
               DateTime day = DateTime(date.year, date.month, date.day);
-              tempActivity[day] = (tempActivity[day] ?? 0) + 1;
+              tempActivity.putIfAbsent(day, () => DailyActivity()).saved++;
             }
           }
         }
         
         if (!isClosed) {
           activityData.value = tempActivity;
-
           userProfileModel.value = UserProfileModel(
             userName: displayName.obs,
             recipeCount: recipeCount.obs,
@@ -114,15 +135,18 @@ class UserProfileController extends GetxController {
         }
       } catch (e) {
         print("Error fetching profile details: $e");
-        if (!isClosed) _loadMockData(displayName);
+        if (!isClosed) {
+          activityData.value = tempActivity;
+          _loadMockData(displayName);
+        }
       }
     } else {
-      if (!isClosed) _loadMockData(displayName);
+      if (!isClosed) {
+        activityData.value = tempActivity;
+        _loadMockData(displayName);
+      }
     }
-    
-    if (!isClosed) {
-      isLoading.value = false;
-    }
+    if (!isClosed) isLoading.value = false;
   }
   
   void _loadMockData(String displayName) {
@@ -142,6 +166,19 @@ class UserProfileController extends GetxController {
     );
   }
 
+  void onActivityTap(DateTime date, DailyActivity activity) {
+    _popupTimer?.cancel();
+    popupDate.value = date;
+    popupActivity.value = activity;
+    showPopup.value = true;
+
+    _popupTimer = Timer(Duration(seconds: 4), () {
+      if (!isClosed) {
+        showPopup.value = false;
+      }
+    });
+  }
+
   void onSharePressed() async {
     try {
       await Share.share(
@@ -150,13 +187,7 @@ class UserProfileController extends GetxController {
       );
     } catch (e) {
       if (isClosed) return;
-      Get.snackbar(
-        'Share Error',
-        'Unable to share at the moment. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: appTheme.redCustom,
-        colorText: appTheme.whiteCustom,
-      );
+      Get.snackbar('Share Error', 'Unable to share at the moment.');
     }
   }
 
@@ -173,6 +204,7 @@ class UserProfileController extends GetxController {
 
   @override
   void onClose() {
+    _popupTimer?.cancel();
     super.onClose();
   }
 }

@@ -7,6 +7,7 @@ import '../models/recipe_detail_model.dart';
 import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/global_save_manager.dart';
+import '../../user_profile_screen/controller/user_profile_controller.dart';
 
 class RecipeDetailController extends GetxController {
   final recipeDetailModel = Rx<RecipeDetailModel?>(null);
@@ -206,19 +207,31 @@ class RecipeDetailController extends GetxController {
     );
   }
 
-  void onBookmarkTap() {
+  Future<void> onBookmarkTap() async {
     isBookmarked.value = !isBookmarked.value;
     if (isBookmarked.value) {
+      // Save "followed to cook" action locally
+      final prefs = await SharedPreferences.getInstance();
+      List<String> cookedDates = prefs.getStringList('cooked_dates') ?? [];
+      String todayStr = DateTime.now().toIso8601String().split('T')[0];
+      cookedDates.add(todayStr);
+      await prefs.setStringList('cooked_dates', cookedDates);
+
       Get.showSnackbar(
         GetSnackBar(
-          message: 'cooked',
-          duration: Duration(milliseconds: 1000),
+          message: 'Marked as cooked!',
+          duration: Duration(milliseconds: 1500),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.black87,
           margin: EdgeInsets.all(16.h),
           borderRadius: 8.h,
         ),
       );
+
+      // Refresh UserProfileController to update the heatmap immediately
+      if (Get.isRegistered<UserProfileController>()) {
+        Get.find<UserProfileController>().refreshUserProfile();
+      }
     }
   }
 
