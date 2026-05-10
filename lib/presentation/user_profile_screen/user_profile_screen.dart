@@ -41,7 +41,6 @@ class UserProfileScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildUserProfileSection(),
-              _buildAllergiesSection(),
               _buildActivityCalendarSection(),
               _buildWeeklyReportBanner(),
               _buildMyRecipesSection(),
@@ -108,50 +107,6 @@ class UserProfileScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Widget _buildAllergiesSection() {
-    return Obx(() {
-      String allergies = controller.userProfileModel.value?.allergies?.value ?? "";
-      if (allergies.isEmpty) return SizedBox.shrink();
-
-      List<String> allergyList = allergies.split(',').map((e) => e.trim()).toList();
-
-      return Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 8.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "My Allergies",
-              style: TextStyleHelper.instance.title16MediumRoboto,
-            ),
-            SizedBox(height: 8.h),
-            Wrap(
-              spacing: 8.h,
-              runSpacing: 8.h,
-              children: allergyList.map((allergy) => Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 6.h),
-                decoration: BoxDecoration(
-                  color: appTheme.red_900.withOpacity(0.1),
-                  border: Border.all(color: appTheme.red_900, width: 0.5.h),
-                  borderRadius: BorderRadius.circular(16.h),
-                ),
-                child: Text(
-                  allergy,
-                  style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
-                    color: appTheme.red_900,
-                  ),
-                ),
-              )).toList(),
-            ),
-            SizedBox(height: 8.h),
-            Divider(color: appTheme.gray_200),
-          ],
-        ),
-      );
-    });
   }
 
   Widget _buildActivityCalendarSection() {

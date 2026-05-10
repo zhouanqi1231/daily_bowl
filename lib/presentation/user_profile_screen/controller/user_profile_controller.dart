@@ -77,14 +77,6 @@ class UserProfileController extends GetxController {
       try {
         int recipeCount = 0;
         List<RecipeItemModel> userRecipes = [];
-        String allergiesStr = "";
-
-        // Fetch user detail
-        final userData = await ApiClient.get('/users/$userId/');
-        if (isClosed) return;
-        if (userData != null) {
-          allergiesStr = (userData['allergies'] ?? userData['allergy'] ?? "").toString();
-        }
 
         // Fetch created recipes
         final recipesResponse = await ApiClient.get('/users/$userId/recipes/');
@@ -129,7 +121,6 @@ class UserProfileController extends GetxController {
             userName: displayName.obs,
             recipeCount: recipeCount.obs,
             saveCount: _saveManager.savedIds.length.obs,
-            allergies: allergiesStr.obs,
             recipes: userRecipes.obs,
           );
         }
@@ -154,7 +145,6 @@ class UserProfileController extends GetxController {
       userName: displayName.obs,
       recipeCount: 4.obs,
       saveCount: 128.obs,
-      allergies: "".obs,
       recipes: [
         RecipeItemModel(
           id: 1,
