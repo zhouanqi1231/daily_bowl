@@ -133,31 +133,39 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
   }
 
   Widget _buildAllergyAlertSection(BuildContext context) {
-    // render this only if have tag
     if (controller.allergyTags.isEmpty) return SizedBox.shrink();
-    return Row(
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 8.h,
+      runSpacing: 8.h,
       children: [
         Text(
           "Allergy Alert:",
-          style: TextStyleHelper.instance.body14RegularRoboto,
+          style: TextStyleHelper.instance.body14RegularRoboto
         ),
-        SizedBox(width: 8.h),
-        // 动态生成过敏源标签
-        ...controller.allergyTags.map((tag) => Padding(
-          padding: EdgeInsets.only(right: 8.h),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: appTheme.deep_orange_200,
-              border: Border.all(color: appTheme.red_900, width: 1.h),
-              borderRadius: BorderRadius.circular(14.h),
+        ...controller.allergyTags.map((tag) {
+          bool isMatched = controller.isUserAllergicTo(tag);
+          return GestureDetector(
+            onTap: () => controller.onAllergyTagTap(tag),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 3.h),
+              decoration: BoxDecoration(
+                color: isMatched ? appTheme.red_900 : appTheme.gray_200,
+                border: Border.all(
+                  color: isMatched ? appTheme.red_900 : appTheme.gray_300,
+                  width: 1.h,
+                ),
+                borderRadius: BorderRadius.circular(14.h),
+              ),
+              child: Text(
+                "#$tag",
+                style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
+                  color: isMatched ? appTheme.whiteCustom : appTheme.gray_700,
+                ),
+              ),
             ),
-            child: Text(
-              "#$tag",
-              style: TextStyleHelper.instance.label11MediumRoboto,
-            ),
-          ),
-        )).toList(),
+          );
+        }).toList(),
       ],
     );
   }

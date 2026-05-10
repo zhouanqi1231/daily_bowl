@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../widgets/custom_ingredients_list.dart';
 import '../models/recipe_detail_model.dart';
 import '../../../core/app_export.dart';
@@ -21,6 +22,7 @@ class RecipeDetailController extends GetxController {
   final authorName = "".obs;
   final updateDate = "".obs;
   final allergyTags = <String>[].obs;
+  final userAllergies = <String>[].obs;
   final recipeImageUrl = "".obs;
 
   // For scrolling app bar color change
@@ -39,12 +41,35 @@ class RecipeDetailController extends GetxController {
       ever(Get.find<GlobalSaveManager>().savedIds, (Set<int> savedIds) {
         isSaved.value = savedIds.contains(recipeId);
       });
-      _fetchRecipeDetail(recipeId);
+      _initializeData();
     } else {
       isLoading.value = false;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Get.snackbar("Error", "Cannot get recipe ID");
       });
+    }
+  }
+
+  Future<void> _initializeData() async {
+    await Future.wait([
+      _loadUserAllergies(),
+      _fetchRecipeDetail(recipeId),
+    ]);
+  }
+
+  Future<void> _loadUserAllergies() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      int? userId = prefs.getInt('user_id');
+      if (userId == null) return;
+
+      final userData = await ApiClient.get('/users/$userId/');
+      if (userData != null && userData['allergy'] != null) {
+        String allergyStr = userData['allergy'].toString();
+        userAllergies.value = allergyStr.split(',').map((e) => e.trim().toLowerCase()).where((e) => e.isNotEmpty).toList();
+      }
+    } catch (e) {
+      print("Error loading user allergies: $e");
     }
   }
 
@@ -97,7 +122,7 @@ class RecipeDetailController extends GetxController {
       var results = await Future.wait(ingredientFutures);
 
       List<CustomIngredientsItem> loadedIngredients = [];
-      Set<String> allergies = {};
+      Set<String> allergiesSet = {};
 
       for (var result in results) {
         var assoc = result['assoc'];
@@ -109,11 +134,14 @@ class RecipeDetailController extends GetxController {
         ));
 
         if (ingDetail['allergy'] != null && ingDetail['allergy'].toString().isNotEmpty) {
-          allergies.add(ingDetail['allergy'].toString());
+          String allergyField = ingDetail['allergy'].toString();
+          // Split by comma in case there are multiple allergies for one ingredient
+          List<String> splitAllergies = allergyField.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+          allergiesSet.addAll(splitAllergies);
         }
       }
 
-      allergyTags.value = allergies.toList();
+      allergyTags.value = allergiesSet.toList();
 
       recipeDetailModel.value = RecipeDetailModel(
         ingredientsList: loadedIngredients,
@@ -130,10 +158,18 @@ class RecipeDetailController extends GetxController {
     }
   }
 
+  bool isUserAllergicTo(String tag) {
+    String normalizedTag = tag.toLowerCase();
+    // Simple match or partial match for safety (e.g., "Nut" matches "Peanut" or "Tree Nut")
+    return userAllergies.any((userAllergy) {
+      return normalizedTag.contains(userAllergy) || userAllergy.contains(normalizedTag);
+    });
+  }
+
   void onShareTap() {
     Share.share(
-      'Check out this amazing recipe: Stir-fried Tomato and Eggs\n\nA simple and classic dish that is easy to make and perfect for a quick meal!',
-      subject: 'Stir-fried Tomato and Eggs Recipe',
+      'Check out this amazing recipe: ${recipeTitle.value}\n\n${recipeDescription.value}',
+      subject: '${recipeTitle.value} Recipe',
     );
   }
 
@@ -142,12 +178,13 @@ class RecipeDetailController extends GetxController {
   }
 
   void onAllergyTagTap(String allergen) {
+    bool isMatch = isUserAllergicTo(allergen);
     Get.snackbar(
-      'Allergy Alert',
-      'This recipe contains $allergen. Please be careful if you have allergies.',
+      isMatch ? 'Allergy Warning!' : 'Allergy Alert',
+      'This recipe contains $allergen.${isMatch ? " This matches your allergy profile!" : ""}',
       snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: appTheme.red_900,
-      colorText: appTheme.whiteCustom,
+      backgroundColor: isMatch ? appTheme.red_900 : appTheme.deep_orange_200,
+      colorText: isMatch ? appTheme.whiteCustom : appTheme.black_900,
       duration: Duration(seconds: 3),
     );
   }
