@@ -39,6 +39,8 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildPhotoUploadSection(),
+                          SizedBox(height: 12.h),
+                          _buildImageUrlField(), // New URL field added here
                           SizedBox(height: 20.h),
                           _buildTitleField(),
                           SizedBox(height: 20.h),
@@ -64,7 +66,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
   Widget _buildPhotoUploadSection() {
     return Obx(
       () => GestureDetector(
-        onTap: () => controller.pickImage(),
+        onTap: () => controller.onUploadClicked(), // Changed to show "under development"
         child: Container(
           width: double.infinity,
           height: 180.h,
@@ -98,7 +100,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                       ),
                       SizedBox(height: 12.h),
                       Text(
-                        "Add a photo",
+                        "Upload Photo",
                         style: TextStyleHelper.instance.body14MediumRoboto
                             .copyWith(color: appTheme.gray_500),
                       ),
@@ -107,6 +109,17 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildImageUrlField() {
+    return CustomFloatingTextField(
+      placeholder: "Or paste image URL here",
+      controller: controller.imageUrlController,
+      textStyle: TextStyleHelper.instance.body14RegularRoboto
+          .copyWith(color: appTheme.gray_900),
+      labelStyle: TextStyleHelper.instance.body14RegularRoboto
+          .copyWith(color: appTheme.gray_600),
     );
   }
 

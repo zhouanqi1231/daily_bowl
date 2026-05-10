@@ -23,7 +23,7 @@ class RecipeCreationController extends GetxController {
   late TextEditingController cuisineTypeController;
   late TextEditingController servingsController;
   late TextEditingController cookingMethodController;
-  
+  late TextEditingController imageUrlController; // New controller for Image URL
 
   // Image picker
   final ImagePicker _imagePicker = ImagePicker();
@@ -46,6 +46,7 @@ class RecipeCreationController extends GetxController {
     cuisineTypeController = TextEditingController();
     servingsController = TextEditingController();
     cookingMethodController = TextEditingController();
+    imageUrlController = TextEditingController(); // Initialize URL controller
     
     // Initialize with 1 ingredient row by default
     addIngredientRow();
@@ -56,6 +57,10 @@ class RecipeCreationController extends GetxController {
 
   void _disposeControllers() {
     titleController.dispose();
+    cuisineTypeController.dispose();
+    servingsController.dispose();
+    cookingMethodController.dispose();
+    imageUrlController.dispose(); // Dispose URL controller
     for (var controller in stepControllers) {
       controller.dispose();
     }
@@ -74,6 +79,16 @@ class RecipeCreationController extends GetxController {
 
   void addStepRow() {
     stepControllers.add(TextEditingController());
+  }
+
+  void onUploadClicked() {
+    Get.snackbar(
+      'Notice',
+      'Upload under development',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.black87,
+      colorText: Colors.white,
+    );
   }
 
   Future<void> pickImage() async {
@@ -118,6 +133,8 @@ class RecipeCreationController extends GetxController {
           if (pickedFile != null) {
             selectedImage.value = File(pickedFile.path);
             recipeCreationModel.value?.imagePath?.value = pickedFile.path;
+            // Clear URL if an image is picked
+            imageUrlController.clear();
           }
         }
       } else {
@@ -251,6 +268,7 @@ class RecipeCreationController extends GetxController {
         'cooking_method': cookingMethodController.text.trim(),
         'procedure': procedureStr,
         'description': '', 
+        'img_url': imageUrlController.text.trim(), // Include Image URL in payload
       };
 
       final recipeResponse = await ApiClient.post('/recipes/', recipePayload);
@@ -350,6 +368,7 @@ class RecipeCreationController extends GetxController {
     cuisineTypeController.clear();
     servingsController.clear();
     cookingMethodController.clear();
+    imageUrlController.clear(); // Clear URL controller
     for (var controller in stepControllers) {
       controller.clear();
     }
