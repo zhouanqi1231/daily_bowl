@@ -20,13 +20,20 @@ class AllergySettingController extends GetxController {
   void _initializeAllergyItems() {
     // Standard list of common allergies
     allergyItems.value = [
-      AllergyItemModel(name: "Nut".obs, isSelected: false.obs),
+      AllergyItemModel(name: "Peanut".obs, isSelected: false.obs),
+      AllergyItemModel(name: "Tree Nut".obs, isSelected: false.obs),
       AllergyItemModel(name: "Egg".obs, isSelected: false.obs),
-      AllergyItemModel(name: "Fish".obs, isSelected: false.obs),
       AllergyItemModel(name: "Milk".obs, isSelected: false.obs),
+      AllergyItemModel(name: "Fish".obs, isSelected: false.obs),
       AllergyItemModel(name: "Shellfish".obs, isSelected: false.obs),
       AllergyItemModel(name: "Soy".obs, isSelected: false.obs),
       AllergyItemModel(name: "Wheat".obs, isSelected: false.obs),
+      AllergyItemModel(name: "Sesame".obs, isSelected: false.obs),
+      AllergyItemModel(name: "Mustard".obs, isSelected: false.obs),
+      AllergyItemModel(name: "Sulfite".obs, isSelected: false.obs),
+      AllergyItemModel(name: "Celery".obs, isSelected: false.obs),
+      AllergyItemModel(name: "Lupin".obs, isSelected: false.obs),
+      AllergyItemModel(name: "Mollusc".obs, isSelected: false.obs),
     ];
   }
 
