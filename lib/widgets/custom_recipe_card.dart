@@ -38,7 +38,7 @@ class CustomRecipeCard extends StatelessWidget {
           children: [
             Expanded(
               child: Padding(
-                padding: EdgeInsets.only(left: 16.h),
+                padding: EdgeInsets.symmetric(horizontal: 16.h), // Increased padding on the right
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
