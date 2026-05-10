@@ -40,7 +40,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                         children: [
                           _buildPhotoUploadSection(),
                           SizedBox(height: 12.h),
-                          _buildImageUrlField(), // New URL field added here
+                          _buildImageUrlField(),
                           SizedBox(height: 20.h),
                           _buildTitleField(),
                           SizedBox(height: 20.h),
@@ -66,7 +66,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
   Widget _buildPhotoUploadSection() {
     return Obx(
       () => GestureDetector(
-        onTap: () => controller.onUploadClicked(), // Changed to show "under development"
+        onTap: () => controller.onUploadClicked(),
         child: Container(
           width: double.infinity,
           height: 180.h,
@@ -205,18 +205,70 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                 return Container(
                   margin: EdgeInsets.only(bottom: 12.h),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: CustomFloatingTextField(
-                          placeholder: "Name",
-                          controller: controllers['name'],
-                          validator: controller.validateIngredientName,
-                          textStyle: TextStyleHelper
-                              .instance.body14RegularRoboto
-                              .copyWith(color: appTheme.gray_900),
-                          labelStyle: TextStyleHelper
-                              .instance.body14RegularRoboto
-                              .copyWith(color: appTheme.gray_600),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return Autocomplete<String>(
+                              optionsBuilder: (TextEditingValue textEditingValue) {
+                                if (textEditingValue.text == '') {
+                                  return const Iterable<String>.empty();
+                                }
+                                return controller.allIngredients.where((String option) {
+                                  return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+                                });
+                              },
+                              onSelected: (String selection) {
+                                controllers['name']!.text = selection;
+                              },
+                              fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                                // Sync the controller with the one in our map
+                                if (controllers['name']!.text != textEditingController.text && textEditingController.text.isEmpty) {
+                                  textEditingController.text = controllers['name']!.text;
+                                }
+                                textEditingController.addListener(() {
+                                  controllers['name']!.text = textEditingController.text;
+                                });
+
+                                return CustomFloatingTextField(
+                                  placeholder: "Name",
+                                  controller: textEditingController,
+                                  focusNode: focusNode,
+                                  validator: controller.validateIngredientName,
+                                  textStyle: TextStyleHelper.instance.body14RegularRoboto
+                                      .copyWith(color: appTheme.gray_900),
+                                  labelStyle: TextStyleHelper.instance.body14RegularRoboto
+                                      .copyWith(color: appTheme.gray_600),
+                                );
+                              },
+                              optionsViewBuilder: (context, onSelected, options) {
+                                return Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Material(
+                                    elevation: 4.0,
+                                    borderRadius: BorderRadius.circular(12.h),
+                                    child: Container(
+                                      width: constraints.maxWidth,
+                                      constraints: BoxConstraints(maxHeight: 200.h),
+                                      child: ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                        itemCount: options.length,
+                                        itemBuilder: (BuildContext context, int index) {
+                                          final String option = options.elementAt(index);
+                                          return ListTile(
+                                            title: Text(option, style: TextStyleHelper.instance.body14RegularRoboto),
+                                            onTap: () => onSelected(option),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
                         ),
                       ),
                       SizedBox(width: 10.h),
@@ -225,19 +277,12 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                         child: CustomFloatingTextField(
                           placeholder: "number",
                           controller: controllers['quantity'],
-                          keyboardType: CustomFloatingTextField.getKeyboardType(
-                            "NUMBER_ONLY",
-                          ),
-                          inputFormatters:
-                              CustomFloatingTextField.getInputFormatters(
-                            "NUMBER_ONLY",
-                          ),
+                          keyboardType: CustomFloatingTextField.getKeyboardType("NUMBER_ONLY"),
+                          inputFormatters: CustomFloatingTextField.getInputFormatters("NUMBER_ONLY"),
                           validator: controller.validateIngredientQuantity,
-                          textStyle: TextStyleHelper
-                              .instance.body14RegularRoboto
+                          textStyle: TextStyleHelper.instance.body14RegularRoboto
                               .copyWith(color: appTheme.gray_900),
-                          labelStyle: TextStyleHelper
-                              .instance.body14RegularRoboto
+                          labelStyle: TextStyleHelper.instance.body14RegularRoboto
                               .copyWith(color: appTheme.gray_600),
                         ),
                       ),
@@ -247,21 +292,10 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                         child: DropdownButtonFormField<String>(
                           value: controllers['unit']!.text,
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 12.h,
-                              vertical: 12.h,
-                            ),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 12.h),
                             filled: true,
                             fillColor: appTheme.gray_50,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.h),
-                              borderSide: BorderSide.none,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.h),
-                              borderSide: BorderSide.none,
-                            ),
-                            focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.h),
                               borderSide: BorderSide.none,
                             ),
@@ -269,15 +303,10 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                           style: TextStyleHelper.instance.body14RegularRoboto
                               .copyWith(color: appTheme.gray_900),
                           items: ["g", "ml"]
-                              .map((unit) => DropdownMenuItem(
-                                    value: unit,
-                                    child: Text(unit),
-                                  ))
+                              .map((unit) => DropdownMenuItem(value: unit, child: Text(unit)))
                               .toList(),
                           onChanged: (value) {
-                            if (value != null) {
-                              controllers['unit']!.text = value;
-                            }
+                            if (value != null) controllers['unit']!.text = value;
                           },
                         ),
                       ),

@@ -25,6 +25,9 @@ class RecipeCreationController extends GetxController {
   late TextEditingController cookingMethodController;
   late TextEditingController imageUrlController; // New controller for Image URL
 
+  // List of all ingredients from server for suggestions
+  final allIngredients = <String>[].obs;
+
   // Image picker
   final ImagePicker _imagePicker = ImagePicker();
 
@@ -33,6 +36,7 @@ class RecipeCreationController extends GetxController {
     super.onInit();
     _initializeControllers();
     recipeCreationModel.value = RecipeCreationModel();
+    _fetchIngredients();
   }
 
   @override
@@ -66,6 +70,20 @@ class RecipeCreationController extends GetxController {
     }
     for (var controllerMap in ingredientControllers) {
       controllerMap.values.forEach((controller) => controller.dispose());
+    }
+  }
+
+  Future<void> _fetchIngredients() async {
+    try {
+      final response = await ApiClient.get('/ingredients/');
+      if (response is List) {
+        allIngredients.value = response
+            .map((e) => e['name']?.toString() ?? "")
+            .where((name) => name.isNotEmpty)
+            .toList();
+      }
+    } catch (e) {
+      print("Error fetching ingredients for suggestions: $e");
     }
   }
 

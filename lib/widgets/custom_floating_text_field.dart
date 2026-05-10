@@ -18,6 +18,7 @@ import '../core/app_export.dart';
  * @param keyboardType - Keyboard type based on input type
  * @param inputFormatters - Optional input formatters for validation
  * @param controller - Text editing controller
+ * @param focusNode - Optional focus node for accessibility and autocomplete
  * @param onChanged - Callback when text changes
  * @param enabled - Whether the field is enabled
  * @param maxLines - Maximum number of lines
@@ -35,6 +36,7 @@ class CustomFloatingTextField extends StatelessWidget {
     this.keyboardType,
     this.inputFormatters,
     this.controller,
+    this.focusNode,
     this.onChanged,
     this.enabled,
     this.maxLines,
@@ -59,6 +61,9 @@ class CustomFloatingTextField extends StatelessWidget {
 
   /// Text editing controller
   final TextEditingController? controller;
+
+  /// Focus node for the text field
+  final FocusNode? focusNode;
 
   /// Callback function when text changes
   final Function(String)? onChanged;
@@ -91,6 +96,7 @@ class CustomFloatingTextField extends StatelessWidget {
       margin: EdgeInsets.only(top: topMargin ?? 0.h),
       child: TextFormField(
         controller: controller,
+        focusNode: focusNode,
         validator: validator,
         keyboardType: keyboardType ?? TextInputType.text,
         inputFormatters: inputFormatters,
