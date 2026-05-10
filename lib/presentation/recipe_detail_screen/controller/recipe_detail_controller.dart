@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:get/get.dart';
@@ -212,10 +213,34 @@ class RecipeDetailController extends GetxController {
     if (isBookmarked.value) {
       // Save "followed to cook" action locally
       final prefs = await SharedPreferences.getInstance();
+      
+      // 1. Update heatmap data (cooked_dates)
       List<String> cookedDates = prefs.getStringList('cooked_dates') ?? [];
       String todayStr = DateTime.now().toIso8601String().split('T')[0];
       cookedDates.add(todayStr);
       await prefs.setStringList('cooked_dates', cookedDates);
+
+      // 2. Save detailed recipe JSON for weekly report
+      List<String> followedRecipesJson = prefs.getStringList('followed_recipes') ?? [];
+      
+      List<Map<String, String>> ingredients = [];
+      if (recipeDetailModel.value != null && recipeDetailModel.value!.ingredientsList != null) {
+        ingredients = recipeDetailModel.value!.ingredientsList!.value.map((e) => {
+          'name': e.name ?? '',
+          'quantity': e.quantity ?? '',
+        }).toList();
+      }
+
+      Map<String, dynamic> recipeInfo = {
+        'id': recipeId,
+        'title': recipeTitle.value,
+        'description': recipeDescription.value,
+        'image_path': recipeImageUrl.value,
+        'cooked_at': DateTime.now().toIso8601String(),
+        'ingredients': ingredients,
+      };
+      followedRecipesJson.add(jsonEncode(recipeInfo));
+      await prefs.setStringList('followed_recipes', followedRecipesJson);
 
       Get.showSnackbar(
         GetSnackBar(

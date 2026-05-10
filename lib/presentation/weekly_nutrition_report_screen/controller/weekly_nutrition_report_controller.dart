@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/app_export.dart';
 import '../models/ingredient_item_model.dart';
 import '../models/recipe_item_model.dart';
@@ -16,6 +18,7 @@ class WeeklyNutritionReportController extends GetxController {
   void onInit() {
     super.onInit();
     _initializeData();
+    _loadFollowedRecipes();
   }
 
   void updateScrollOffset(double offset) {
@@ -23,31 +26,11 @@ class WeeklyNutritionReportController extends GetxController {
   }
 
   void _initializeData() {
+    // Initial mock data for nutrition stats, but we'll load recipes from local storage
     weeklyNutritionReportModel.value = WeeklyNutritionReportModel(
       weekNumber: 'W16'.obs,
       totalCalories: 3564.obs,
-      recipesList: [
-        RecipeItemModel(
-          title: 'Stir-fried Tomato and Eggs'.obs,
-          description: 'This is a simple and classic dish ...'.obs,
-          imagePath: ImageConstant.imgMedia.obs,
-        ),
-        RecipeItemModel(
-          title: 'Stir-fried Tomato and Eggs'.obs,
-          description: 'This is a simple and classic dish ...'.obs,
-          imagePath: ImageConstant.imgMedia.obs,
-        ),
-        RecipeItemModel(
-          title: 'Stir-fried Tomato and Eggs'.obs,
-          description: 'This is a simple and classic dish ...'.obs,
-          imagePath: ImageConstant.imgMedia.obs,
-        ),
-        RecipeItemModel(
-          title: 'Stir-fried Tomato and Eggs'.obs,
-          description: 'This is a simple and classic dish ...'.obs,
-          imagePath: ImageConstant.imgMedia.obs,
-        ),
-      ],
+      recipesList: [], // Will be loaded from local storage
       ingredientsList: [
         IngredientItemModel(name: 'Tomato'.obs, quantity: '200 g'.obs),
         IngredientItemModel(name: 'Cucumber'.obs, quantity: '150 g'.obs),
@@ -60,12 +43,40 @@ class WeeklyNutritionReportController extends GetxController {
     );
   }
 
+  Future<void> _loadFollowedRecipes() async {
+    try {
+      isLoading.value = true;
+      final prefs = await SharedPreferences.getInstance();
+      List<String> followedRecipesJson = prefs.getStringList('followed_recipes') ?? [];
+      
+      // We can reverse the list to show the most recent ones first
+      List<RecipeItemModel> followedRecipes = followedRecipesJson.reversed.map((jsonStr) {
+        Map<String, dynamic> data = jsonDecode(jsonStr);
+        return RecipeItemModel(
+          title: (data['title'] ?? 'Unknown Recipe').toString().obs,
+          description: (data['description'] ?? '').toString().obs,
+          imagePath: (data['image_path'] ?? ImageConstant.imgMedia).toString().obs,
+        );
+      }).toList();
+
+      if (weeklyNutritionReportModel.value != null) {
+        weeklyNutritionReportModel.value!.recipesList = followedRecipes;
+        weeklyNutritionReportModel.refresh();
+      }
+    } catch (e) {
+      print("Error loading followed recipes: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   void onRecipeCardTapped(RecipeItemModel recipe) {
-    Get.toNamed(AppRoutes.recipeDetailScreen);
+    // If we had the ID, we could navigate to details. 
+    // Since we only saved minimal info, we show a notice or navigate with defaults.
+    Get.snackbar("Notice", "Viewing detailed report for ${recipe.title?.value}");
   }
 
   void onShareTap() {
-    // Basic share functionality for the report
     Get.snackbar(
       'Share',
       'Sharing your weekly nutrition report...',
