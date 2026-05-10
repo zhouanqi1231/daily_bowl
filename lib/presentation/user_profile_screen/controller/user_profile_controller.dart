@@ -31,6 +31,9 @@ class UserProfileController extends GetxController {
   final popupDate = Rx<DateTime?>(null);
   Timer? _popupTimer;
 
+  // Heatmap scrolling
+  final heatmapScrollController = ScrollController();
+
   @override
   void onInit() {
     super.onInit();
@@ -137,7 +140,42 @@ class UserProfileController extends GetxController {
         _loadMockData(displayName);
       }
     }
-    if (!isClosed) isLoading.value = false;
+    
+    if (!isClosed) {
+      isLoading.value = false;
+      // After loading data, wait for frame and scroll
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollToCurrentWeek();
+      });
+    }
+  }
+
+  void scrollToCurrentWeek() {
+    if (!heatmapScrollController.hasClients) return;
+
+    final today = DateTime.now();
+    final firstDayOfYear = DateTime(today.year, 1, 1);
+    int startOffset = firstDayOfYear.weekday % 7;
+    DateTime startDate = firstDayOfYear.subtract(Duration(days: startOffset));
+    
+    int daysDiff = today.difference(startDate).inDays;
+    int currentWeekIndex = daysDiff ~/ 7;
+
+    double weekColumnWidth = 18.h; // matches the width in UI
+    double viewportWidth = Get.width - 32.h; // section padding/margins subtracted
+
+    double targetOffset = (currentWeekIndex * weekColumnWidth) + (weekColumnWidth / 2) - (viewportWidth / 2);
+    
+    // Clamp to valid range
+    double maxScroll = heatmapScrollController.position.maxScrollExtent;
+    if (targetOffset < 0) targetOffset = 0;
+    if (targetOffset > maxScroll) targetOffset = maxScroll;
+
+    heatmapScrollController.animateTo(
+      targetOffset,
+      duration: Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
   }
   
   void _loadMockData(String displayName) {
@@ -195,6 +233,7 @@ class UserProfileController extends GetxController {
   @override
   void onClose() {
     _popupTimer?.cancel();
+    heatmapScrollController.dispose();
     super.onClose();
   }
 }

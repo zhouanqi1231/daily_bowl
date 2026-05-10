@@ -127,6 +127,7 @@ class UserProfileScreen extends StatelessWidget {
       child: Stack(
         children: [
           SingleChildScrollView(
+            controller: controller.heatmapScrollController,
             scrollDirection: Axis.horizontal,
             child: Obx(() {
               final data = controller.activityData;
