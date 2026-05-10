@@ -77,8 +77,8 @@ class WeeklyNutritionReportScreen
               children: [
                 Padding(
                   padding: EdgeInsets.only(left: 4.h, bottom: 20.h),
-                  child: Text(
-                    'Weekly Report: W16',
+                  child: Obx(() => Text(
+                    'Weekly Report: ${controller.weeklyNutritionReportModel.value?.weekNumber?.value ?? 'W--'}',
                     style: TextStyleHelper.instance.headline28MediumRoboto.copyWith(
                       height: 1.2,
                       color: Colors.white,
@@ -90,7 +90,7 @@ class WeeklyNutritionReportScreen
                         ),
                       ],
                     ),
-                  ),
+                  )),
                 ),
               ],
             ),
@@ -122,120 +122,132 @@ class WeeklyNutritionReportScreen
   }
 
   Widget _buildRecipesSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'During This week you followed these recipes:',
-          style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
-            height: 1.2,
+    return Obx(() {
+      final recipes = controller.weeklyNutritionReportModel.value?.recipesList ?? [];
+      
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            recipes.isEmpty 
+              ? 'You haven\'t followed any recipes this week yet.' 
+              : 'During this week you followed these recipes:',
+            style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
+              height: 1.2,
+            ),
           ),
-        ),
-        SizedBox(height: 20.h),
-        Column(
-          children: List.generate(
-            controller.weeklyNutritionReportModel.value?.recipesList?.length ??
-                0,
-            (index) {
-              RecipeItemModel recipe = controller
-                  .weeklyNutritionReportModel
-                  .value!
-                  .recipesList![index];
-              return Padding(
-                padding: EdgeInsets.only(bottom: 10.h),
-                child: CustomRecipeCard(
-                  title: recipe.title?.value ?? '',
-                  description: recipe.description?.value ?? '',
-                  imagePath: recipe.imagePath?.value ?? '',
-                  onTap: () => controller.onRecipeCardTapped(recipe),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
+          if (recipes.isNotEmpty) ...[
+            SizedBox(height: 20.h),
+            Column(
+              children: List.generate(
+                recipes.length,
+                (index) {
+                  RecipeItemModel recipe = recipes[index];
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 10.h),
+                    child: CustomRecipeCard(
+                      title: recipe.title?.value ?? '',
+                      description: recipe.description?.value ?? '',
+                      imagePath: recipe.imagePath?.value ?? '',
+                      onTap: () => controller.onRecipeCardTapped(recipe),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ],
+      );
+    });
   }
 
   Widget _buildIngredientsSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'By following these recipes, you consumed these ingredients:',
-          style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
-            height: 1.5,
+    return Obx(() {
+      final ingredients = controller.weeklyNutritionReportModel.value?.ingredientsList ?? [];
+      if (ingredients.isEmpty) return SizedBox.shrink();
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'By following these recipes, you consumed these ingredients:',
+            style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
+              height: 1.5,
+            ),
           ),
-        ),
-        CustomIngredientList(
-          ingredientList:
-              controller.weeklyNutritionReportModel.value?.ingredientsList?.map(
+          CustomIngredientList(
+            ingredientList: ingredients.map(
                 (item) {
                   return IngredientItem(
                     name: item.name?.value ?? '',
                     quantity: item.quantity?.value ?? '',
                   );
                 },
-              ).toList() ??
-              [],
-          margin: EdgeInsets.only(top: 12.h),
-        ),
-      ],
-    );
+              ).toList(),
+            margin: EdgeInsets.only(top: 12.h),
+          ),
+        ],
+      );
+    });
   }
 
   Widget _buildNutritionAnalysisSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Here's your weekly nutrition analysis:",
-          style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
-            height: 1.2,
+    return Obx(() {
+      final totalCalories = controller.weeklyNutritionReportModel.value?.totalCalories?.value ?? 0;
+      if (totalCalories == 0) return SizedBox.shrink();
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Here's your weekly nutrition analysis:",
+            style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
+              height: 1.2,
+            ),
           ),
-        ),
-        SizedBox(height: 18.h),
-        Container(
-          width: double.infinity,
-          margin: EdgeInsets.symmetric(horizontal: 52.h),
-          padding: EdgeInsets.fromLTRB(12.h, 26.h, 12.h, 26.h),
-          decoration: BoxDecoration(
-            color: appTheme.white_A700,
-            borderRadius: BorderRadius.circular(16.h),
-            boxShadow: [
-              BoxShadow(
-                color: appTheme.color6E196E,
-                offset: Offset(0, 1),
-                blurRadius: 8.h,
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 16.h),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Nutrition Consumption',
-                    style: TextStyleHelper.instance.title16BoldPoppins.copyWith(
-                      height: 1.6,
+          SizedBox(height: 18.h),
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.symmetric(horizontal: 52.h),
+            padding: EdgeInsets.fromLTRB(12.h, 26.h, 12.h, 26.h),
+            decoration: BoxDecoration(
+              color: appTheme.white_A700,
+              borderRadius: BorderRadius.circular(16.h),
+              boxShadow: [
+                BoxShadow(
+                  color: appTheme.color6E196E.withOpacity(0.2),
+                  offset: Offset(0, 1),
+                  blurRadius: 8.h,
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 16.h),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Nutrition Consumption',
+                      style: TextStyleHelper.instance.title16BoldPoppins.copyWith(
+                        height: 1.6,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 28.h),
-              _buildNutritionChart(context),
-              SizedBox(height: 28.h),
-              _buildNutritionLegend(context),
-            ],
+                SizedBox(height: 28.h),
+                _buildNutritionChart(context, totalCalories),
+                SizedBox(height: 28.h),
+                _buildNutritionLegend(context),
+              ],
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 
-  Widget _buildNutritionChart(BuildContext context) {
+  Widget _buildNutritionChart(BuildContext context, int totalCalories) {
     return Container(
       height: 214.h,
       width: 214.h,
@@ -272,7 +284,7 @@ class WeeklyNutritionReportScreen
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                '3564',
+                '$totalCalories',
                 style: TextStyleHelper.instance.headline32BoldPoppins,
               ),
               Text(
@@ -336,14 +348,19 @@ class WeeklyNutritionReportScreen
   }
 
   Widget _buildCongratulationsSection(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 18.h),
-      child: Text(
-        'Congratulations! This is a remarkably healthy week in terms of food. You have a balanced diet and nutrition consumption. Keep going!',
-        style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
-          height: 1.5,
+    return Obx(() {
+      final recipes = controller.weeklyNutritionReportModel.value?.recipesList ?? [];
+      if (recipes.isEmpty) return SizedBox.shrink();
+
+      return Padding(
+        padding: EdgeInsets.only(top: 18.h),
+        child: Text(
+          'Congratulations! This is a remarkably healthy week in terms of food. You have a balanced diet and nutrition consumption. Keep going!',
+          style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
+            height: 1.5,
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
