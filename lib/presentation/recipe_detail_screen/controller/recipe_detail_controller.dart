@@ -21,6 +21,7 @@ class RecipeDetailController extends GetxController {
   final authorName = "".obs;
   final updateDate = "".obs;
   final allergyTags = <String>[].obs;
+  final recipeImageUrl = "".obs;
 
   // For scrolling app bar color change
   final scrollOffset = 0.0.obs;
@@ -67,8 +68,10 @@ class RecipeDetailController extends GetxController {
 
       recipeTitle.value = recipeData['title'] ?? 'Unknown Recipe';
       recipeDescription.value = "Cuisine Type: ${recipeData['cuisine_type'] ?? 'Default Type'} • Portion: ${recipeData['servings'] ?? 1} pax";
+      recipeImageUrl.value = recipeData['img_url'] ?? "";
 
-      authorName.value = recipeData['creator_username'] ?? "Unknown User";
+      // Fetch author name
+      authorName.value = recipeData['creator_username'] ?? "User ${recipeData['created_by'] ?? ''}";
 
       if (recipeData['created_at'] != null) {
         DateTime date = DateTime.parse(recipeData['created_at']);

@@ -105,6 +105,12 @@ class ExploreController extends GetxController {
           // Use the fetched user name or fallback to ID
           String displayName = _userMap[creatorId] ?? "User $creatorId";
           String initial = displayName.isNotEmpty ? displayName[0].toUpperCase() : "U";
+          
+          // Use img_url if available, otherwise use default image
+          String imageUrl = json['img_url']?.toString() ?? "";
+          if (imageUrl.isEmpty) {
+            imageUrl = ImageConstant.imgMedia188x364;
+          }
 
           return RecipeItemModel(
             id: rId,
@@ -112,7 +118,7 @@ class ExploreController extends GetxController {
             userName: displayName.obs,
             userInitial: initial.obs,
             userInfo: (json['cuisine_type'] ?? 'Home Chef').toString().obs,
-            recipeImage: ImageConstant.imgMedia188x364.obs,
+            recipeImage: imageUrl.obs,
             isBookmarked: Get.find<GlobalSaveManager>().savedIds.contains(rId).obs,
           );
         }).toList();

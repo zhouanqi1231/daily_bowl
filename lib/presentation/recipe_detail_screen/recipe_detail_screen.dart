@@ -56,7 +56,9 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
                 child: Column(
                   children: [
                     CustomImageView(
-                      imagePath: ImageConstant.imgMedia, // TODO: if return img
+                      imagePath: controller.recipeImageUrl.value.isNotEmpty 
+                          ? controller.recipeImageUrl.value 
+                          : ImageConstant.imgMedia,
                       width: double.infinity,
                       height: controller.imageHeight,
                       fit: BoxFit.cover,
