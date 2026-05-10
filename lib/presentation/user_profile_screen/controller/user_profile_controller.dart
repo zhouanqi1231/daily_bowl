@@ -62,10 +62,16 @@ class UserProfileController extends GetxController {
               DateTime day = DateTime(date.year, date.month, date.day);
               tempActivity[day] = (tempActivity[day] ?? 0) + 1;
             }
+            
+            String? imageUrl = r['img_url'];
+            
             return RecipeItemModel(
+              id: r['id'],
               title: (r['title'] as String? ?? "No Title").obs,
               description: (r['procedure'] as String? ?? "No Procedure").obs,
-              imagePath: ImageConstant.imgMedia.obs,
+              imagePath: (imageUrl != null && imageUrl.isNotEmpty 
+                  ? imageUrl 
+                  : ImageConstant.imgMedia).obs,
             );
           }).toList();
         }
@@ -107,21 +113,25 @@ class UserProfileController extends GetxController {
       saveCount: 128.obs,
       recipes: [
         RecipeItemModel(
+          id: 1,
           title: "Stir-fried Tomato and Eggs".obs,
           description: "This is a simple and classic dish ...".obs,
           imagePath: ImageConstant.imgMedia.obs,
         ),
         RecipeItemModel(
+          id: 2,
           title: "Stir-fried Tomato and Eggs".obs,
           description: "This is a simple and classic dish ...".obs,
           imagePath: ImageConstant.imgMedia.obs,
         ),
         RecipeItemModel(
+          id: 3,
           title: "Stir-fried Tomato and Eggs".obs,
           description: "This is a simple and classic dish ...".obs,
           imagePath: ImageConstant.imgMedia.obs,
         ),
         RecipeItemModel(
+          id: 4,
           title: "Stir-fried Tomato and Eggs".obs,
           description: "This is a simple and classic dish ...".obs,
           imagePath: ImageConstant.imgMedia.obs,
@@ -158,8 +168,8 @@ class UserProfileController extends GetxController {
 
   void onRecipeTap(int index) {
     final recipe = userProfileModel.value?.recipes?[index];
-    if (recipe != null) {
-      Get.toNamed(AppRoutes.recipeDetailScreen);
+    if (recipe != null && recipe.id != null) {
+      Get.toNamed(AppRoutes.recipeDetailScreen, arguments: {'id': recipe.id});
     }
   }
 
