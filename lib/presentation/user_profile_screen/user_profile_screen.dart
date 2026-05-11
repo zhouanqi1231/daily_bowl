@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../core/app_export.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -415,14 +416,39 @@ class UserProfileScreen extends StatelessWidget {
                       controller.userProfileModel.value?.recipes?[index];
                   return Container(
                     margin: EdgeInsets.only(bottom: 10.h),
-                    child: CustomRecipeCard(
-                      title:
-                          recipe?.title?.value ?? "Stir-fried Tomato and Eggs",
-                      description: recipe?.description?.value ??
-                          "This is a simple and classic dish ...",
-                      imagePath:
-                          recipe?.imagePath?.value ?? ImageConstant.imgMedia,
-                      onTap: () => controller.onRecipeTap(index),
+                    child: Slidable(
+                      key: ValueKey(recipe?.id),
+                      endActionPane: ActionPane(
+                        motion: const ScrollMotion(),
+                        extentRatio: 0.45,
+                        children: [
+                          SlidableAction(
+                            onPressed: (context) => controller.onEditRecipe(index),
+                            backgroundColor: Color(0xFF2196F3),
+                            foregroundColor: Colors.white,
+                            icon: Icons.edit,
+                            label: 'Edit',
+                            borderRadius: BorderRadius.circular(12.h),
+                          ),
+                          SlidableAction(
+                            onPressed: (context) => controller.onDeleteRecipe(index),
+                            backgroundColor: Color(0xFFFE4A49),
+                            foregroundColor: Colors.white,
+                            icon: Icons.delete,
+                            label: 'Delete',
+                            borderRadius: BorderRadius.circular(12.h),
+                          ),
+                        ],
+                      ),
+                      child: CustomRecipeCard(
+                        title:
+                            recipe?.title?.value ?? "Stir-fried Tomato and Eggs",
+                        description: recipe?.description?.value ??
+                            "This is a simple and classic dish ...",
+                        imagePath:
+                            recipe?.imagePath?.value ?? ImageConstant.imgMedia,
+                        onTap: () => controller.onRecipeTap(index),
+                      ),
                     ),
                   );
                 },

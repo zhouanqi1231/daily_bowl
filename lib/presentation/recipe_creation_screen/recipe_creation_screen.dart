@@ -15,8 +15,10 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
       appBar: AppBar(
         backgroundColor: appTheme.white_A700,
         elevation: 0,
-        title: Text("Create a Recipe",
-            style: TextStyleHelper.instance.title22RegularRoboto),
+        title: Obx(() => Text(
+          controller.isEditMode.value ? "Edit Recipe" : "Create a Recipe",
+          style: TextStyleHelper.instance.title22RegularRoboto
+        )),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: appTheme.blackCustom),
@@ -83,32 +85,44 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                     height: 180.h,
                     fit: BoxFit.cover,
                   )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(12.h),
-                        decoration: BoxDecoration(
-                          color: appTheme.white_A700,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.add_a_photo_outlined,
-                          color: appTheme.gray_500,
-                          size: 32.h,
-                        ),
-                      ),
-                      SizedBox(height: 12.h),
-                      Text(
-                        "Upload Photo",
-                        style: TextStyleHelper.instance.body14MediumRoboto
-                            .copyWith(color: appTheme.gray_500),
-                      ),
-                    ],
-                  ),
+                : (controller.imageUrlController.text.isNotEmpty 
+                   ? Image.network(
+                      controller.imageUrlController.text,
+                      width: double.infinity,
+                      height: 180.h,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => _buildUploadPlaceholder(),
+                    )
+                   : _buildUploadPlaceholder()),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildUploadPlaceholder() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          padding: EdgeInsets.all(12.h),
+          decoration: BoxDecoration(
+            color: appTheme.white_A700,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.add_a_photo_outlined,
+            color: appTheme.gray_500,
+            size: 32.h,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Text(
+          "Upload Photo",
+          style: TextStyleHelper.instance.body14MediumRoboto
+              .copyWith(color: appTheme.gray_500),
+        ),
+      ],
     );
   }
 
@@ -128,8 +142,6 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
       placeholder: "Title",
       controller: controller.titleController,
       validator: controller.validateTitle,
-      onChanged: (value) =>
-          controller.recipeCreationModel.value?.title?.value = value,
     );
   }
 
@@ -223,7 +235,6 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                                 controllers['name']!.text = selection;
                               },
                               fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
-                                // Sync the controller with the one in our map
                                 if (controllers['name']!.text != textEditingController.text && textEditingController.text.isEmpty) {
                                   textEditingController.text = controllers['name']!.text;
                                 }
@@ -242,31 +253,6 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                                       .copyWith(color: appTheme.gray_600),
                                 );
                               },
-                              optionsViewBuilder: (context, onSelected, options) {
-                                return Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Material(
-                                    elevation: 4.0,
-                                    borderRadius: BorderRadius.circular(12.h),
-                                    child: Container(
-                                      width: constraints.maxWidth,
-                                      constraints: BoxConstraints(maxHeight: 200.h),
-                                      child: ListView.builder(
-                                        padding: EdgeInsets.zero,
-                                        shrinkWrap: true,
-                                        itemCount: options.length,
-                                        itemBuilder: (BuildContext context, int index) {
-                                          final String option = options.elementAt(index);
-                                          return ListTile(
-                                            title: Text(option, style: TextStyleHelper.instance.body14RegularRoboto),
-                                            onTap: () => onSelected(option),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
                             );
                           },
                         ),
@@ -277,8 +263,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                         child: CustomFloatingTextField(
                           placeholder: "number",
                           controller: controllers['quantity'],
-                          keyboardType: CustomFloatingTextField.getKeyboardType("NUMBER_ONLY"),
-                          inputFormatters: CustomFloatingTextField.getInputFormatters("NUMBER_ONLY"),
+                          keyboardType: TextInputType.number,
                           validator: controller.validateIngredientQuantity,
                           textStyle: TextStyleHelper.instance.body14RegularRoboto
                               .copyWith(color: appTheme.gray_900),
@@ -290,7 +275,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                       SizedBox(
                         width: 90.h,
                         child: DropdownButtonFormField<String>(
-                          value: controllers['unit']!.text,
+                          value: controllers['unit']!.text.isEmpty ? 'g' : controllers['unit']!.text,
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 12.h),
                             filled: true,
@@ -394,7 +379,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
           Expanded(
             child: Obx(
               () => CustomButton(
-                text: "Confirm",
+                text: controller.isLoading.value ? "Saving..." : "Confirm",
                 width: double.infinity,
                 backgroundColor: appTheme.deep_purple_800,
                 textColor: appTheme.white_A700,

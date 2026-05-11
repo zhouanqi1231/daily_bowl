@@ -226,6 +226,46 @@ class UserProfileController extends GetxController {
     }
   }
 
+  void onEditRecipe(int index) {
+    final recipe = userProfileModel.value?.recipes?[index];
+    if (recipe != null && recipe.id != null) {
+      Get.toNamed(AppRoutes.recipeCreationScreen, arguments: {'id': recipe.id});
+    }
+  }
+
+  void onDeleteRecipe(int index) {
+    final recipe = userProfileModel.value?.recipes?[index];
+    if (recipe == null || recipe.id == null) return;
+
+    Get.dialog(
+      AlertDialog(
+        title: Text('Delete Recipe'),
+        content: Text('Are you sure you want to delete this recipe?'),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text('Cancel', style: TextStyle(color: appTheme.blue_gray_400)),
+          ),
+          TextButton(
+            onPressed: () async {
+              Get.back();
+              try {
+                await ApiClient.delete('/recipes/${recipe.id}/');
+                userProfileModel.value?.recipes?.removeAt(index);
+                userProfileModel.value?.recipeCount?.value--;
+                userProfileModel.refresh();
+                Get.snackbar('Success', 'Recipe deleted successfully');
+              } catch (e) {
+                Get.snackbar('Error', 'Failed to delete recipe');
+              }
+            },
+            child: Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   void refreshUserProfile() {
     _initializeUserProfile();
   }
