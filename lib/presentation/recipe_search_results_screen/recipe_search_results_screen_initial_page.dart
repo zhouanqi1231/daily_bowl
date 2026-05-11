@@ -34,10 +34,13 @@ class RecipeSearchResultsScreenInitialPage extends StatelessWidget {
           );
         }
 
+        double statusBarHeight = MediaQuery.of(context).padding.top;
+
         return ListView.separated(
-          padding: EdgeInsets.fromLTRB(16.h, 20.h, 16.h, 40.h),
+          padding: EdgeInsets.fromLTRB(16.h, 0.h, 16.h, 20.h),
           itemCount: controller.recipeSearchResultsModelObj.value.recipeList!.length,
-          separatorBuilder: (context, index) => SizedBox(height: 12.h),
+          separatorBuilder: (context, index) =>
+              SizedBox(height: 10.h),
           itemBuilder: (context, index) {
             var recipe = controller.recipeSearchResultsModelObj.value.recipeList![index];
             return CustomRecipeCard(
