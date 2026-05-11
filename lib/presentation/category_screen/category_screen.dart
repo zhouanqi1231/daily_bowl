@@ -1,15 +1,147 @@
 import 'package:flutter/material.dart';
 import '../../core/app_export.dart';
+import '../../widgets/custom_image_view.dart';
+import './controller/category_controller.dart';
+import './models/category_model.dart';
 
 class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({Key? key}) : super(key: key);
+  CategoryScreen({Key? key}) : super(key: key);
+
+  final CategoryController controller = Get.put(CategoryController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appTheme.white_A700,
-      // Removed AppBar and body content as requested
-      body: Container(),
+      body: SafeArea(
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: appTheme.deep_purple_800,
+              ),
+            );
+          }
+
+          if (controller.categoryList.isEmpty) {
+            return Center(
+              child: Text(
+                "No categories found",
+                style: TextStyleHelper.instance.body14RegularRoboto,
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () => controller.fetchCategories(),
+            child: GridView.builder(
+              padding: EdgeInsets.fromLTRB(16.h, 20.h, 16.h, 40.h),
+              physics: AlwaysScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16.h,
+                crossAxisSpacing: 16.h,
+                childAspectRatio: 1.2, // Rectangular shape
+              ),
+              itemCount: controller.categoryList.length,
+              itemBuilder: (context, index) {
+                CategoryModel category = controller.categoryList[index];
+                return _buildCategoryItem(category);
+              },
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildCategoryItem(CategoryModel category) {
+    return GestureDetector(
+      onTap: () => controller.onCategoryTap(category),
+      child: Container(
+        decoration: BoxDecoration(
+          color: appTheme.deep_purple_50,
+          borderRadius: BorderRadius.circular(16.h),
+          boxShadow: [
+            BoxShadow(
+              color: appTheme.gray_300.withOpacity(0.3),
+              blurRadius: 4.h,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16.h),
+          child: Obx(() {
+            bool hasImage = category.imagePath.value.isNotEmpty;
+            return Stack(
+              children: [
+                // Background (Recipe image or default icon)
+                if (hasImage)
+                  Positioned.fill(
+                    child: CustomImageView(
+                      imagePath: category.imagePath.value,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                
+                if (hasImage)
+                  // Gradient Overlay for text readability on image
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.7),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  // Default Icon when no image is available
+                  Positioned.fill(
+                    child: Opacity(
+                      opacity: 0.1,
+                      child: Icon(
+                        Icons.restaurant_menu,
+                        size: 80.h,
+                        color: appTheme.deep_purple_800,
+                      ),
+                    ),
+                  ),
+
+                // Content
+                Padding(
+                  padding: EdgeInsets.all(16.h),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        category.cuisineType.value,
+                        style: TextStyleHelper.instance.title16BoldPoppins.copyWith(
+                          color: hasImage ? Colors.white : appTheme.deep_purple_800,
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        "${category.recipeCount.value} Recipes",
+                        style: TextStyleHelper.instance.body12RegularRoboto.copyWith(
+                          color: hasImage ? Colors.white.withOpacity(0.8) : appTheme.gray_600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }),
+        ),
+      ),
     );
   }
 }

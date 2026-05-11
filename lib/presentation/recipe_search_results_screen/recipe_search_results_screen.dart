@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../core/app_export.dart';
-import '../../widgets/custom_bottom_bar.dart';
-import '../../widgets/custom_floating_action_button.dart';
+import '../../widgets/custom_app_bar.dart';
 import './controller/recipe_search_results_controller.dart';
 import './recipe_search_results_screen_initial_page.dart';
 
@@ -12,72 +12,27 @@ class RecipeSearchResultsScreen
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
       child: Scaffold(
-        body: Navigator(
-          key: Get.nestedKey(1),
-          initialRoute: AppRoutes.recipeSearchResultsScreen,
-          onGenerateRoute: (routeSetting) => GetPageRoute(
-            page: () => getCurrentPage(routeSetting.name!),
-            transition: Transition.noTransition,
-          ),
+        backgroundColor: appTheme.white_A700,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(70.h),
+          child: Obx(() => CustomAppBar(
+            height: 70.h,
+            leadingIcon: ImageConstant.imgArrowLeft,
+            onLeadingTap: () => Get.back(),
+            title: controller.cuisineType.value ?? "Recipes",
+            backgroundColor: appTheme.white_A700,
+            horizontalPadding: 16.h,
+          )),
         ),
-        floatingActionButton: CustomFloatingActionButton(
-          onPressed: () {
-            // Create recipe functionality
-          },
-          iconPath: ImageConstant.imgCreateARecipe,
-          backgroundColor: appTheme.deep_purple_50,
-        ),
-        bottomNavigationBar: SizedBox(
-          width: double.maxFinite,
-          child: _buildBottomNavigation(),
-        ),
+        body: RecipeSearchResultsScreenInitialPage(),
       ),
     );
-  }
-
-  Widget _buildBottomNavigation() {
-    var bottomBarItemList = <CustomBottomBarItem>[
-      CustomBottomBarItem(
-        icon: ImageConstant.imgNavExplore,
-        activeIcon: ImageConstant.imgNavExplore,
-        title: 'Explore',
-        routeName: AppRoutes.recipeSearchResultsScreen,
-      ),
-      CustomBottomBarItem(
-        icon: ImageConstant.imgNavCatagory,
-        title: 'Category',
-        routeName: AppRoutes.recipeSearchResultsScreen,
-      ),
-      CustomBottomBarItem(
-        icon: ImageConstant.imgIcon24x24,
-        title: 'Saved',
-        routeName: AppRoutes.recipeSearchResultsScreen,
-      ),
-      CustomBottomBarItem(
-        icon: ImageConstant.imgNavMe,
-        title: 'Me',
-        routeName: AppRoutes.recipeSearchResultsScreen,
-      ),
-    ];
-
-    return CustomBottomBar(
-      bottomBarItemList: bottomBarItemList,
-      selectedIndex: 0,
-      onChanged: (index) {
-        var bottomBarItem = bottomBarItemList[index];
-        Get.toNamed(bottomBarItem.routeName!, id: 1);
-      },
-    );
-  }
-
-  Widget getCurrentPage(String currentRoute) {
-    switch (currentRoute) {
-      case AppRoutes.recipeSearchResultsScreen:
-        return RecipeSearchResultsScreenInitialPage();
-      default:
-        return Container();
-    }
   }
 }

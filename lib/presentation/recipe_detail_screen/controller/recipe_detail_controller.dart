@@ -27,6 +27,12 @@ class RecipeDetailController extends GetxController {
   final userAllergies = <String>[].obs;
   final recipeImageUrl = "".obs;
 
+  // Nutrition data (stored for local persistence on "Cook")
+  final totalCalories = 0.0.obs;
+  final totalProtein = 0.0.obs;
+  final totalCarbs = 0.0.obs;
+  final totalFat = 0.0.obs;
+
   // For scrolling app bar color change
   final scrollOffset = 0.0.obs;
   final imageHeight = 412.0; // Same as in the screen
@@ -94,19 +100,28 @@ class RecipeDetailController extends GetxController {
     try {
       isLoading.value = true;
 
+      // Fetch recipe, ingredients, and nutrition in parallel
       var responses = await Future.wait([
         ApiClient.get('/recipes/$id/'),
         ApiClient.get('/recipes/$id/ingredients/'),
+        ApiClient.get('/recipes/$id/nutrition/'),
       ]);
 
       if (isClosed) return;
 
       var recipeData = responses[0];
       var ingredientsAssoc = responses[1];
+      var nutritionData = responses[2];
 
       recipeTitle.value = recipeData['title'] ?? 'Unknown Recipe';
       recipeDescription.value = "Cuisine Type: ${recipeData['cuisine_type'] ?? 'Default Type'} • Portion: ${recipeData['servings'] ?? 1} pax";
       recipeImageUrl.value = recipeData['img_url'] ?? "";
+
+      // Assign nutrition data
+      totalCalories.value = (nutritionData['total_calories'] ?? 0.0).toDouble();
+      totalProtein.value = (nutritionData['total_protein'] ?? 0.0).toDouble();
+      totalCarbs.value = (nutritionData['total_carbs'] ?? 0.0).toDouble();
+      totalFat.value = (nutritionData['total_fat'] ?? 0.0).toDouble();
 
       // Fetch author name
       authorName.value = recipeData['creator_username'] ?? "User ${recipeData['created_by'] ?? ''}";
@@ -238,6 +253,12 @@ class RecipeDetailController extends GetxController {
         'image_path': recipeImageUrl.value,
         'cooked_at': DateTime.now().toIso8601String(),
         'ingredients': ingredients,
+        'nutrition': {
+          'calories': totalCalories.value,
+          'protein': totalProtein.value,
+          'carbs': totalCarbs.value,
+          'fat': totalFat.value,
+        }
       };
       followedRecipesJson.add(jsonEncode(recipeInfo));
       await prefs.setStringList('followed_recipes', followedRecipesJson);
