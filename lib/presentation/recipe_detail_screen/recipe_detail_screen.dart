@@ -66,14 +66,16 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
                     Padding(
                       padding: EdgeInsets.only(top: 12.h, left: 16.h, right: 16.h),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildRecipeHeaderSection(context),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: 24.h),
                           _buildIngredientsSection(context),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: 24.h),
                           _buildStepsSection(context),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: 24.h),
+                          _buildNutritionSection(context),
+                          SizedBox(height: 24.h),
                           _buildUpdatedDateSection(context),
                           SizedBox(height: 180.h),
                         ],
@@ -132,6 +134,32 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     );
   }
 
+  Widget _buildNutritionSection(BuildContext context) {
+    List<CustomIngredientsItem> nutritionItems = [
+      CustomIngredientsItem(name: "Calories", quantity: "${controller.totalCalories.value.toInt()} kcal"),
+      CustomIngredientsItem(name: "Protein", quantity: "${controller.totalProtein.value.toInt()} g"),
+      CustomIngredientsItem(name: "Carbohydrates", quantity: "${controller.totalCarbs.value.toInt()} g"),
+      CustomIngredientsItem(name: "Fat", quantity: "${controller.totalFat.value.toInt()} g"),
+    ];
+
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Nutrition Facts",
+            style: TextStyleHelper.instance.title16MediumRoboto,
+          ),
+          SizedBox(height: 14.h),
+          CustomIngredientsList(
+            ingredientsList: nutritionItems,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildAllergyAlertSection(BuildContext context) {
     if (controller.allergyTags.isEmpty) return SizedBox.shrink();
     return Wrap(
@@ -148,19 +176,20 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
           return GestureDetector(
             onTap: () => controller.onAllergyTagTap(tag),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 3.h),
+              padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 4.h),
               decoration: BoxDecoration(
                 color: isMatched ? appTheme.red_900 : appTheme.gray_200,
                 border: Border.all(
                   color: isMatched ? appTheme.red_900 : appTheme.gray_300,
                   width: 1.h,
                 ),
-                borderRadius: BorderRadius.circular(14.h),
+                borderRadius: BorderRadius.circular(16.h),
               ),
               child: Text(
                 "#$tag",
-                style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
+                style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
                   color: isMatched ? appTheme.whiteCustom : appTheme.gray_700,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -214,7 +243,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
       padding: EdgeInsets.only(bottom: 12.h),
       child: Text(
         controller.updateDate.value,
-        style: TextStyleHelper.instance.body12RegularRoboto.copyWith(
+        style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
           color: appTheme.gray_600,
         ),
       ),
