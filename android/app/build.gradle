@@ -42,6 +42,13 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
+
+    // Customizes the name of the output APK
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "DailyBowl_${variant.name}_v${variant.versionName}.apk"
+        }
+    }
 }
 
 flutter {
