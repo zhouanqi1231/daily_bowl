@@ -69,21 +69,10 @@ class LightCodeColors {
   Color get white_700 => const Color(0xFFFFFFFF);
   Color get black_900 => const Color(0xFF000000);
   
-  Color get indigo_400 => const Color(0xFF6665DD);
-  Color get cyan_400 => const Color(0xFF34D1BF);
-  Color get amber_900 => const Color(0xFFFF7606);
-
   // Colors with opacity
-  Color get blue_gray_500_7f => const Color(0x7F597393);
-  Color get gray_600_19 => const Color(0x196E6E6E);
-  Color get lime_900_21 => const Color(0x21AF6B2C);
   Color get red_900 => const Color(0xFFB3261E);
 
   // Additional/Custom Colors
-  Color get gray_300_alt => const Color(0XFFD2D2D2);
-  Color get black_alt => const Color(0XFF343330);
-  Color get deep_purple_50_alt => const Color(0xFFEADDFF);
-  
   Color get redCustom => Colors.red;
   Color get greenCustom => Colors.green;
   Color get whiteCustom => Colors.white;
@@ -99,7 +88,4 @@ class LightCodeColors {
   // Color Shades
   Color get grey200 => Colors.grey.shade200;
   Color get grey100 => Colors.grey.shade100;
-
-  // Legacy mappings for backward compatibility
-  Color get deep_purple_50_02 => const Color(0xFFE8DEF8);
 }
