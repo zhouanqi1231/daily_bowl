@@ -1,13 +1,12 @@
 import 'dart:io';
-import 'dart:ui_web' as ui_web;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:universal_html/html.dart' as html;
 
 import '../core/app_export.dart';
+import '../core/network/api_client.dart';
 
 extension ImageTypeExtension on String {
   ImageType get imageType {
@@ -107,6 +106,13 @@ class CustomImageView extends StatelessWidget {
     }
   }
 
+  String _resolveUrl() {
+    if (kIsWeb && imagePath.startsWith('http')) {
+      return ApiClient.proxyImageUrl(imagePath);
+    }
+    return imagePath;
+  }
+
   Widget _buildImageView() {
     switch (imagePath.imageType) {
       case ImageType.svg:
@@ -148,14 +154,11 @@ class CustomImageView extends StatelessWidget {
               : null,
         );
       case ImageType.network:
-        if (kIsWeb) {
-          return _buildHtmlImage();
-        }
         return CachedNetworkImage(
           height: height,
           width: width,
           fit: fit,
-          imageUrl: imagePath,
+          imageUrl: _resolveUrl(),
           color: color,
           placeholder: (context, url) => SizedBox(
             height: 30,
@@ -182,25 +185,5 @@ class CustomImageView extends StatelessWidget {
           color: color,
         );
     }
-  }
-
-  Widget _buildHtmlImage() {
-    final viewType = 'img_${identityHashCode(this)}';
-
-    ui_web.platformViewRegistry.registerViewFactory(viewType, (int viewId) {
-      final img = html.ImageElement()
-        ..src = imagePath
-        ..alt = ''
-        ..style.width = '100%'
-        ..style.height = '100%'
-        ..style.objectFit = fit == BoxFit.cover ? 'cover' : 'contain';
-      return img;
-    });
-
-    return HtmlElementView(
-      viewType: viewType,
-      // ignore: avoid_print
-      onPlatformViewCreated: (_) {},
-    );
   }
 }

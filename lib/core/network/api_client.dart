@@ -11,6 +11,13 @@ class ApiClient {
   static String? _baseUrl;
   static String? _defaultApiKey;
 
+  /// Wraps an external image URL through the API's image proxy,
+  /// bypassing browser CORS restrictions on web.
+  static String proxyImageUrl(String originalUrl) {
+    if (_baseUrl == null) return originalUrl;
+    return '$_baseUrl/proxy/image/?url=${Uri.encodeQueryComponent(originalUrl)}';
+  }
+
   // init environment vars
   static Future<void> init() async {
     final String envString = await rootBundle.loadString('env.json');
