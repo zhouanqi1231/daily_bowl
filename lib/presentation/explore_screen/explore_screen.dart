@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/app_export.dart';
 import '../../widgets/custom_floating_action_button.dart';
 import '../../widgets/custom_image_view.dart';
-import '../recipe_search_results_screen/widgets/recipe_card_item.dart';
+import '../categorized_recipe_page/widgets/recipe_card_item.dart';
 import './controller/explore_controller.dart';
 
 class ExploreScreen extends StatelessWidget {

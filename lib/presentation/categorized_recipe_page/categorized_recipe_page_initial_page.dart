@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
 import '../../widgets/custom_recipe_card.dart';
-import './controller/recipe_search_results_controller.dart';
+import './controller/categorized_recipe_controller.dart';
 
-class RecipeSearchResultsScreenInitialPage extends StatelessWidget {
-  RecipeSearchResultsScreenInitialPage({Key? key}) : super(key: key);
+class CategorizedRecipePageInitialPage extends StatelessWidget {
+  CategorizedRecipePageInitialPage({Key? key}) : super(key: key);
 
-  final RecipeSearchResultsController controller = Get.put(
-    RecipeSearchResultsController(),
+  final CategorizedRecipeController controller = Get.put(
+    CategorizedRecipeController(),
   );
 
   @override
@@ -25,7 +25,7 @@ class RecipeSearchResultsScreenInitialPage extends StatelessWidget {
           );
         }
 
-        if (controller.recipeSearchResultsModelObj.value.recipeList?.isEmpty ?? true) {
+        if (controller.categorizedRecipeModelObj.value.recipeList?.isEmpty ?? true) {
           return Center(
             child: Text(
               "No recipes found for this category",
@@ -38,11 +38,11 @@ class RecipeSearchResultsScreenInitialPage extends StatelessWidget {
 
         return ListView.separated(
           padding: EdgeInsets.fromLTRB(16.h, 0.h, 16.h, 20.h),
-          itemCount: controller.recipeSearchResultsModelObj.value.recipeList!.length,
+          itemCount: controller.categorizedRecipeModelObj.value.recipeList!.length,
           separatorBuilder: (context, index) =>
               SizedBox(height: 10.h),
           itemBuilder: (context, index) {
-            var recipe = controller.recipeSearchResultsModelObj.value.recipeList![index];
+            var recipe = controller.categorizedRecipeModelObj.value.recipeList![index];
             return CustomRecipeCard(
               title: recipe.recipeName?.value ?? "",
               description: "By ${recipe.userName?.value ?? ''}",

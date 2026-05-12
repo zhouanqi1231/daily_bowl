@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
-import '../../recipe_search_results_screen/models/recipe_item_model.dart';
+import '../../categorized_recipe_page/models/recipe_item_model.dart';
 import '../models/explore_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/global_save_manager.dart';

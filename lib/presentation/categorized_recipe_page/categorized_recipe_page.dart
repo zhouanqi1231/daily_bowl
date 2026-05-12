@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 
 import '../../core/app_export.dart';
 import '../../widgets/custom_app_bar.dart';
-import './controller/recipe_search_results_controller.dart';
-import './recipe_search_results_screen_initial_page.dart';
+import './controller/categorized_recipe_controller.dart';
+import './categorized_recipe_page_initial_page.dart';
 
-class RecipeSearchResultsScreen
-    extends GetWidget<RecipeSearchResultsController> {
-  RecipeSearchResultsScreen({Key? key}) : super(key: key);
+class CategorizedRecipePage
+    extends GetWidget<CategorizedRecipeController> {
+  CategorizedRecipePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class RecipeSearchResultsScreen
             horizontalPadding: 16.h,
           )),
         ),
-        body: RecipeSearchResultsScreenInitialPage(),
+        body: CategorizedRecipePageInitialPage(),
       ),
     );
   }
