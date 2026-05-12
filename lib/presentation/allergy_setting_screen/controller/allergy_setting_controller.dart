@@ -18,6 +18,7 @@ class AllergySettingController extends GetxController {
     _loadAllergies();
   }
 
+  // preset allergy types
   void _initializeAllergyItems() {
     allergyItems.value = [
       AllergyItemModel(name: "Peanut".obs, isSelected: false.obs),

@@ -27,7 +27,6 @@ class UserProfileScreen extends StatelessWidget {
           actionIcons: [
             CustomAppBarAction(
               iconPath: ImageConstant.imgShare,
-              onTap: () => controller.onSharePressed(),
             ),
           ],
           backgroundColor: appTheme.white_A700,

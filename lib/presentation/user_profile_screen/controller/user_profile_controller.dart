@@ -55,7 +55,7 @@ class UserProfileController extends GetxController {
     String? email = prefs.getString('user_email');
     int? userId = prefs.getInt('user_id');
     
-    String displayName = "Amy Perkins";
+    String displayName = "UserName";
     
     if (storedName != null && storedName.isNotEmpty) {
       displayName = storedName;
@@ -194,6 +194,7 @@ class UserProfileController extends GetxController {
     );
   }
 
+  // heatmap tap: date, created, saved, cooked
   void onActivityTap(DateTime date, DailyActivity activity) {
     _popupTimer?.cancel();
     popupDate.value = date;
@@ -207,18 +208,7 @@ class UserProfileController extends GetxController {
     });
   }
 
-  void onSharePressed() async {
-    try {
-      await Share.share(
-        'Check out ${userProfileModel.value?.userName?.value ?? "Amy Perkins"}\'s amazing recipes on Recipe Master! 🍳👨‍🍳',
-        subject: 'Recipe Master - User Profile',
-      );
-    } catch (e) {
-      if (isClosed) return;
-      Get.snackbar('Share Error', 'Unable to share at the moment.');
-    }
-  }
-
+  // go to recipe detail screen
   void onRecipeTap(int index) {
     final recipe = userProfileModel.value?.recipes?[index];
     if (recipe != null && recipe.id != null) {
@@ -226,6 +216,7 @@ class UserProfileController extends GetxController {
     }
   }
 
+  // slide recipe list item to edit
   void onEditRecipe(int index) {
     final recipe = userProfileModel.value?.recipes?[index];
     if (recipe != null && recipe.id != null) {
@@ -233,6 +224,7 @@ class UserProfileController extends GetxController {
     }
   }
 
+  // slide recipe list item to delete
   void onDeleteRecipe(int index) {
     final recipe = userProfileModel.value?.recipes?[index];
     if (recipe == null || recipe.id == null) return;

@@ -69,6 +69,7 @@ class WeeklyNutritionReportController extends GetxController {
     try {
       isLoading.value = true;
       final prefs = await SharedPreferences.getInstance();
+      // read json storage
       List<String> followedRecipesJson = prefs.getStringList('followed_recipes') ?? [];
       
       // Filter recipes followed THIS week
