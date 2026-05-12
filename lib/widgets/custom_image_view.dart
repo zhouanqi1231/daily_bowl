@@ -108,7 +108,11 @@ class CustomImageView extends StatelessWidget {
 
   String _resolveUrl() {
     if (kIsWeb && imagePath.startsWith('http')) {
-      return ApiClient.proxyImageUrl(imagePath);
+      final url = ApiClient.proxyImageUrl(imagePath);
+      // proxyImageUrl returns the original if _baseUrl is null or if the
+      // image is already hosted on the API server — in that case CORS is
+      // handled by Flask-CORS and no proxy is needed.
+      return url;
     }
     return imagePath;
   }
