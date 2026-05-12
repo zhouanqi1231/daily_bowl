@@ -34,8 +34,6 @@ class CategorizedRecipePageInitialPage extends StatelessWidget {
           );
         }
 
-        double statusBarHeight = MediaQuery.of(context).padding.top;
-
         return ListView.separated(
           padding: EdgeInsets.fromLTRB(16.h, 0.h, 16.h, 20.h),
           itemCount: controller.categorizedRecipeModelObj.value.recipeList!.length,

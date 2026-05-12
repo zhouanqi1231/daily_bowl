@@ -496,9 +496,6 @@ class MonthBorderPainter extends CustomPainter {
     final step = cellSize + cellMargin * 2;
 
     for (int month = 1; month <= 12; month++) {
-      Path path = Path();
-      List<Offset> points = [];
-
       List<Point<int>> monthCells = [];
       for (int x = 0; x < weeks.length; x++) {
         for (int y = 0; y < weeks[x].length; y++) {
