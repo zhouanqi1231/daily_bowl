@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -145,6 +146,21 @@ class CustomImageView extends StatelessWidget {
               : null,
         );
       case ImageType.network:
+        if (kIsWeb) {
+          return Image.network(
+            imagePath,
+            height: height,
+            width: width,
+            fit: fit ?? BoxFit.cover,
+            color: color,
+            errorBuilder: (context, error, stackTrace) => Image.asset(
+              placeHolder ?? ImageConstant.imgImageNotFound,
+              height: height,
+              width: width,
+              fit: fit ?? BoxFit.cover,
+            ),
+          );
+        }
         return CachedNetworkImage(
           height: height,
           width: width,
