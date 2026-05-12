@@ -17,7 +17,7 @@ import './controller/main_container_controller.dart';
 class MainContainerScreen extends StatelessWidget {
   final MainContainerController controller = Get.put(MainContainerController());
 
-  MainContainerScreen({Key? key}) : super(key: key);
+  MainContainerScreen({super.key});
 
   /// Builds the "Me" tab content based on the user's login status.
   ///

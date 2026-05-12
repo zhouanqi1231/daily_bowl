@@ -95,12 +95,12 @@ class AppRoutes {
     ),
     GetPage(
       name: profileSettingsScreen,
-      page: () => ProfileSettingsScreen(),
+      page: () => const ProfileSettingsScreen(),
       bindings: [ProfileSettingsBinding()],
     ),
     GetPage(
       name: recipeDetailScreen,
-      page: () => RecipeDetailScreen(),
+      page: () => const RecipeDetailScreen(),
       bindings: [RecipeDetailBinding()],
     ),
     GetPage(
