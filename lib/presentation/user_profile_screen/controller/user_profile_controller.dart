@@ -120,6 +120,20 @@ class UserProfileController extends GetxController {
   /// Fetches recipes and saves from the server to populate the profile and activity map.
   Future<void> _loadServerData(int userId, String displayName, Map<DateTime, DailyActivity> tempActivity) async {
     try {
+      // 0. Fetch basic user details (including allergies)
+      String allergyStr = "";
+      try {
+        final userData = await ApiClient.get('/users/$userId/');
+        if (userData != null) {
+          allergyStr = (userData['allergies'] ?? userData['allergy'] ?? "").toString();
+          // Update local cache
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('user_allergies', allergyStr);
+        }
+      } catch (e) {
+        print("Error fetching user details: $e");
+      }
+
       // 1. Fetch created recipes and update activity
       final recipes = await _fetchCreatedRecipes(userId, tempActivity);
       
@@ -133,6 +147,7 @@ class UserProfileController extends GetxController {
           recipeCount: recipes.length.obs,
           saveCount: _saveManager.savedIds.length.obs,
           recipes: recipes.obs,
+          allergies: allergyStr.obs,
         );
       }
     } catch (e) {
