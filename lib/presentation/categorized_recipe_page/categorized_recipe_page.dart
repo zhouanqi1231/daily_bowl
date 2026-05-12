@@ -6,6 +6,10 @@ import '../../widgets/custom_app_bar.dart';
 import './controller/categorized_recipe_controller.dart';
 import './categorized_recipe_page_initial_page.dart';
 
+/// A screen that displays recipes filtered by a specific category (cuisine type).
+///
+/// This screen uses a [CategorizedRecipeController] to manage the state and
+/// displays the list of recipes using [CategorizedRecipePageInitialPage].
 class CategorizedRecipePage
     extends GetWidget<CategorizedRecipeController> {
   CategorizedRecipePage({Key? key}) : super(key: key);

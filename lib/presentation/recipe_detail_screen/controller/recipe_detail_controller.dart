@@ -10,39 +10,64 @@ import '../../../core/network/api_client.dart';
 import '../../../core/global_save_manager.dart';
 import '../../user_profile_screen/controller/user_profile_controller.dart';
 
+/// A controller class for the RecipeDetailScreen.
+///
+/// This class manages the state of the recipe details, including fetching data
+/// from multiple API endpoints (recipe, ingredients, nutrition), matching user
+/// allergies, and handling user interactions like "cooking" or "saving" a recipe.
 class RecipeDetailController extends GetxController {
+  /// Observable object for the recipe detail model.
   final recipeDetailModel = Rx<RecipeDetailModel?>(null);
 
-  // UI status
+  /// Observable boolean to track if the recipe is marked as cooked.
   final isBookmarked = false.obs;
+
+  /// Observable boolean to track if the recipe is saved in the user's collection.
   final isSaved = false.obs;
+
+  /// Observable boolean to track loading state.
   final isLoading = true.obs;
 
-  // data bind to UI
+  /// Observable string for the recipe's main image URL.
   final recipeImageUrl = "".obs;
 
+  /// Observable string for the recipe title.
   final recipeTitle = "".obs;
+
+  /// Observable string for the recipe description (cuisine type and servings).
   final recipeDescription = "".obs;
 
+  /// Observable string for the author's name.
   final authorName = "".obs;
 
-  // match user allergies to ingredients
+  /// Observable list of allergy tags associated with the recipe's ingredients.
   final allergyTags = <String>[].obs;
+
+  /// Observable list of the user's own allergies.
   final userAllergies = <String>[].obs;
 
-  // Nutrition data (stored for local persistence on "Cook")
+  /// Observable value for total calories in the recipe.
   final totalCalories = 0.0.obs;
+
+  /// Observable value for total protein in the recipe.
   final totalProtein = 0.0.obs;
+
+  /// Observable value for total carbohydrates in the recipe.
   final totalCarbs = 0.0.obs;
+
+  /// Observable value for total fat in the recipe.
   final totalFat = 0.0.obs;
 
-  // create date
+  /// Observable string for the recipe's creation date.
   final updateDate = "".obs;
 
-  // For scrolling app bar color change
+  /// Observable value for the current scroll position of the screen.
   final scrollOffset = 0.0.obs;
-  final imageHeight = 412.0; // Same as in the screen
 
+  /// The height of the top image, used for parallax/app bar effects.
+  final imageHeight = 412.0;
+
+  /// The unique ID of the recipe being displayed.
   int recipeId = -1;
 
   @override
@@ -68,6 +93,7 @@ class RecipeDetailController extends GetxController {
     }
   }
 
+  /// Initial data fetch sequence: user allergies and recipe details.
   Future<void> _initializeData() async {
     await Future.wait([
       _loadUserAllergies(),
@@ -75,6 +101,7 @@ class RecipeDetailController extends GetxController {
     ]);
   }
 
+  /// Loads the current user's allergies from the backend and updates [userAllergies].
   Future<void> _loadUserAllergies() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -101,12 +128,19 @@ class RecipeDetailController extends GetxController {
     }
   }
 
+  /// Updates the current [scrollOffset] as the user scrolls.
+  ///
+  /// [offset] The new scroll position.
   void updateScrollOffset(double offset) {
     scrollOffset.value = offset;
   }
 
+  /// Returns true if the top image has been scrolled past the app bar.
   bool get isImageScrolledOut => scrollOffset.value >= imageHeight - (70.h);
 
+  /// Fetches all necessary details for a recipe, including ingredients and nutrition.
+  ///
+  /// [id] The ID of the recipe to fetch.
   Future<void> _fetchRecipeDetail(int id) async {
     try {
       isLoading.value = true;
@@ -225,7 +259,9 @@ class RecipeDetailController extends GetxController {
     }
   }
 
-  // match user allergy to current recipe
+  /// Checks if the user is allergic to a specific [tag].
+  ///
+  /// Compares the ingredient's allergy tag with the user's allergy list.
   bool isUserAllergicTo(String tag) {
     String normalizedTag = tag.toLowerCase();
     return userAllergies.any((userAllergy) {
@@ -234,7 +270,9 @@ class RecipeDetailController extends GetxController {
     });
   }
 
-  // cooked button
+  /// Handles the action when the "Mark as Cooked" button is tapped.
+  ///
+  /// Persists the cooking event locally, updates heatmap data, and refreshes the profile.
   Future<void> onBookmarkTap() async {
     isBookmarked.value = !isBookmarked.value;
     if (isBookmarked.value) {
@@ -286,7 +324,9 @@ class RecipeDetailController extends GetxController {
     }
   }
 
-  // save button
+  /// Handles the action when the "Save Recipe" button is tapped.
+  ///
+  /// Uses [GlobalSaveManager] to toggle the recipe's saved status.
   void onMainFabTap() {
     if (recipeId != -1) {
       bool willBeSaved = !isSaved.value;

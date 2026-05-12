@@ -4,7 +4,12 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_floating_text_field.dart';
 import './controller/login_controller.dart';
 
+/// A screen that provides a login interface for the user.
+///
+/// This screen allows users to enter their email and password to authenticate.
+/// It also provides a way to navigate to the registration flow.
 class LoginScreen extends GetWidget<LoginController> {
+  /// Optional callback to be executed when the register button is pressed.
   final VoidCallback? onRegisterPressed;
 
   const LoginScreen({Key? key, this.onRegisterPressed}) : super(key: key);

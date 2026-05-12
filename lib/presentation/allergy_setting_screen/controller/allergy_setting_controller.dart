@@ -6,9 +6,18 @@ import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
 import '../../user_profile_screen/controller/user_profile_controller.dart';
 
+/// A controller class for the AllergySettingScreen to manage the state of the allergy settings.
+///
+/// This class manages the state of the allergy settings, including the list of allergy items,
+/// loading status, and syncing with the backend and local storage.
 class AllergySettingController extends GetxController {
+  /// Observable object for allergy setting model.
   Rx<AllergySettingModel> allergySettingModelObj = AllergySettingModel().obs;
+
+  /// Observable list of allergy items.
   RxList<AllergyItemModel> allergyItems = <AllergyItemModel>[].obs;
+
+  /// Observable boolean to track loading state.
   RxBool isLoading = false.obs;
 
   @override
@@ -18,7 +27,7 @@ class AllergySettingController extends GetxController {
     _loadAllergies();
   }
 
-  // preset allergy types
+  /// Initializes the preset allergy items list.
   void _initializeAllergyItems() {
     allergyItems.value = [
       AllergyItemModel(name: "Peanut".obs, isSelected: false.obs),
@@ -38,6 +47,7 @@ class AllergySettingController extends GetxController {
     ];
   }
 
+  /// Loads the user's allergy settings from local storage and the API.
   Future<void> _loadAllergies() async {
     try {
       isLoading.value = true;
@@ -70,6 +80,9 @@ class AllergySettingController extends GetxController {
     }
   }
 
+  /// Parses a comma-separated string of allergies and updates the [allergyItems] list.
+  ///
+  /// [allergyStr] A comma-separated string of allergy names.
   void _applyAllergiesToItems(String allergyStr) {
     List<String> userAllergies = allergyStr.split(',').map((e) => e.trim().toLowerCase()).toList();
     for (var item in allergyItems) {
@@ -78,6 +91,10 @@ class AllergySettingController extends GetxController {
     allergyItems.refresh();
   }
 
+  /// Toggles the selection state of an allergy item at the given index.
+  ///
+  /// [index] The index of the allergy item in the list.
+  /// [value] The new selection state.
   void toggleAllergy(int index, bool value) {
     if (index >= 0 && index < allergyItems.length) {
       allergyItems[index].isSelected?.value = value;
@@ -86,6 +103,7 @@ class AllergySettingController extends GetxController {
     }
   }
 
+  /// Saves the current allergy settings to local storage and the API.
   Future<void> saveAllergySettings() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -135,6 +153,7 @@ class AllergySettingController extends GetxController {
     }
   }
 
+  /// Returns a list of the names of all selected allergies.
   List<String> getSelectedAllergies() {
     return allergyItems
         .where((item) => item.isSelected?.value ?? false)

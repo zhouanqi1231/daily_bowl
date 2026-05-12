@@ -2,8 +2,15 @@ import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
 import '../models/category_model.dart';
 
+/// A controller class for the CategoryScreen.
+///
+/// This class manages the state of the category list, including fetching categories
+/// and their representative images from the backend.
 class CategoryController extends GetxController {
+  /// Observable list of category models.
   RxList<CategoryModel> categoryList = <CategoryModel>[].obs;
+
+  /// Observable boolean to track loading state.
   RxBool isLoading = false.obs;
 
   @override
@@ -12,6 +19,7 @@ class CategoryController extends GetxController {
     fetchCategories();
   }
 
+  /// Fetches the list of recipe categories and their counts from the API.
   Future<void> fetchCategories() async {
     try {
       isLoading.value = true;
@@ -43,6 +51,10 @@ class CategoryController extends GetxController {
     }
   }
 
+  /// Fetches a representative image for each category in [categoryList].
+  ///
+  /// For each category, it requests the first recipe of that cuisine type
+  /// and updates the category's [imagePath].
   Future<void> _fetchCategoryImages() async {
     for (var category in categoryList) {
       try {
@@ -59,6 +71,9 @@ class CategoryController extends GetxController {
     }
   }
 
+  /// Handles navigation to the [CategorizedRecipePage] when a category is tapped.
+  ///
+  /// [category] The category model that was tapped.
   void onCategoryTap(CategoryModel category) {
     Get.toNamed(AppRoutes.categorizedRecipePage, arguments: {
       'cuisine_type': category.cuisineType.value,

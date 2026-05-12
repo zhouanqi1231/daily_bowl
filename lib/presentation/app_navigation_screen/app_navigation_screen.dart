@@ -5,6 +5,9 @@ import './controller/app_navigation_controller.dart';
 
 // ignore_for_file: must_be_immutable
 
+/// A screen that provides easy access to all other screens in the application.
+///
+/// This is primarily used during development to quickly jump to different parts of the app.
 class AppNavigationScreen extends GetWidget<AppNavigationController> {
   const AppNavigationScreen({Key? key}) : super(key: key);
 
@@ -96,7 +99,11 @@ class AppNavigationScreen extends GetWidget<AppNavigationController> {
     );
   }
 
-  /// Common widget
+  /// Builds a clickable row for a screen title.
+  ///
+  /// [context] The build context.
+  /// [screenTitle] The title to display for the screen.
+  /// [onTapScreenTitle] Callback function when the row is tapped.
   Widget _buildScreenTitle(
     BuildContext context, {
     required String screenTitle,
@@ -133,12 +140,18 @@ class AppNavigationScreen extends GetWidget<AppNavigationController> {
     );
   }
 
-  /// Common click event
+  /// Navigates to the specified [routeName].
+  ///
+  /// [context] The build context.
+  /// [routeName] The name of the route to navigate to.
   void onTapScreenTitle(BuildContext context, String routeName) {
     Get.toNamed(routeName);
   }
 
-  /// Common click event for bottomsheet
+  /// Shows a modal bottom sheet with the provided [className] widget.
+  ///
+  /// [context] The build context.
+  /// [className] The widget to display in the bottom sheet.
   void onTapBottomSheetTitle(BuildContext context, Widget className) {
     showModalBottomSheet(
       context: context,
@@ -150,7 +163,10 @@ class AppNavigationScreen extends GetWidget<AppNavigationController> {
     );
   }
 
-  /// Common click event for dialog
+  /// Shows an alert dialog with the provided [className] widget.
+  ///
+  /// [context] The build context.
+  /// [className] The widget to display in the dialog.
   void onTapDialogTitle(BuildContext context, Widget className) {
     showDialog(
       context: context,

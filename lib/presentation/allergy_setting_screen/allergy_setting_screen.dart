@@ -5,6 +5,10 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_checkbox.dart';
 import './controller/allergy_setting_controller.dart';
 
+/// A screen where users can select and save their allergies.
+///
+/// This screen displays a list of common allergies that the user can toggle
+/// to update their profile settings.
 class AllergySettingScreen extends GetWidget<AllergySettingController> {
   const AllergySettingScreen({Key? key}) : super(key: key);
 
@@ -21,7 +25,10 @@ class AllergySettingScreen extends GetWidget<AllergySettingController> {
     );
   }
 
-  /// Section Widget
+  /// Builds the top app bar for the screen.
+  ///
+  /// [context] The build context.
+  /// Returns a [PreferredSizeWidget] containing the app bar.
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return CustomAppBar(
       leadingIcon: ImageConstant.imgArrowLeft,
@@ -32,7 +39,10 @@ class AllergySettingScreen extends GetWidget<AllergySettingController> {
     );
   }
 
-  /// Section Widget
+  /// Builds the scrollable list of allergy checkboxes.
+  ///
+  /// [context] The build context.
+  /// Returns a [Widget] representing the allergy list.
   Widget _buildAllergyList(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4.h),

@@ -5,12 +5,22 @@ import '../../../core/global_save_manager.dart';
 import '../models/recipe_item_model.dart';
 import '../models/categorized_recipe_model.dart';
 
+/// A controller class for the CategorizedRecipePage.
+///
+/// This class manages the state of the categorized recipe list, including
+/// fetching recipes by cuisine type and handling search queries.
 class CategorizedRecipeController extends GetxController {
+  /// Observable object for the categorized recipe model.
   Rx<CategorizedRecipeModel> categorizedRecipeModelObj =
       CategorizedRecipeModel().obs;
+
+  /// Observable controller for the search text field.
   Rx<TextEditingController> searchController = TextEditingController().obs;
 
+  /// Observable boolean to track loading state.
   RxBool isLoading = false.obs;
+
+  /// Observable string for the selected cuisine type.
   Rx<String?> cuisineType = Rx<String?>(null);
 
   @override
@@ -45,6 +55,7 @@ class CategorizedRecipeController extends GetxController {
     super.onClose();
   }
 
+  /// Fetches recipes from the backend filtered by the current [cuisineType].
   Future<void> fetchRecipes() async {
     // get recipe with filter condition of cuisine_type
     try {

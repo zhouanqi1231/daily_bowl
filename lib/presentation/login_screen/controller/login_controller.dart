@@ -7,10 +7,19 @@ import '../../explore_screen/controller/explore_controller.dart';
 import '../../user_profile_screen/controller/user_profile_controller.dart';
 import '../../../core/global_save_manager.dart';
 
+/// A controller class for the LoginScreen.
+///
+/// This class manages the state of the login process, including text controllers
+/// for email and password, handling the login API call, and updating other
+/// controllers upon successful authentication.
 class LoginController extends GetxController {
+  /// Controller for the email input field.
   TextEditingController emailController = TextEditingController();
+
+  /// Controller for the password input field.
   TextEditingController passwordController = TextEditingController();
 
+  /// Observable boolean to track password visibility.
   RxBool obscurePassword = true.obs;
 
   @override
@@ -28,6 +37,10 @@ class LoginController extends GetxController {
     super.onClose();
   }
 
+  /// Attempts to authenticate the user with the provided email and password.
+  ///
+  /// On success, it persists the API token, fetches user details, refreshes
+  /// relevant controllers (Explore, UserProfile, MainContainer), and navigates back.
   Future<void> login() async {
     FocusManager.instance.primaryFocus?.unfocus();
     
@@ -116,6 +129,9 @@ class LoginController extends GetxController {
     }
   }
 
+  /// Handles the action when the register button is pressed.
+  ///
+  /// Typically toggles the registration view in the main container.
   void onRegisterPressed() {
     if (Get.isRegistered<MainContainerController>()) {
       Get.find<MainContainerController>().toggleRegister(true);

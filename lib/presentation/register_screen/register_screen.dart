@@ -4,8 +4,15 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_floating_text_field.dart';
 import './controller/register_controller.dart';
 
+/// A screen that provides a registration interface for new users.
+///
+/// This screen allows users to enter a username, email, and password (with confirmation)
+/// to create a new account.
 class RegisterScreen extends GetWidget<RegisterController> {
+  /// Callback to be executed when the user opts to navigate back to the login screen.
   final VoidCallback? onLoginPressed;
+
+  /// Callback to be executed upon successful registration.
   final VoidCallback? onRegisterSuccess;
 
   const RegisterScreen({Key? key, this.onLoginPressed, this.onRegisterSuccess})

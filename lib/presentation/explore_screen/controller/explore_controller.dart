@@ -6,20 +6,33 @@ import '../models/explore_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/global_save_manager.dart';
 
+/// A controller class for the ExploreScreen to manage the state of recipe exploration.
+///
+/// This class handles fetching recipes from the backend, pagination (infinite scroll),
+/// checking user login status, and managing bookmarks (saves).
 class ExploreController extends GetxController {
+  /// Observable object for the explore model.
   Rx<ExploreModel> exploreModelObj = ExploreModel().obs;
 
-  // load and pagination
-  RxBool isLoading = false.obs; // is loading
-  RxBool hasMoreData = true.obs; // is db have more data
-  int limit = 10; // request <limit> recipes each time
-  int offset = 0; // offset
+  /// Observable boolean to track loading state for pagination.
+  RxBool isLoading = false.obs;
 
-  // user login status vars
+  /// Observable boolean to track if more data is available on the server.
+  RxBool hasMoreData = true.obs;
+
+  /// Number of recipes to fetch per request.
+  int limit = 10;
+
+  /// Current offset for recipe pagination.
+  int offset = 0;
+
+  /// Observable boolean for the user's login status.
   RxBool isLoggedIn = false.obs;
+
+  /// The ID of the currently logged-in user.
   int currentUserId = 0;
 
-  // Map to store userId -> username for quick lookup
+  /// Map to store userId -> username for quick lookup during recipe display.
   final Map<int, String> _userMap = {};
 
   @override
@@ -28,6 +41,7 @@ class ExploreController extends GetxController {
     exploreModelObj.value.recipeList = [];
     _initializeData();
 
+    // Listen to global save manager changes to update local bookmark status.
     ever(Get.find<GlobalSaveManager>().savedIds, (Set<int> globalSavedIds) {
       if (exploreModelObj.value.recipeList != null) {
         for (var recipe in exploreModelObj.value.recipeList!) {
@@ -39,12 +53,14 @@ class ExploreController extends GetxController {
     });
   }
 
+  /// Initial data fetch sequence: users map, login status, and initial recipes.
   Future<void> _initializeData() async {
     await _fetchUsers(); // Fetch users first to populate names
     await checkLoginStatus();
     await fetchRecipes();
   }
 
+  /// Fetches the list of all users to populate the [_userMap] for displaying creator names.
   Future<void> _fetchUsers() async {
     try {
       final response = await ApiClient.get('/users/');
@@ -62,6 +78,9 @@ class ExploreController extends GetxController {
     }
   }
 
+  /// Checks the local storage for an API key to determine if the user is logged in.
+  ///
+  /// Updates [isLoggedIn] and [currentUserId], and refreshes recipe data if necessary.
   Future<void> checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('api_key');
@@ -85,6 +104,10 @@ class ExploreController extends GetxController {
     }
   }
 
+  /// Fetches recipes from the backend API with pagination support.
+  ///
+  /// Uses [limit] and [offset] to manage data loading. Updates [exploreModelObj]
+  /// with the new recipes and handles the [hasMoreData] state.
   Future<void> fetchRecipes() async {
     // dont request if is loading or there are not more data
     if (isLoading.value || !hasMoreData.value) return;
@@ -143,6 +166,8 @@ class ExploreController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  /// Resets the pagination and re-fetches the initial set of recipes and users.
   Future<void> refreshData() async {
     offset = 0;
     hasMoreData.value = true;
@@ -152,6 +177,9 @@ class ExploreController extends GetxController {
     await fetchRecipes();
   }
 
+  /// Toggles the bookmark status for a recipe at the given [index].
+  ///
+  /// Uses [GlobalSaveManager] to persist the change.
   void toggleBookmark(int index) async {
     // if not logged in, disable this button
     if (!isLoggedIn.value) return;

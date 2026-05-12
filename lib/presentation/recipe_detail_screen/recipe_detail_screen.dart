@@ -8,6 +8,11 @@ import '../../widgets/custom_ingredients_list.dart';
 import '../../widgets/custom_instruction_list.dart';
 import './controller/recipe_detail_controller.dart';
 
+/// A screen that displays detailed information about a specific recipe.
+///
+/// This screen includes the recipe image, title, author, ingredients,
+/// preparation steps, nutrition facts, and allergy alerts. It also provides
+/// functionality to mark the recipe as "cooked" or save it to the user's collection.
 class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
   RecipeDetailScreen({Key? key}) : super(key: key);
 
@@ -95,6 +100,9 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     );
   }
 
+  /// Builds the header section containing the recipe title, author, and description.
+  ///
+  /// [context] The build context.
   Widget _buildRecipeHeaderSection(BuildContext context) {
     return SizedBox(
       width: double.infinity,
@@ -141,6 +149,9 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     );
   }
 
+  /// Builds the nutrition facts section displaying calories, protein, carbs, and fat.
+  ///
+  /// [context] The build context.
   Widget _buildNutritionSection(BuildContext context) {
     // nutrition of the recipe: calories, protein, carbs, fat
     List<CustomIngredientsItem> nutritionItems = [
@@ -168,6 +179,10 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     );
   }
 
+  /// Builds a section showing allergy alerts if the recipe contains ingredients
+  /// the user is allergic to.
+  ///
+  /// [context] The build context.
   Widget _buildAllergyAlertSection(BuildContext context) {
     if (controller.allergyTags.isEmpty) return SizedBox.shrink();
     return Wrap(
@@ -206,6 +221,9 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     );
   }
 
+  /// Builds the list of ingredients for the recipe.
+  ///
+  /// [context] The build context.
   Widget _buildIngredientsSection(BuildContext context) {
     // ingredient list
     return SizedBox(
@@ -226,7 +244,10 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     );
   }
 
- Widget _buildStepsSection(BuildContext context) {
+  /// Builds the list of preparation steps for the recipe.
+  ///
+  /// [context] The build context.
+  Widget _buildStepsSection(BuildContext context) {
     // recipe procedures
     return Container(
       width: double.infinity,
@@ -247,6 +268,9 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     );
   }
 
+  /// Builds a section showing the recipe's creation or last updated date.
+  ///
+  /// [context] The build context.
   Widget _buildUpdatedDateSection(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 12.h),
@@ -259,6 +283,9 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
     );
   }
 
+  /// Builds the floating action buttons for bookmarking (cooked) and saving the recipe.
+  ///
+  /// [context] The build context.
   Widget _buildFloatingActionButtons(BuildContext context) {
     return Positioned(
       bottom: 42.h,

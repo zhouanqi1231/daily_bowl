@@ -4,6 +4,10 @@ import '../../widgets/custom_image_view.dart';
 import './controller/category_controller.dart';
 import './models/category_model.dart';
 
+/// A screen that displays various recipe categories (cuisine types) in a grid.
+///
+/// Each category item displays the cuisine name, the number of recipes available,
+/// and a representative image.
 class CategoryScreen extends StatelessWidget {
   CategoryScreen({Key? key}) : super(key: key);
 
@@ -55,6 +59,10 @@ class CategoryScreen extends StatelessWidget {
     );
   }
 
+  /// Builds a single category item in the grid.
+  ///
+  /// [category] The category model data to display.
+  /// Returns a [Widget] representing the category item.
   Widget _buildCategoryItem(CategoryModel category) {
     return GestureDetector(
       onTap: () => controller.onCategoryTap(category),

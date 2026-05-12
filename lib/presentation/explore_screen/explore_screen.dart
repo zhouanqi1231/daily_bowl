@@ -5,6 +5,10 @@ import '../../widgets/custom_image_view.dart';
 import '../categorized_recipe_page/widgets/recipe_card_item.dart';
 import './controller/explore_controller.dart';
 
+/// A screen that displays a feed of recipes for the user to explore.
+///
+/// This screen includes features like pull-to-refresh, infinite scrolling,
+/// and a floating action button for creating new recipes (when logged in).
 class ExploreScreen extends StatelessWidget {
   ExploreScreen({Key? key}) : super(key: key);
 
@@ -71,6 +75,10 @@ class ExploreScreen extends StatelessWidget {
     );
   }
 
+  /// Builds the floating action buttons for the screen.
+  ///
+  /// [context] The build context.
+  /// Returns a [Widget] containing the FAB if the user is logged in, otherwise an empty [SizedBox].
   Widget _buildFloatingActionButtons(BuildContext context) {
     return Obx(() {
       if (!controller.isLoggedIn.value) {

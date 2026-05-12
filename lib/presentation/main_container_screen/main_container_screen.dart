@@ -10,9 +10,18 @@ import '../login_screen/login_screen.dart';
 import '../register_screen/register_screen.dart';
 import './controller/main_container_controller.dart';
 
+/// The root screen of the application that manages the main navigation.
+///
+/// It uses a [CustomBottomBar] to switch between different sections of the app:
+/// Explore, Category, Saved, and Profile (Me). It also handles the conditional
+/// rendering of login and registration screens for unauthenticated users.
 class MainContainerScreen extends StatelessWidget {
   final MainContainerController controller = Get.put(MainContainerController());
 
+  /// Builds the "Me" tab content based on the user's login status.
+  ///
+  /// If the user is logged in, it shows the [UserProfileScreen].
+  /// Otherwise, it toggles between [LoginScreen] and [RegisterScreen].
   Widget _buildMeTab() {
     return Obx(() {
       if (controller.isLoggedIn.value) {
@@ -41,6 +50,7 @@ class MainContainerScreen extends StatelessWidget {
     });
   }
 
+  /// The list of pages corresponding to the bottom navigation bar items.
   List<Widget> get _pages => [
         ExploreScreen(),
         CategoryScreen(),
