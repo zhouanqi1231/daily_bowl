@@ -114,6 +114,8 @@ class WeeklyNutritionReportScreen
           SizedBox(height: 24.h),
           _buildNutritionAnalysisSection(context),
           SizedBox(height: 24.h),
+          _buildGenerateReportButton(context),
+          SizedBox(height: 24.h),
           _buildCongratulationsSection(context),
           SizedBox(height: 60.h),
         ],
@@ -345,6 +347,49 @@ class WeeklyNutritionReportScreen
         ),
       ],
     );
+  }
+
+  Widget _buildGenerateReportButton(BuildContext context) {
+    return Obx(() {
+      final recipes =
+          controller.weeklyNutritionReportModel.value?.recipesList ?? [];
+      if (recipes.isEmpty) return const SizedBox.shrink();
+
+      return SizedBox(
+        width: double.infinity,
+        height: 50.h,
+        child: ElevatedButton.icon(
+          onPressed: controller.isGeneratingReport.value
+              ? null
+              : () => controller.generateReport(),
+          icon: controller.isGeneratingReport.value
+              ? SizedBox(
+                  width: 20.h,
+                  height: 20.h,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: appTheme.white_A700,
+                  ),
+                )
+              : const Icon(Icons.picture_as_pdf, size: 20),
+          label: Text(
+            controller.isGeneratingReport.value
+                ? 'Generating...'
+                : 'Generate Nutrition Report (PDF)',
+            style: TextStyleHelper.instance.title16MediumRoboto
+                .copyWith(color: appTheme.white_A700),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: appTheme.deep_purple_800,
+            disabledBackgroundColor: appTheme.deep_purple_300,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.h),
+            ),
+            elevation: 0,
+          ),
+        ),
+      );
+    });
   }
 
   Widget _buildCongratulationsSection(BuildContext context) {

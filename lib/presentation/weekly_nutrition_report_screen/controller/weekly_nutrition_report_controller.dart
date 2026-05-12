@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:universal_html/html.dart' as html;
 import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
 import '../models/ingredient_item_model.dart';
@@ -164,6 +166,62 @@ class WeeklyNutritionReportController extends GetxController {
   void onRecipeCardTapped(RecipeItemModel recipe) {
     if (recipe.id != null) {
       Get.toNamed(AppRoutes.recipeDetailScreen, arguments: {'id': recipe.id});
+    }
+  }
+
+  final isGeneratingReport = false.obs;
+
+  /// POSTs to the aux service with ?wait=true — the server blocks until the
+  /// worker finishes, then the download URL is returned and opened in a new tab.
+  Future<void> generateReport() async {
+    final recipes = weeklyNutritionReportModel.value?.recipesList;
+    if (recipes == null || recipes.isEmpty) {
+      Get.snackbar('No recipes', 'No recipes this week to generate a report.');
+      return;
+    }
+
+    final recipeIds = recipes.map((r) => r.id).whereType<int>().toList();
+    if (recipeIds.isEmpty) {
+      Get.snackbar('Error', 'Could not collect recipe IDs.');
+      return;
+    }
+
+    final auxBase = ApiClient.auxBaseUrl;
+    if (auxBase.isEmpty) {
+      Get.snackbar('Error', 'Aux service URL not configured.');
+      return;
+    }
+
+    try {
+      isGeneratingReport.value = true;
+
+      final resp = await http.post(
+        Uri.parse('$auxBase/reports/?wait=true'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'recipe_ids': recipeIds}),
+      );
+
+      if (resp.statusCode == 500) {
+        final data = jsonDecode(resp.body);
+        throw Exception(data['error_message'] ?? 'Report generation failed');
+      }
+      if (resp.statusCode == 504) {
+        throw Exception('Report generation timed out — try again.');
+      }
+      if (resp.statusCode != 200) {
+        throw Exception('Unexpected response: ${resp.statusCode}');
+      }
+
+      final job = jsonDecode(resp.body);
+      final jobId = job['id'];
+      final downloadUrl = '$auxBase/reports/$jobId/download/';
+      html.window.open(downloadUrl, '_blank');
+
+      Get.snackbar('Success', 'Report downloaded.');
+    } catch (e) {
+      Get.snackbar('Error', '$e');
+    } finally {
+      isGeneratingReport.value = false;
     }
   }
 

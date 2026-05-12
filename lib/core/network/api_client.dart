@@ -11,6 +11,13 @@ class ApiClient {
   static String? _baseUrl;
   static String? _defaultApiKey;
 
+  /// Base URL of the aux report service (strips /api, appends /aux).
+  static String get auxBaseUrl {
+    if (_baseUrl == null) return '';
+    final base = _baseUrl!.replaceAll(RegExp(r'/api$'), '');
+    return '$base/aux';
+  }
+
   /// Wraps an external image URL through the API's image proxy,
   /// bypassing browser CORS restrictions on web.
   /// Returns the original URL if it's already hosted on the API server
