@@ -106,9 +106,9 @@ flutter run
 2. Select your target device from the device selector.
 3. Press **F5** (VS Code) or the **Run** icon (Android Studio).
 
-# Compile and Deploy
+# 7 Compile and Deploy
 
-## Android
+## 7.1 Android
 Use Android Studio to conveniently compile the Flutter project into an Android release APK. You can generate the APK via the IDE interface (Build > Flutter > Build APK) or run the following command in your terminal:
 
 ```bash
@@ -117,7 +117,7 @@ flutter build apk --release
 
 The generated APK can be found at `build/app/outputs/flutter-apk/app-release.apk`.
 
-## Web Application
+## 7.2 Web Application
 
 You can also use the terminal to compile the project into web pages. The compilation yields a set of static web files which you can deploy anywhere (Nginx, Vercel, Firebase, etc.). In our case, we deployed it on **GitHub Pages**.
 
@@ -139,7 +139,7 @@ Because Flutter Web is a Single Page Application (SPA), direct links or page ref
 
 Push the entire contents of the `build/web` directory to your target GitHub repository. Then, navigate to your repository's **Settings > Pages** and set the source branch (e.g., `main`) to deploy your site.
 
-# 7 Try the client
+# 8 Try the client
 
 Download the Released Apk from the Release page. 
 
