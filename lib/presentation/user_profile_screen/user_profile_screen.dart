@@ -420,23 +420,21 @@ class UserProfileScreen extends StatelessWidget {
                       key: ValueKey(recipe?.id),
                       endActionPane: ActionPane(
                         motion: const ScrollMotion(),
-                        extentRatio: 0.45,
+                        extentRatio: 0.2,
                         children: [
                           SlidableAction(
                             onPressed: (context) => controller.onEditRecipe(index),
                             backgroundColor: Color(0xFF2196F3),
                             foregroundColor: Colors.white,
                             icon: Icons.edit,
-                            label: 'Edit',
-                            borderRadius: BorderRadius.circular(12.h),
+                            borderRadius: BorderRadius.circular(24.h),
                           ),
                           SlidableAction(
                             onPressed: (context) => controller.onDeleteRecipe(index),
                             backgroundColor: Color(0xFFFE4A49),
                             foregroundColor: Colors.white,
                             icon: Icons.delete,
-                            label: 'Delete',
-                            borderRadius: BorderRadius.circular(12.h),
+                            borderRadius: BorderRadius.circular(24.h),
                           ),
                         ],
                       ),
