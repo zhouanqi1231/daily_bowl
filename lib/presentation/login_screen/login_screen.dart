@@ -34,6 +34,7 @@ class LoginScreen extends GetWidget<LoginController> {
               CustomFloatingTextField(
                 placeholder: "Password",
                 controller: controller.passwordController,
+                obscureText: true,
                 textStyle: TextStyleHelper.instance.body14RegularRoboto
                     .copyWith(color: appTheme.gray_900),
                 labelStyle: TextStyleHelper.instance.body14RegularRoboto

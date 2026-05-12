@@ -43,6 +43,7 @@ class RegisterScreen extends GetWidget<RegisterController> {
               CustomFloatingTextField(
                 placeholder: "Password",
                 controller: controller.passwordController,
+                obscureText: true,
                 textStyle: TextStyleHelper.instance.body14RegularRoboto
                     .copyWith(color: appTheme.gray_900),
                 labelStyle: TextStyleHelper.instance.body14RegularRoboto
@@ -52,6 +53,7 @@ class RegisterScreen extends GetWidget<RegisterController> {
               CustomFloatingTextField(
                 placeholder: "Repeat Password",
                 controller: controller.repeatPasswordController,
+                obscureText: true,
                 textStyle: TextStyleHelper.instance.body14RegularRoboto
                     .copyWith(color: appTheme.gray_900),
                 labelStyle: TextStyleHelper.instance.body14RegularRoboto
