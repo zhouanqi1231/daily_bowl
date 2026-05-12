@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/app_export.dart';
+import '../../../core/network/api_client.dart';
 import '../models/ingredient_item_model.dart';
 import '../models/recipe_item_model.dart';
 import '../models/weekly_nutrition_report_model.dart';
@@ -25,16 +26,22 @@ class WeeklyNutritionReportController extends GetxController {
     scrollOffset.value = offset;
   }
 
-  /// Calculates the week of the year (1-53)
+  /// Calculates the week of the year (1-53) based on ISO 8601 (starts on Monday)
   int _getWeekOfYear(DateTime date) {
-    final firstDayOfYear = DateTime(date.year, 1, 1);
-    final daysSinceFirstDay = date.difference(firstDayOfYear).inDays;
+    // Find the Thursday of the week (ISO 8601 week belongs to the year of its Thursday)
+    DateTime thursday = date.add(Duration(days: 4 - date.weekday));
+    DateTime firstDayOfYear = DateTime(thursday.year, 1, 1);
+    int daysSinceFirstDay = thursday.difference(firstDayOfYear).inDays;
     return (daysSinceFirstDay / 7).floor() + 1;
   }
 
-  /// Checks if two dates are in the same week of the same year
-  bool _isSameWeek(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && _getWeekOfYear(date1) == _getWeekOfYear(date2);
+  /// Checks if a date falls in the current calendar week (Monday to Sunday)
+  bool _isDateInCurrentWeek(DateTime date) {
+    final now = DateTime.now();
+    // Find Monday of the current week
+    final startOfMonday = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday - 1));
+    // Check if date is on or after Monday 00:00:00
+    return date.isAfter(startOfMonday.subtract(const Duration(seconds: 1)));
   }
 
   String _getWeekdayName(int day) {
@@ -64,8 +71,6 @@ class WeeklyNutritionReportController extends GetxController {
       final prefs = await SharedPreferences.getInstance();
       List<String> followedRecipesJson = prefs.getStringList('followed_recipes') ?? [];
       
-      final now = DateTime.now();
-      
       // Filter recipes followed THIS week
       List<RecipeItemModel> currentWeekRecipes = [];
       Map<String, double> aggregatedIngredients = {};
@@ -78,18 +83,41 @@ class WeeklyNutritionReportController extends GetxController {
 
           DateTime cookedAt = DateTime.parse(cookedAtStr).toLocal();
           
-          if (_isSameWeek(now, cookedAt)) {
-            String timeStr = "${_getWeekdayName(cookedAt.weekday)} ${cookedAt.hour}:${cookedAt.minute.toString().padLeft(2, '0')}";
+          // Filter by cooking date, including only data on this week
+          if (_isDateInCurrentWeek(cookedAt)) {
+            int? recipeId = data['id'];
+            if (recipeId == null) continue;
+
+            String title;
+            String imagePath;
+
+            try {
+              // Fetch latest info from server
+              final recipeDetail = await ApiClient.get('/recipes/$recipeId/');
+              if (recipeDetail == null) {
+                // If ID is missing in the server, don't show the item
+                continue;
+              }
+              title = recipeDetail['title'] ?? 'Unknown Recipe';
+              imagePath = recipeDetail['img_url'] ?? ImageConstant.imgMedia;
+            } catch (e) {
+              print("Failed to fetch info for recipe $recipeId: $e");
+              // If server request fails (e.g. 404), don't show the item
+              continue;
+            }
+
+            // Show the cooked_time
+            String cookedTime = "${cookedAt.hour.toString().padLeft(2, '0')}:${cookedAt.minute.toString().padLeft(2, '0')}";
+            String cookedDay = _getWeekdayName(cookedAt.weekday);
             
-            // We add every instance as a separate item in the list
             currentWeekRecipes.add(RecipeItemModel(
-              title: (data['title'] ?? 'Unknown Recipe').toString().obs,
-              // Update description to show precisely when it was cooked
-              description: "Cooked on $timeStr • ${data['description'] ?? ''}".obs,
-              imagePath: (data['image_path'] ?? ImageConstant.imgMedia).toString().obs,
+              id: recipeId,
+              title: title.obs,
+              description: "Cooked at $cookedTime on $cookedDay".obs,
+              imagePath: imagePath.obs,
             ));
 
-            // Aggregate ingredients for nutrition consumption display (Total summary)
+            // Aggregate ingredients for nutrition consumption display
             if (data['ingredients'] != null && data['ingredients'] is List) {
               for (var ing in data['ingredients']) {
                 String name = ing['name'] ?? 'Unknown';
@@ -103,10 +131,10 @@ class WeeklyNutritionReportController extends GetxController {
       }
 
       if (weeklyNutritionReportModel.value != null) {
-        // Show most recent first (don't merge duplicates, keep them as separate records)
+        // Show most recent first
         weeklyNutritionReportModel.value!.recipesList = currentWeekRecipes.reversed.toList();
         
-        // Update ingredients list in model (Aggregate for total consumption view)
+        // Update ingredients list in model
         weeklyNutritionReportModel.value!.ingredientsList = aggregatedIngredients.entries.map((e) {
           return IngredientItemModel(
             name: e.key.obs,
@@ -114,7 +142,6 @@ class WeeklyNutritionReportController extends GetxController {
           );
         }).toList();
 
-        // Total calories account for every time you cooked (e.g. 2 times = double calories)
         int count = currentWeekRecipes.length;
         weeklyNutritionReportModel.value!.totalCalories?.value = count * 450; 
         
@@ -134,7 +161,9 @@ class WeeklyNutritionReportController extends GetxController {
   }
 
   void onRecipeCardTapped(RecipeItemModel recipe) {
-    Get.snackbar("Activity Log", "You recorded this session: ${recipe.title?.value}");
+    if (recipe.id != null) {
+      Get.toNamed(AppRoutes.recipeDetailScreen, arguments: {'id': recipe.id});
+    }
   }
 
   void onShareTap() {
