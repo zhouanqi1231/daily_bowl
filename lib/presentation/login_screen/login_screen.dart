@@ -17,7 +17,7 @@ class LoginScreen extends GetWidget<LoginController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.h),
@@ -66,7 +66,7 @@ class LoginScreen extends GetWidget<LoginController> {
                       text: "Register",
                       width: double.infinity,
                       backgroundColor: appTheme.gray_700,
-                      textColor: appTheme.white_A700,
+                      textColor: appTheme.white_700,
                       onPressed: onRegisterPressed ?? () => controller.onRegisterPressed(),
                     ),
                   ),
@@ -77,7 +77,7 @@ class LoginScreen extends GetWidget<LoginController> {
                       text: "Login",
                       width: double.infinity,
                       backgroundColor: appTheme.deepPurple_800,
-                      textColor: appTheme.white_A700,
+                      textColor: appTheme.white_700,
                       onPressed: () => controller.login(),
                     ),
                   ),

@@ -34,7 +34,7 @@ class ImageConstant {
 
   // Weekly Nutrition Report Screen
   static String imgArrowLeftWhiteA700 =
-      '${_basePath}img_arrow_left_white_a700.svg';
+      '${_basePath}img_arrow_left_white_700.svg';
   static String imgCoverImage = '${_basePath}img_cover_image.png';
 
   // Custom Image View Screen

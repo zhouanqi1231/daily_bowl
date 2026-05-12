@@ -15,7 +15,7 @@ class UserProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.h),
         child: CustomAppBar(
@@ -28,7 +28,7 @@ class UserProfileScreen extends StatelessWidget {
               iconPath: ImageConstant.imgShare,
             ),
           ],
-          backgroundColor: appTheme.white_A700,
+          backgroundColor: appTheme.white_700,
           horizontalPadding: 16.h,
         ),
       ),
@@ -53,7 +53,7 @@ class UserProfileScreen extends StatelessWidget {
   Widget _buildUserProfileSection() {
     return Container(
       width: double.infinity,
-      color: appTheme.white_A700,
+      color: appTheme.white_700,
       padding: EdgeInsets.fromLTRB(24.h, 4.h, 24.h, 16.h),
       child: Row(
         children: [
@@ -113,7 +113,7 @@ class UserProfileScreen extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(16.h, 10.h, 16.h, 0),
       padding: EdgeInsets.fromLTRB(14.h, 8.h, 14.h, 8.h),
       decoration: BoxDecoration(
-        color: appTheme.white_A700,
+        color: appTheme.white_700,
         borderRadius: BorderRadius.circular(12.h),
         boxShadow: [
           BoxShadow(

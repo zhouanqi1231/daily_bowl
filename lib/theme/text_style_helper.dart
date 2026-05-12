@@ -34,14 +34,14 @@ class TextStyleHelper {
     fontSize: 28.fSize,
     fontWeight: FontWeight.w500,
     fontFamily: 'Roboto',
-    color: appTheme.white_A700, // Keep white for header contrast
+    color: appTheme.white_700, // Keep white for header contrast
   );
 
   TextStyle get headline24RegularRozhaOne => TextStyle(
     fontSize: 24.fSize,
     fontWeight: FontWeight.w400,
     fontFamily: 'Rozha One',
-    color: appTheme.white_A700, // Keep white for banner contrast
+    color: appTheme.white_700, // Keep white for banner contrast
   );
 
   TextStyle get headline24RegularRoboto => TextStyle(
@@ -142,7 +142,7 @@ class TextStyleHelper {
     fontSize: 10.fSize,
     fontWeight: FontWeight.w700,
     fontFamily: 'Roboto',
-    color: appTheme.white_A700, // Keep white for high-contrast labels
+    color: appTheme.white_700, // Keep white for high-contrast labels
   );
 
   TextStyle get headline32RegularRoboto => TextStyle(

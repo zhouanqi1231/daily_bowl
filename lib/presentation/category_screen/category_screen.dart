@@ -18,7 +18,7 @@ class CategoryScreen extends StatelessWidget {
     double statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       body: Obx(() {
         if (controller.isLoading.value) {
           return Center(

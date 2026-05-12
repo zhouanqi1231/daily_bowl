@@ -60,7 +60,7 @@ class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 18.h),
         decoration: BoxDecoration(
-          color: appTheme.white_A700,
+          color: appTheme.white_700,
           borderRadius: BorderRadius.circular(12.h),
           boxShadow: [
             BoxShadow(

@@ -11,9 +11,9 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       appBar: AppBar(
-        backgroundColor: appTheme.white_A700,
+        backgroundColor: appTheme.white_700,
         elevation: 0,
         title: Obx(() => Text(
           controller.isEditMode.value ? "Edit Recipe" : "Create a Recipe",
@@ -118,7 +118,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
         Container(
           padding: EdgeInsets.all(12.h),
           decoration: BoxDecoration(
-            color: appTheme.white_A700,
+            color: appTheme.white_700,
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -414,7 +414,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
   Widget _buildActionButtons() {
     return Container(
       padding: EdgeInsets.fromLTRB(24.h, 16.h, 24.h, 16.h),
-      decoration: BoxDecoration(color: appTheme.white_A700),
+      decoration: BoxDecoration(color: appTheme.white_700),
       child: Row(
         children: [
           Expanded(
@@ -422,7 +422,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
               text: "Discard",
               width: double.infinity,
               backgroundColor: appTheme.gray_700,
-              textColor: appTheme.white_A700,
+              textColor: appTheme.white_700,
               onPressed: () => controller.discardRecipe(),
             ),
           ),
@@ -433,7 +433,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                 text: controller.isLoading.value ? "Saving..." : "Confirm",
                 width: double.infinity,
                 backgroundColor: appTheme.deepPurple_800,
-                textColor: appTheme.white_A700,
+                textColor: appTheme.white_700,
                 onPressed: controller.isLoading.value
                     ? null
                     : () => controller.confirmRecipe(),

@@ -37,7 +37,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
                   margin: 2.h,
                 ),
               ],
-              backgroundColor: appTheme.white_A700.withValues(alpha: opacity),
+              backgroundColor: appTheme.white_700.withValues(alpha: opacity),
               horizontalPadding: 16.h,
             );
           },
@@ -300,11 +300,11 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               backgroundColor:
                   controller.isBookmarked.value
                       ? appTheme.deepPurple_800
-                      : appTheme.white_A700,
+                      : appTheme.white_700,
               child: CustomImageView(
                 imagePath: ImageConstant.imgFab,
                 color: controller.isBookmarked.value
-                    ? appTheme.white_A700
+                    ? appTheme.white_700
                     : null,
               ),
             ),
@@ -322,7 +322,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
                 controller.isSaved.value ? Icons.star : Icons.star_border, // Changed to star icon
                 color:
                     controller.isSaved.value
-                        ? appTheme.white_A700
+                        ? appTheme.white_700
                         : appTheme.deepPurple_800,
               ),
             ),

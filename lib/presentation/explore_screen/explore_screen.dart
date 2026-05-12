@@ -19,7 +19,7 @@ class ExploreScreen extends StatelessWidget {
     double statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       body: Stack(
         children: [
           // add NotificationListener for scroll event
@@ -99,7 +99,7 @@ class ExploreScreen extends StatelessWidget {
               backgroundColor: appTheme.deepPurple_800,
               child: CustomImageView(
                 imagePath: ImageConstant.imgCreateARecipe,
-                color: appTheme.white_A700,
+                color: appTheme.white_700,
               ),
             ),
           ],

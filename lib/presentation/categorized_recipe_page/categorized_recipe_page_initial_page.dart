@@ -15,7 +15,7 @@ class CategorizedRecipePageInitialPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.maxFinite,
-      color: appTheme.white_A700,
+      color: appTheme.white_700,
       child: Obx(() {
         if (controller.isLoading.value) {
           return Center(

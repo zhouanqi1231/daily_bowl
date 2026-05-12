@@ -16,7 +16,7 @@ class WeeklyNutritionReportScreen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.h),
@@ -30,7 +30,7 @@ class WeeklyNutritionReportScreen
               topPadding: 0.h,
               leadingIcon: ImageConstant.imgArrowLeft,
               onLeadingTap: () => Get.back(),
-              backgroundColor: appTheme.white_A700.withValues(alpha: opacity),
+              backgroundColor: appTheme.white_700.withValues(alpha: opacity),
               horizontalPadding: 16.h,
             );
           },
@@ -211,7 +211,7 @@ class WeeklyNutritionReportScreen
             margin: EdgeInsets.symmetric(horizontal: 52.h),
             padding: EdgeInsets.fromLTRB(12.h, 26.h, 12.h, 26.h),
             decoration: BoxDecoration(
-              color: appTheme.white_A700,
+              color: appTheme.white_700,
               borderRadius: BorderRadius.circular(16.h),
               boxShadow: [
                 BoxShadow(

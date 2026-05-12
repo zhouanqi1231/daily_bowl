@@ -66,12 +66,7 @@ class LightCodeColors {
   
   Color get purple_50 => const Color(0xFFF3EDF7);
   
-  Color get orange_100 => const Color(0xFFFFE3B9);
-  Color get orange_200 => const Color(0xFFFFC369);
-  Color get orange_300 => const Color(0xFFFFBB48);
-  
-  
-  Color get white_A700 => const Color(0xFFFFFFFF);
+  Color get white_700 => const Color(0xFFFFFFFF);
   Color get black_900 => const Color(0xFF000000);
   
   Color get indigo_400 => const Color(0xFF6665DD);
