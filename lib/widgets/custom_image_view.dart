@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../core/app_export.dart';
+import '../core/network/api_client.dart';
 
 extension ImageTypeExtension on String {
   ImageType get imageType {
@@ -105,6 +106,17 @@ class CustomImageView extends StatelessWidget {
     }
   }
 
+  String _resolveUrl() {
+    if (kIsWeb && imagePath.startsWith('http')) {
+      final url = ApiClient.proxyImageUrl(imagePath);
+      // proxyImageUrl returns the original if _baseUrl is null or if the
+      // image is already hosted on the API server — in that case CORS is
+      // handled by Flask-CORS and no proxy is needed.
+      return url;
+    }
+    return imagePath;
+  }
+
   Widget _buildImageView() {
     switch (imagePath.imageType) {
       case ImageType.svg:
@@ -146,26 +158,11 @@ class CustomImageView extends StatelessWidget {
               : null,
         );
       case ImageType.network:
-        if (kIsWeb) {
-          return Image.network(
-            imagePath,
-            height: height,
-            width: width,
-            fit: fit ?? BoxFit.cover,
-            color: color,
-            errorBuilder: (context, error, stackTrace) => Image.asset(
-              placeHolder ?? ImageConstant.imgImageNotFound,
-              height: height,
-              width: width,
-              fit: fit ?? BoxFit.cover,
-            ),
-          );
-        }
         return CachedNetworkImage(
           height: height,
           width: width,
           fit: fit,
-          imageUrl: imagePath,
+          imageUrl: _resolveUrl(),
           color: color,
           placeholder: (context, url) => SizedBox(
             height: 30,

@@ -11,6 +11,16 @@ class ApiClient {
   static String? _baseUrl;
   static String? _defaultApiKey;
 
+  /// Wraps an external image URL through the API's image proxy,
+  /// bypassing browser CORS restrictions on web.
+  /// Returns the original URL if it's already hosted on the API server
+  /// (Flask-CORS handles those) or if the base URL hasn't been loaded yet.
+  static String proxyImageUrl(String originalUrl) {
+    if (_baseUrl == null) return originalUrl;
+    if (originalUrl.startsWith(_baseUrl!)) return originalUrl;
+    return '$_baseUrl/proxy/image/?url=${Uri.encodeQueryComponent(originalUrl)}';
+  }
+
   // init environment vars
   static Future<void> init() async {
     final String envString = await rootBundle.loadString('env.json');
