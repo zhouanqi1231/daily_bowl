@@ -69,5 +69,6 @@ class SavedRecipeListController extends GetxController {
 
   Future<void> refreshRecipes() async {
     await Get.find<GlobalSaveManager>().fetchInitialSaves();
+    await initializeRecipeList();
   }
 }

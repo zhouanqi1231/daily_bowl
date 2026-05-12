@@ -22,22 +22,27 @@ class SavedRecipeListInitialPage extends StatelessWidget {
           children: [
             Expanded(
               child: Obx(
-                () => ListView.separated(
-                  // Use status bar height in padding to prevent coverage initially,
-                  // but allow content to scroll behind status bar.
-                  padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 40.h),
-                  itemCount: controller.recipeList.length,
-                  separatorBuilder: (context, index) =>
-                      SizedBox(height: 10.h),
-                  itemBuilder: (context, index) {
-                    final recipe = controller.recipeList[index];
-                    return CustomRecipeCard(
-                      title: recipe.title?.value ?? "",
-                      description: recipe.description?.value ?? "",
-                      imagePath: recipe.imagePath?.value ?? "",
-                      onTap: () => controller.onRecipeTap(index),
-                    );
-                  },
+                () => RefreshIndicator(
+                  onRefresh: () => controller.refreshRecipes(),
+                  color: appTheme.deep_purple_800,
+                  child: ListView.separated(
+                    // Use status bar height in padding to prevent coverage initially,
+                    // but allow content to scroll behind status bar.
+                    padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 40.h),
+                    physics: const AlwaysScrollableScrollPhysics(), // Ensure it's scrollable even if list is short
+                    itemCount: controller.recipeList.length,
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: 10.h),
+                    itemBuilder: (context, index) {
+                      final recipe = controller.recipeList[index];
+                      return CustomRecipeCard(
+                        title: recipe.title?.value ?? "",
+                        description: recipe.description?.value ?? "",
+                        imagePath: recipe.imagePath?.value ?? "",
+                        onTap: () => controller.onRecipeTap(index),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
