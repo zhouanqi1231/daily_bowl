@@ -239,18 +239,6 @@ class RecipeDetailController extends GetxController {
     // No-op or minimal action as requested previously
   }
 
-  void onAllergyTagTap(String allergen) {
-    bool isMatch = isUserAllergicTo(allergen);
-    Get.snackbar(
-      isMatch ? 'Allergy Warning!' : 'Allergy Alert',
-      'This recipe contains $allergen.${isMatch ? " This matches your allergy profile!" : ""}',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: isMatch ? appTheme.red_900 : appTheme.deep_orange_200,
-      colorText: isMatch ? appTheme.whiteCustom : appTheme.black_900,
-      duration: Duration(seconds: 3),
-    );
-  }
-
   // cooked button
   Future<void> onBookmarkTap() async {
     isBookmarked.value = !isBookmarked.value;

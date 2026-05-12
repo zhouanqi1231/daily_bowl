@@ -184,7 +184,6 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
         ...controller.allergyTags.map((tag) {
           bool isMatched = controller.isUserAllergicTo(tag);
           return GestureDetector(
-            onTap: () => controller.onAllergyTagTap(tag),
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 2.h),
               decoration: BoxDecoration(
