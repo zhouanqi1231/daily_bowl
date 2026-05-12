@@ -49,7 +49,7 @@ class CustomCheckBox extends StatelessWidget {
           onChanged: onChanged,
           title: Text(text, style: textStyle ?? _getDefaultTextStyle()),
           controlAffinity: ListTileControlAffinity.leading,
-          activeColor: checkboxColor ?? appTheme.deepPurple800,
+          activeColor: checkboxColor ?? appTheme.deepPurple_800,
           contentPadding: padding ?? EdgeInsets.symmetric(horizontal: 18.h),
           dense: true,
           visualDensity: VisualDensity.compact,

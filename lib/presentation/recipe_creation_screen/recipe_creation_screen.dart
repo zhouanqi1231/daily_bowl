@@ -68,7 +68,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
             Container(
               color: Colors.black26,
               child: Center(
-                child: CircularProgressIndicator(color: appTheme.deepPurple800),
+                child: CircularProgressIndicator(color: appTheme.deepPurple_800),
               ),
             ),
         ],
@@ -339,9 +339,9 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
         CustomButton(
           text: "Add more ingredients",
           width: double.infinity,
-          backgroundColor: appTheme.deepPurple50,
-          textColor: appTheme.blueGray800,
-          leftIcon: ImageConstant.imgIconBlueGray800,
+          backgroundColor: appTheme.deepPurple_50,
+          textColor: appTheme.blueGray_800,
+          leftIcon: ImageConstant.imgIconblueGray_800,
           onPressed: () => controller.addIngredientRow(),
         ),
       ],
@@ -402,9 +402,9 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
         CustomButton(
           text: "Add more steps",
           width: double.infinity,
-          backgroundColor: appTheme.deepPurple50,
-          textColor: appTheme.blueGray800,
-          leftIcon: ImageConstant.imgIconBlueGray800,
+          backgroundColor: appTheme.deepPurple_50,
+          textColor: appTheme.blueGray_800,
+          leftIcon: ImageConstant.imgIconblueGray_800,
           onPressed: () => controller.addStepRow(),
         ),
       ],
@@ -432,7 +432,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
               () => CustomButton(
                 text: controller.isLoading.value ? "Saving..." : "Confirm",
                 width: double.infinity,
-                backgroundColor: appTheme.deepPurple800,
+                backgroundColor: appTheme.deepPurple_800,
                 textColor: appTheme.white_A700,
                 onPressed: controller.isLoading.value
                     ? null

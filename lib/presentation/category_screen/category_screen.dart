@@ -23,7 +23,7 @@ class CategoryScreen extends StatelessWidget {
         if (controller.isLoading.value) {
           return Center(
             child: CircularProgressIndicator(
-              color: appTheme.deepPurple800,
+              color: appTheme.deepPurple_800,
             ),
           );
         }
@@ -68,7 +68,7 @@ class CategoryScreen extends StatelessWidget {
       onTap: () => controller.onCategoryTap(category),
       child: Container(
         decoration: BoxDecoration(
-          color: appTheme.deepPurple50,
+          color: appTheme.deepPurple_50,
           borderRadius: BorderRadius.circular(16.h),
           boxShadow: [
             BoxShadow(
@@ -117,7 +117,7 @@ class CategoryScreen extends StatelessWidget {
                       child: Icon(
                         Icons.restaurant_menu,
                         size: 80.h,
-                        color: appTheme.deepPurple800,
+                        color: appTheme.deepPurple_800,
                       ),
                     ),
                   ),
@@ -132,7 +132,7 @@ class CategoryScreen extends StatelessWidget {
                       Text(
                         category.cuisineType.value,
                         style: TextStyleHelper.instance.title16BoldPoppins.copyWith(
-                          color: hasImage ? Colors.white : appTheme.deepPurple800,
+                          color: hasImage ? Colors.white : appTheme.deepPurple_800,
                         ),
                       ),
                       SizedBox(height: 4.h),

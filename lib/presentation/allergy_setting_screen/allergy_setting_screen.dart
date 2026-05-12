@@ -15,7 +15,7 @@ class AllergySettingScreen extends GetWidget<AllergySettingController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.deepPurple50,
+      backgroundColor: appTheme.deepPurple_50,
       appBar: _buildAppBar(context),
       body: Container(
         width: double.infinity,

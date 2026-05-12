@@ -63,7 +63,7 @@ class UserProfileScreen extends StatelessWidget {
             width: 104.h,
             radius: BorderRadius.circular(52.h),
             border: Border.all(
-              color: appTheme.deepPurple800,
+              color: appTheme.deepPurple_800,
               width: 1.h,
             ),
             margin: EdgeInsets.only(top: 6.h),
@@ -87,7 +87,7 @@ class UserProfileScreen extends StatelessWidget {
                       () => Text(
                         "${controller.userProfileModel.value?.recipeCount?.value ?? 0} Recipes",
                         style: TextStyleHelper.instance.body14MediumRoboto
-                            .copyWith(color: appTheme.blueGray400),
+                            .copyWith(color: appTheme.blueGray_400),
                       ),
                     ),
                     SizedBox(width: 24.h),
@@ -95,7 +95,7 @@ class UserProfileScreen extends StatelessWidget {
                       () => Text(
                         "${controller.userProfileModel.value?.saveCount?.value ?? 0} Saves",
                         style: TextStyleHelper.instance.body14MediumRoboto
-                            .copyWith(color: appTheme.blueGray400),
+                            .copyWith(color: appTheme.blueGray_400),
                       ),
                     ),
                   ],
@@ -229,7 +229,7 @@ class UserProfileScreen extends StatelessWidget {
               Text(
                 dateStr,
                 style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
-                  color: appTheme.blueGray400,
+                  color: appTheme.blueGray_400,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -249,7 +249,7 @@ class UserProfileScreen extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 2.h),
       child: Row(
         children: [
-          Icon(icon, size: 10.h, color: appTheme.deepPurple800),
+          Icon(icon, size: 10.h, color: appTheme.deepPurple_800),
           SizedBox(width: 4.h),
           Text(
             text,
@@ -324,7 +324,7 @@ class UserProfileScreen extends StatelessWidget {
                     color: _getHeatMapColor(score),
                     borderRadius: BorderRadius.circular(0.h),
                     border: Border.all(
-                      color: isSelected ? appTheme.blueGray400 : Colors.transparent,
+                      color: isSelected ? appTheme.blueGray_400 : Colors.transparent,
                       width: 1.8.h,
                     ),
                   ),

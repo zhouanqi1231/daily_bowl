@@ -20,7 +20,7 @@ class CategorizedRecipePageInitialPage extends StatelessWidget {
         if (controller.isLoading.value) {
           return Center(
             child: CircularProgressIndicator(
-              color: appTheme.deepPurple800,
+              color: appTheme.deepPurple_800,
             ),
           );
         }

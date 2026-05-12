@@ -38,7 +38,7 @@ class RecipeCardItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: appTheme.gray_50,
           borderRadius: BorderRadius.circular(12.h),
-          border: Border.all(color: appTheme.blueGray100, width: 1.h),
+          border: Border.all(color: appTheme.blueGray_100, width: 1.h),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -68,13 +68,13 @@ class RecipeCardItem extends StatelessWidget {
             height: 40.h,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: appTheme.deepPurple50,
+              color: appTheme.deepPurple_50,
               borderRadius: BorderRadius.circular(20.h),
             ),
             child: Text(
               recipeItemModel?.userInitial?.value ?? "A",
               style: TextStyleHelper.instance.title16MediumRoboto.copyWith(
-                color: appTheme.deepPurple800,
+                color: appTheme.deepPurple_800,
               ),
             ),
           ),

@@ -11,7 +11,7 @@ class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.deepPurple50,
+      backgroundColor: appTheme.deepPurple_50,
       appBar: CustomAppBar(
         leadingIcon: ImageConstant.imgArrowLeft,
         onLeadingTap: () => Get.back(),
@@ -64,7 +64,7 @@ class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
           borderRadius: BorderRadius.circular(12.h),
           boxShadow: [
             BoxShadow(
-              color: appTheme.deepPurple300.withValues(alpha: 0.3),
+              color: appTheme.deepPurple_300.withValues(alpha: 0.3),
               offset: const Offset(0, 1),
               blurRadius: 5,
             ),

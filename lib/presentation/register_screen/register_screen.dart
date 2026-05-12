@@ -106,7 +106,7 @@ class RegisterScreen extends GetWidget<RegisterController> {
                     child: CustomButton(
                       text: "Register",
                       width: double.infinity,
-                      backgroundColor: appTheme.deepPurple800,
+                      backgroundColor: appTheme.deepPurple_800,
                       textColor: appTheme.white_A700,
                       onPressed: () {
                         if (onRegisterSuccess != null) {

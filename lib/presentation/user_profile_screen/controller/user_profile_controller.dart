@@ -302,7 +302,7 @@ class UserProfileController extends GetxController {
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text('Cancel', style: TextStyle(color: appTheme.blueGray400)),
+            child: Text('Cancel', style: TextStyle(color: appTheme.blueGray_400)),
           ),
           TextButton(
             onPressed: () async {

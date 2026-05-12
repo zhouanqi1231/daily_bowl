@@ -14,7 +14,7 @@ class ImageConstant {
 
   // Model Recipe Item Model Screen
   // Recipe Creation Screen
-  static String imgIconBlueGray800 = '${_basePath}img_icon_blue_gray_800.svg';
+  static String imgIconblueGray_800 = '${_basePath}img_icon_blue_gray_800.svg';
   static String imgIconGray500 = '${_basePath}img_icon_gray_500.svg';
 
   // Saved Recipe List Screen
@@ -45,7 +45,7 @@ class ImageConstant {
       'assets/images/img_icon_gray_800_24x24.svg';
   static String imgMedia188x364 = 'assets/images/img_media_188x364.png';
   static String imgFab = 'assets/images/img_fab.svg';
-  static String imgFabDeepPurple800 =
+  static String imgFabdeepPurple_800 =
       'assets/images/img_fab_deep_purple_800.svg';
   static String imgGenericAvatar = 'assets/images/img_generic_avatar.svg';
   static String imgIcon = 'assets/images/img_icon.svg';
