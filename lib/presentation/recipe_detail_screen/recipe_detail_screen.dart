@@ -29,7 +29,6 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               actionIcons: [
                 CustomAppBarAction(
                   iconPath: ImageConstant.imgShare,
-                  onTap: () => controller.onShareTap(),
                   margin: 2.h,
                 ),
               ],
@@ -182,7 +181,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
         ),
         // allergy tags, from all the ingredient-allergy-tags
         ...controller.allergyTags.map((tag) {
-          bool isMatched = controller.isUserAllergicTo(tag);
+          bool isMatched = controller.isUserAllergicTo(tag); // matched: red, unmatched: gray
           return GestureDetector(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 2.h),

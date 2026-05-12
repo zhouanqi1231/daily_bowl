@@ -166,17 +166,6 @@ class WeeklyNutritionReportController extends GetxController {
     }
   }
 
-  void onShareTap() {
-    final week = weeklyNutritionReportModel.value?.weekNumber?.value ?? "this week";
-    Get.snackbar(
-      'Share Report',
-      'Preparing to share your $week nutrition summary...',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: appTheme.deep_purple_800,
-      colorText: Colors.white,
-    );
-  }
-
   void onBackPressed() {
     Get.back();
   }

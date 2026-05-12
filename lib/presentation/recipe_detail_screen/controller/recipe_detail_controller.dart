@@ -81,6 +81,7 @@ class RecipeDetailController extends GetxController {
       int? userId = prefs.getInt('user_id');
       if (userId == null) return;
 
+      // get user allergy data
       final userData = await ApiClient.get('/users/$userId/');
       if (isClosed) return;
 
@@ -123,10 +124,16 @@ class RecipeDetailController extends GetxController {
       var ingredientsAssoc = responses[1];
       var nutritionData = responses[2];
 
+      // recipe info
+      recipeImageUrl.value = recipeData['img_url'] ?? "";
+
       recipeTitle.value = recipeData['title'] ?? 'Unknown Recipe';
       recipeDescription.value =
           "Cuisine Type: ${recipeData['cuisine_type'] ?? 'Default Type'} • Portion: ${recipeData['servings'] ?? 1} pax";
-      recipeImageUrl.value = recipeData['img_url'] ?? "";
+
+      // Fetch author name
+      authorName.value = recipeData['creator_username'] ??
+          "User ${recipeData['created_by'] ?? ''}";
 
       // Assign nutrition data
       totalCalories.value = (nutritionData['total_calories'] ?? 0.0).toDouble();
@@ -134,17 +141,14 @@ class RecipeDetailController extends GetxController {
       totalCarbs.value = (nutritionData['total_carbs'] ?? 0.0).toDouble();
       totalFat.value = (nutritionData['total_fat'] ?? 0.0).toDouble();
 
-      // Fetch author name
-      authorName.value = recipeData['creator_username'] ??
-          "User ${recipeData['created_by'] ?? ''}";
-
+      // Fetch created date
       if (recipeData['created_at'] != null) {
         DateTime date = DateTime.parse(recipeData['created_at']);
         updateDate.value =
             "Created on ${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
       }
 
-      // Separate steps from procedure string
+      // Separate steps from procedure string (1,2,3...)
       List<String> steps = [];
       String procedure = recipeData['procedure'] ?? '';
       if (procedure.isNotEmpty) {
@@ -160,6 +164,7 @@ class RecipeDetailController extends GetxController {
         }
       }
 
+      // Fetch ingredients in parallel
       var ingredientFutures =
           ingredientsAssoc.map<Future<Map<String, dynamic>>>((assoc) async {
         int ingId = assoc['ingredient_id'];
@@ -220,23 +225,13 @@ class RecipeDetailController extends GetxController {
     }
   }
 
+  // match user allergy to current recipe
   bool isUserAllergicTo(String tag) {
     String normalizedTag = tag.toLowerCase();
     return userAllergies.any((userAllergy) {
       return normalizedTag.contains(userAllergy) ||
           userAllergy.contains(normalizedTag);
     });
-  }
-
-  void onShareTap() {
-    Share.share(
-      'Check out this amazing recipe: ${recipeTitle.value}\n\n${recipeDescription.value}',
-      subject: '${recipeTitle.value} Recipe',
-    );
-  }
-
-  void onUserProfileTap() {
-    // No-op or minimal action as requested previously
   }
 
   // cooked button
@@ -296,6 +291,7 @@ class RecipeDetailController extends GetxController {
     if (recipeId != -1) {
       bool willBeSaved = !isSaved.value;
 
+      // request
       Get.find<GlobalSaveManager>().toggleSave(recipeId);
 
       Get.showSnackbar(

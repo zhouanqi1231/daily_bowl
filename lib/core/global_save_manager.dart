@@ -30,6 +30,7 @@ class GlobalSaveManager extends GetxService {
     }
   }
 
+  // call save interface, add/delete
   Future<void> toggleSave(int recipeId) async {
     final prefs = await SharedPreferences.getInstance();
     int? userId = prefs.getInt('user_id');
