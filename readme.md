@@ -1,4 +1,6 @@
-Daily Bowl
+<div align="center">
+
+# Daily Bowl
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![GetX](https://img.shields.io/badge/GetX-8C2CE6?style=for-the-badge&logo=dart&logoColor=white)](https://pub.dev/packages/get)
@@ -7,6 +9,8 @@ Daily Bowl
 Daily Bowl is a Flutter application designed for food lovers to explore recipes, track their weekly nutrition, and manage their cooking activity. 
 
 [Explore Features](#-features) • [Installation](#-installation) • [Project Structure](#-project-structure) • [API Setup](#-api-configuration)
+
+</div>
 
 # 1 Features
 
