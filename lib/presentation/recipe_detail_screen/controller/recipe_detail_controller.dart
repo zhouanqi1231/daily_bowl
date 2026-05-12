@@ -131,11 +131,20 @@ class RecipeDetailController extends GetxController {
         updateDate.value = "Updated on ${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
       }
 
+      // Separate steps from procedure string
       List<String> steps = [];
       String procedure = recipeData['procedure'] ?? '';
       if (procedure.isNotEmpty) {
-        steps = procedure.split(RegExp(r'\d+\.\s*')).where((s) => s.trim().isNotEmpty).toList();
-        if (steps.isEmpty) steps = [procedure];
+        // Improved splitting logic to handle numbering and newlines
+        steps = procedure
+            .split(RegExp(r'\d+\.\s*|\n'))
+            .map((s) => s.trim())
+            .where((s) => s.isNotEmpty)
+            .toList();
+        
+        if (steps.isEmpty && procedure.trim().isNotEmpty) {
+          steps = [procedure.trim()];
+        }
       }
 
       var ingredientFutures = ingredientsAssoc.map<Future<Map<String, dynamic>>>((assoc) async {

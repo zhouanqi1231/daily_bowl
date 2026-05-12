@@ -27,6 +27,8 @@ import '../core/app_export.dart';
  * @param topPadding - Additional top padding for content
  * @param textStyle - Optional custom text style
  * @param labelStyle - Optional custom label style
+ * @param obscureText - Whether the text is obscured (for passwords)
+ * @param suffixIcon - Optional suffix icon widget
  */
 class CustomFloatingTextField extends StatelessWidget {
   CustomFloatingTextField({
@@ -45,6 +47,8 @@ class CustomFloatingTextField extends StatelessWidget {
     this.topPadding,
     this.textStyle,
     this.labelStyle,
+    this.obscureText = false,
+    this.suffixIcon,
   }) : super(key: key);
 
   /// Placeholder text that becomes the floating label
@@ -89,6 +93,12 @@ class CustomFloatingTextField extends StatelessWidget {
   /// Custom label style
   final TextStyle? labelStyle;
 
+  /// Whether the text is obscured
+  final bool obscureText;
+
+  /// Optional suffix icon
+  final Widget? suffixIcon;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -103,20 +113,22 @@ class CustomFloatingTextField extends StatelessWidget {
         enabled: enabled ?? true,
         maxLines: maxLines ?? 1,
         onChanged: onChanged,
+        obscureText: obscureText,
         style: textStyle ??
-            TextStyleHelper.instance.title16RegularRoboto.copyWith(
+            TextStyleHelper.instance.body14RegularRoboto.copyWith(
               color: appTheme.gray_900,
             ),
         decoration: InputDecoration(
           labelText: placeholder,
           labelStyle: labelStyle ??
-              TextStyleHelper.instance.title16RegularRoboto.copyWith(
+              TextStyleHelper.instance.body14RegularRoboto.copyWith(
                 color: appTheme.gray_600,
               ),
           floatingLabelStyle: TextStyleHelper.instance.body12RegularRoboto
               .copyWith(color: appTheme.gray_600),
           filled: true,
           fillColor: appTheme.gray_50,
+          suffixIcon: suffixIcon,
           contentPadding: EdgeInsets.symmetric(
             horizontal: 16.h,
             vertical: 12.h,

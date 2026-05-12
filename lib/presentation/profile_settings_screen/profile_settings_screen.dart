@@ -18,7 +18,7 @@ class ProfileSettingsScreen extends GetWidget<ProfileSettingsController> {
         horizontalPadding: 16.h,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.h),
+        padding: EdgeInsets.all(24.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -317,7 +317,7 @@ class ProfileSettingsScreen extends GetWidget<ProfileSettingsController> {
             backgroundColor: appTheme.deep_purple_800,
             disabledBackgroundColor: appTheme.deep_purple_300,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.h),
+              borderRadius: BorderRadius.circular(16.h),
             ),
             elevation: 0,
           ),
