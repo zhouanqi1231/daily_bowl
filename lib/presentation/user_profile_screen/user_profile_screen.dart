@@ -420,21 +420,37 @@ class UserProfileScreen extends StatelessWidget {
                       key: ValueKey(recipe?.id),
                       endActionPane: ActionPane(
                         motion: const ScrollMotion(),
-                        extentRatio: 0.2,
+                        extentRatio: 0.30,
                         children: [
-                          SlidableAction(
+                          // edit button
+                          CustomSlidableAction(
                             onPressed: (context) => controller.onEditRecipe(index),
-                            backgroundColor: Color(0xFF2196F3),
-                            foregroundColor: Colors.white,
-                            icon: Icons.edit,
-                            borderRadius: BorderRadius.circular(24.h),
+                            backgroundColor: Colors.transparent,
+                            padding: EdgeInsets.zero,
+                            child: Container(
+                              width: 48.h,
+                              height: 48.h,
+                              decoration: BoxDecoration(
+                                color: Colors.deepPurple,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(Icons.edit, color: Colors.white, size: 20.h),
+                            ),
                           ),
-                          SlidableAction(
+                          // delete button
+                          CustomSlidableAction(
                             onPressed: (context) => controller.onDeleteRecipe(index),
-                            backgroundColor: Color(0xFFFE4A49),
-                            foregroundColor: Colors.white,
-                            icon: Icons.delete,
-                            borderRadius: BorderRadius.circular(24.h),
+                            backgroundColor: Colors.transparent,
+                            padding: EdgeInsets.zero,
+                            child: Container(
+                              width: 48.h,
+                              height: 48.h,
+                              decoration: BoxDecoration(
+                                color: Color(0xFFFE4A49),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(Icons.delete, color: Colors.white, size: 20.h),
+                            ),
                           ),
                         ],
                       ),
