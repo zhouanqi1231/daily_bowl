@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:ui' as ui;
+import 'dart:ui_web' as ui_web;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
@@ -187,7 +187,7 @@ class CustomImageView extends StatelessWidget {
   Widget _buildHtmlImage() {
     final viewType = 'img_${identityHashCode(this)}';
 
-    ui.platformViewRegistry.registerViewFactory(viewType, (int viewId) {
+    ui_web.platformViewRegistry.registerViewFactory(viewType, (int viewId) {
       final img = html.ImageElement()
         ..src = imagePath
         ..alt = ''
