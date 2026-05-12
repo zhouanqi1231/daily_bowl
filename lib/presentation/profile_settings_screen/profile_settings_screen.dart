@@ -43,11 +43,12 @@ class ProfileSettingsScreen extends GetWidget<ProfileSettingsController> {
             _buildNewPasswordField(),
             SizedBox(height: 16.h),
             _buildConfirmPasswordField(),
-            SizedBox(height: 40.h),
-            _buildSaveButton(),
-            SizedBox(height: 40.h),
           ],
         ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.fromLTRB(24.h, 16.h, 24.h, 16.h),
+        child: _buildSaveButton(),
       ),
     );
   }
@@ -168,7 +169,7 @@ class ProfileSettingsScreen extends GetWidget<ProfileSettingsController> {
             backgroundColor: appTheme.deep_purple_800,
             disabledBackgroundColor: appTheme.deep_purple_300,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.h),
+              borderRadius: BorderRadius.circular(32.h),
             ),
             elevation: 0,
           ),
