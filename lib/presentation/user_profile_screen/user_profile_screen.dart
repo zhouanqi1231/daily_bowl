@@ -77,7 +77,7 @@ class UserProfileScreen extends StatelessWidget {
                 Obx(
                   () => Text(
                     controller.userProfileModel.value?.userName?.value ??
-                        "Amy Perkins",
+                        "User Name",
                     style: TextStyleHelper.instance.headline28RegularRoboto,
                   ),
                 ),

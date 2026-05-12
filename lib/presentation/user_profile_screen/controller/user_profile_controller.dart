@@ -48,102 +48,131 @@ class UserProfileController extends GetxController {
     });
   }
 
+  /// Main initialization flow
   Future<void> _initializeUserProfile() async {
     isLoading.value = true;
     final prefs = await SharedPreferences.getInstance();
+    
+    final displayName = _getDisplayName(prefs);
+    final userId = prefs.getInt('user_id');
+    final Map<DateTime, DailyActivity> tempActivity = {};
+
+    _loadLocalCookedActivity(prefs, tempActivity);
+
+    if (userId != null) {
+      await _loadServerData(userId, displayName, tempActivity);
+    } else {
+      _setMockProfile(displayName, tempActivity);
+    }
+    
+    _completeLoading();
+  }
+
+  /// Helper to determine the display name from preferences
+  String _getDisplayName(SharedPreferences prefs) {
     String? storedName = prefs.getString('user_name');
     String? email = prefs.getString('user_email');
-    int? userId = prefs.getInt('user_id');
-    
-    String displayName = "UserName";
     
     if (storedName != null && storedName.isNotEmpty) {
-      displayName = storedName;
+      return storedName;
     } else if (email != null && email.isNotEmpty) {
-      displayName = email.split('@')[0];
-      displayName = displayName[0].toUpperCase() + displayName.substring(1);
+      String name = email.split('@')[0];
+      return name[0].toUpperCase() + name.substring(1);
     }
+    return "UserName";
+  }
 
-    Map<DateTime, DailyActivity> tempActivity = {};
-
-    // Load cooked dates from local storage
+  /// Loads cooked dates from local storage into the activity map
+  void _loadLocalCookedActivity(SharedPreferences prefs, Map<DateTime, DailyActivity> tempActivity) {
     List<String> cookedDates = prefs.getStringList('cooked_dates') ?? [];
     for (var dateStr in cookedDates) {
       try {
         DateTime date = DateTime.parse(dateStr);
         DateTime day = DateTime(date.year, date.month, date.day);
         tempActivity.putIfAbsent(day, () => DailyActivity()).cooked++;
-      } catch (e) {}
-    }
-
-    if (userId != null) {
-      try {
-        int recipeCount = 0;
-        List<RecipeItemModel> userRecipes = [];
-
-        // Fetch created recipes
-        final recipesResponse = await ApiClient.get('/users/$userId/recipes/');
-        if (isClosed) return;
-        if (recipesResponse is List) {
-          recipeCount = recipesResponse.length;
-          userRecipes = recipesResponse.map((r) {
-            if (r['created_at'] != null) {
-              DateTime date = DateTime.parse(r['created_at']).toLocal();
-              DateTime day = DateTime(date.year, date.month, date.day);
-              tempActivity.putIfAbsent(day, () => DailyActivity()).created++;
-            }
-            
-            String? imageUrl = r['img_url'];
-            return RecipeItemModel(
-              id: r['id'],
-              title: (r['title'] as String? ?? "No Title").obs,
-              description: (r['procedure'] as String? ?? "No Procedure").obs,
-              imagePath: (imageUrl != null && imageUrl.isNotEmpty 
-                  ? imageUrl 
-                  : ImageConstant.imgMedia).obs,
-            );
-          }).toList();
-        }
-
-        // Fetch saved recipes
-        final savesResponse = await ApiClient.get('/users/$userId/saves/');
-        if (isClosed) return;
-        if (savesResponse is List) {
-          for (var s in savesResponse) {
-             if (s['created_at'] != null) {
-              DateTime date = DateTime.parse(s['created_at']).toLocal();
-              DateTime day = DateTime(date.year, date.month, date.day);
-              tempActivity.putIfAbsent(day, () => DailyActivity()).saved++;
-            }
-          }
-        }
-        
-        if (!isClosed) {
-          activityData.value = tempActivity;
-          userProfileModel.value = UserProfileModel(
-            userName: displayName.obs,
-            recipeCount: recipeCount.obs,
-            saveCount: _saveManager.savedIds.length.obs,
-            recipes: userRecipes.obs,
-          );
-        }
       } catch (e) {
-        print("Error fetching profile details: $e");
-        if (!isClosed) {
-          activityData.value = tempActivity;
-          _loadMockData(displayName);
-        }
+        // Ignore parsing errors for individual dates
       }
-    } else {
+    }
+  }
+
+  /// Fetches recipes and saves from the server
+  Future<void> _loadServerData(int userId, String displayName, Map<DateTime, DailyActivity> tempActivity) async {
+    try {
+      // 1. Fetch created recipes and update activity
+      final recipes = await _fetchCreatedRecipes(userId, tempActivity);
+      
+      // 2. Fetch saved recipes and update activity
+      await _fetchSavedRecipes(userId, tempActivity);
+
+      if (!isClosed) {
+        activityData.value = tempActivity;
+        userProfileModel.value = UserProfileModel(
+          userName: displayName.obs,
+          recipeCount: recipes.length.obs,
+          saveCount: _saveManager.savedIds.length.obs,
+          recipes: recipes.obs,
+        );
+      }
+    } catch (e) {
+      print("Error fetching profile details: $e");
       if (!isClosed) {
         activityData.value = tempActivity;
         _loadMockData(displayName);
       }
     }
-    
+  }
+
+  /// Fetches created recipes for a user and populates activity map
+  Future<List<RecipeItemModel>> _fetchCreatedRecipes(int userId, Map<DateTime, DailyActivity> tempActivity) async {
+    final response = await ApiClient.get('/users/$userId/recipes/');
+    if (isClosed || response is! List) return [];
+
+    return response.map<RecipeItemModel>((r) {
+      if (r['created_at'] != null) {
+        DateTime date = DateTime.parse(r['created_at']).toLocal();
+        DateTime day = DateTime(date.year, date.month, date.day);
+        tempActivity.putIfAbsent(day, () => DailyActivity()).created++;
+      }
+      
+      String? imageUrl = r['img_url'];
+      return RecipeItemModel(
+        id: r['id'],
+        title: (r['title'] as String? ?? "No Title").obs,
+        description: (r['procedure'] as String? ?? "No Procedure").obs,
+        imagePath: (imageUrl != null && imageUrl.isNotEmpty 
+            ? imageUrl 
+            : ImageConstant.imgMedia).obs,
+      );
+    }).toList();
+  }
+
+  /// Fetches saved recipes for a user to update activity map
+  Future<void> _fetchSavedRecipes(int userId, Map<DateTime, DailyActivity> tempActivity) async {
+    final response = await ApiClient.get('/users/$userId/saves/');
+    if (isClosed || response is! List) return;
+
+    for (var s in response) {
+      if (s['created_at'] != null) {
+        DateTime date = DateTime.parse(s['created_at']).toLocal();
+        DateTime day = DateTime(date.year, date.month, date.day);
+        tempActivity.putIfAbsent(day, () => DailyActivity()).saved++;
+      }
+    }
+  }
+
+  /// Fallback to mock data if user is not logged in or an error occurs
+  void _setMockProfile(String displayName, Map<DateTime, DailyActivity> tempActivity) {
+    if (!isClosed) {
+      activityData.value = tempActivity;
+      _loadMockData(displayName);
+    }
+  }
+
+  /// Cleans up loading state and triggers UI updates
+  void _completeLoading() {
     if (!isClosed) {
       isLoading.value = false;
-      // After loading data, wait for frame and scroll
       WidgetsBinding.instance.addPostFrameCallback((_) {
         scrollToCurrentWeek();
       });

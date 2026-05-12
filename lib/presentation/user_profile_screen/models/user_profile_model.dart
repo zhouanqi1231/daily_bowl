@@ -15,7 +15,7 @@ class UserProfileModel {
     this.saveCount,
     this.recipes,
   }) {
-    userName = userName ?? Rx("Amy Perkins");
+    userName = userName ?? Rx("User Name");
     recipeCount = recipeCount ?? Rx(4);
     saveCount = saveCount ?? Rx(128);
     recipes = recipes ?? RxList<RecipeItemModel>([]);
