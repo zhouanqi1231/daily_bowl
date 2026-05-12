@@ -143,4 +143,4 @@ Push the entire contents of the `build/web` directory to your target GitHub repo
 
 Download the Released Apk from the Release page. 
 
-Or visit this Web app: https://zhouanqi1231.github.io/daily_bowl_page/
+Or visit this Web app (best visual on mobile devices): https://zhouanqi1231.github.io/daily_bowl_page/
