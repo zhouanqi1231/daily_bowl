@@ -127,8 +127,16 @@ class RecipeCreationController extends GetxController {
       if (ingredientsData is List && ingredientsData.isNotEmpty) {
         ingredientControllers.clear();
         for (var item in ingredientsData) {
+          String ingredientName = '';
+          int? ingredientId = item['ingredient_id'];
+          if (ingredientId != null) {
+            try {
+              final ingDetail = await ApiClient.get('/ingredients/$ingredientId/');
+              ingredientName = ingDetail['name']?.toString() ?? '';
+            } catch (_) {}
+          }
           ingredientControllers.add({
-            'name': TextEditingController(text: item['ingredient_name'] ?? ''),
+            'name': TextEditingController(text: ingredientName),
             'quantity': TextEditingController(text: (item['amount'] ?? '').toString()),
             'unit': TextEditingController(text: item['unit'] ?? 'g'),
           });
