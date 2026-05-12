@@ -62,6 +62,6 @@ flutter:
 flutter_icons:
   web:
     generate: true
-    image_path: "assets/images/bowl.png"
+    image_path: "assets/images/bowl_with_bg.png"
     background_color: "#ffffff"
     theme_color: "#ffffff"
