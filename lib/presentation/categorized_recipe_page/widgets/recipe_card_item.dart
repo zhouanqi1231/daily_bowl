@@ -4,10 +4,21 @@ import '../../../core/app_export.dart';
 import '../../../widgets/custom_image_view.dart';
 import '../models/recipe_item_model.dart';
 
+/// A widget representing a single recipe card, typically used in lists or grids.
+///
+/// It displays information such as the creator's initials, name, recipe image,
+/// and a bookmark (save) button if the user is logged in.
 class RecipeCardItem extends StatelessWidget {
+  /// The data model for the recipe to display.
   final RecipeItemModel? recipeItemModel;
+
+  /// Callback function when the card is tapped.
   final VoidCallback? onCardTap;
+
+  /// Callback function when the bookmark button is tapped.
   final VoidCallback? onBookmarkTap;
+
+  /// Whether to show the bookmark (save) button.
   final bool showBookmark;
 
   RecipeCardItem({
@@ -46,6 +57,7 @@ class RecipeCardItem extends StatelessWidget {
     );
   }
 
+  /// Builds the creator's profile section with initials and name/info.
   Widget _buildProfileSection() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.h),
@@ -69,7 +81,7 @@ class RecipeCardItem extends StatelessWidget {
           SizedBox(width: 16.h),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(right: 8.h), // Added padding for username/info
+              padding: EdgeInsets.only(right: 8.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -95,6 +107,7 @@ class RecipeCardItem extends StatelessWidget {
     );
   }
 
+  /// Builds the main recipe image.
   Widget _buildRecipeImage() {
     return CustomImageView(
       imagePath:
@@ -105,6 +118,9 @@ class RecipeCardItem extends StatelessWidget {
     );
   }
 
+  /// Builds the bottom section with recipe name and an optional bookmark button.
+  ///
+  /// The height is maintained even if [showBookmark] is false to ensure card consistency.
   Widget _buildRecipeInfo() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.h),
@@ -112,7 +128,9 @@ class RecipeCardItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: Padding(
+            child: Container(
+              height: 48.h, // Maintain consistent height regardless of bookmark button visibility
+              alignment: Alignment.centerLeft,
               padding: EdgeInsets.only(right: 16.h),
               child: Text(
                 recipeItemModel?.recipeName?.value ?? "Recipe name",
@@ -129,7 +147,7 @@ class RecipeCardItem extends StatelessWidget {
               onTap: onBookmarkTap,
               behavior: HitTestBehavior.opaque,
               child: Padding(
-                padding: EdgeInsets.only(left: 8.h, top: 12.h, bottom: 12.h), 
+                padding: EdgeInsets.only(left: 8.h, top: 12.h, bottom: 12.h),
                 child: Obx(
                   () => Icon(
                     (recipeItemModel?.isBookmarked?.value ?? false)
@@ -142,9 +160,7 @@ class RecipeCardItem extends StatelessWidget {
                   ),
                 ),
               ),
-            )
-          else
-            const SizedBox.shrink(),
+            ),
         ],
       ),
     );
