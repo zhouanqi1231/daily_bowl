@@ -14,7 +14,7 @@ import './controller/recipe_detail_controller.dart';
 /// preparation steps, nutrition facts, and allergy alerts. It also provides
 /// functionality to mark the recipe as "cooked" or save it to the user's collection.
 class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
-  RecipeDetailScreen({Key? key}) : super(key: key);
+  const RecipeDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +184,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
   ///
   /// [context] The build context.
   Widget _buildAllergyAlertSection(BuildContext context) {
-    if (controller.allergyTags.isEmpty) return SizedBox.shrink();
+    if (controller.allergyTags.isEmpty) return const SizedBox.shrink();
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       spacing: 8.h,
@@ -216,7 +216,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               ),
             ),
           );
-        }).toList(),
+        }),
       ],
     );
   }
@@ -314,6 +314,10 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
             () => CustomFloatingActionButton(
               heroTag: 'detail_main_fab',
               onPressed: () => controller.onMainFabTap(),
+              backgroundColor:
+                  controller.isSaved.value
+                      ? appTheme.deep_purple_800
+                      : appTheme.deep_purple_50,
               child: Icon( 
                 controller.isSaved.value ? Icons.star : Icons.star_border, // Changed to star icon
                 color:
@@ -321,10 +325,6 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
                         ? appTheme.white_A700
                         : appTheme.deep_purple_800,
               ),
-              backgroundColor:
-                  controller.isSaved.value
-                      ? appTheme.deep_purple_800
-                      : appTheme.deep_purple_50,
             ),
           ),
         ],

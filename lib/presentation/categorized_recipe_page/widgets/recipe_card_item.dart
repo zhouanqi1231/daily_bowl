@@ -21,13 +21,13 @@ class RecipeCardItem extends StatelessWidget {
   /// Whether to show the bookmark (save) button.
   final bool showBookmark;
 
-  RecipeCardItem({
-    Key? key,
+  const RecipeCardItem({
+    super.key,
     this.recipeItemModel,
     this.onCardTap,
     this.onBookmarkTap,
     this.showBookmark = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

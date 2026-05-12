@@ -6,7 +6,7 @@ import '../../widgets/custom_floating_text_field.dart';
 import './controller/recipe_creation_controller.dart';
 
 class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
-  const RecipeCreationScreen({Key? key}) : super(key: key);
+  const RecipeCreationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +242,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                       color: Colors.red.shade400,
                       borderRadius: BorderRadius.circular(12.h),
                     ),
-                    child: Icon(Icons.delete, color: Colors.white),
+                    child: const Icon(Icons.delete, color: Colors.white),
                   ),
                   child: Container(
                     margin: EdgeInsets.only(bottom: 12.h),
@@ -308,7 +308,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                         SizedBox(
                           width: 90.h,
                           child: DropdownButtonFormField<String>(
-                            value: controllers['unit']!.text.isEmpty ? 'g' : controllers['unit']!.text,
+                            initialValue: controllers['unit']!.text.isEmpty ? 'g' : controllers['unit']!.text,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 12.h),
                               filled: true,
@@ -332,7 +332,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                     ),
                   ),
                 );
-              }).toList(),
+              }),
             ],
           ),
         ),
@@ -380,7 +380,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                       color: Colors.red.shade400,
                       borderRadius: BorderRadius.circular(12.h),
                     ),
-                    child: Icon(Icons.delete, color: Colors.white),
+                    child: const Icon(Icons.delete, color: Colors.white),
                   ),
                   child: Container(
                     margin: EdgeInsets.only(bottom: 12.h),
@@ -395,7 +395,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                     ),
                   ),
                 );
-              }).toList(),
+              }),
             ],
           ),
         ),

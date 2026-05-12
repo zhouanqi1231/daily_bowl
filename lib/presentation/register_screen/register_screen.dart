@@ -15,8 +15,7 @@ class RegisterScreen extends GetWidget<RegisterController> {
   /// Callback to be executed upon successful registration.
   final VoidCallback? onRegisterSuccess;
 
-  const RegisterScreen({Key? key, this.onLoginPressed, this.onRegisterSuccess})
-      : super(key: key);
+  const RegisterScreen({super.key, this.onLoginPressed, this.onRegisterSuccess});
 
   @override
   Widget build(BuildContext context) {

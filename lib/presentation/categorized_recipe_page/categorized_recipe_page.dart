@@ -12,7 +12,7 @@ import './categorized_recipe_page_initial_page.dart';
 /// displays the list of recipes using [CategorizedRecipePageInitialPage].
 class CategorizedRecipePage
     extends GetWidget<CategorizedRecipeController> {
-  CategorizedRecipePage({Key? key}) : super(key: key);
+  const CategorizedRecipePage({super.key});
 
   @override
   Widget build(BuildContext context) {

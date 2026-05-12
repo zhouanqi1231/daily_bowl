@@ -11,7 +11,7 @@ import './models/recipe_item_model.dart';
 
 class WeeklyNutritionReportScreen
     extends GetWidget<WeeklyNutritionReportController> {
-  WeeklyNutritionReportScreen({Key? key}) : super(key: key);
+  const WeeklyNutritionReportScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class WeeklyNutritionReportScreen
   }
 
   Widget _buildHeaderSection(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 200.h,
       child: Stack(
@@ -85,7 +85,7 @@ class WeeklyNutritionReportScreen
                       shadows: [
                         Shadow(
                           color: Colors.black.withOpacity(0.6),
-                          offset: Offset(0, 2),
+                          offset: const Offset(0, 2),
                           blurRadius: 6.h,
                         ),
                       ],
@@ -164,7 +164,7 @@ class WeeklyNutritionReportScreen
   Widget _buildIngredientsSection(BuildContext context) {
     return Obx(() {
       final ingredients = controller.weeklyNutritionReportModel.value?.ingredientsList ?? [];
-      if (ingredients.isEmpty) return SizedBox.shrink();
+      if (ingredients.isEmpty) return const SizedBox.shrink();
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,7 +194,7 @@ class WeeklyNutritionReportScreen
   Widget _buildNutritionAnalysisSection(BuildContext context) {
     return Obx(() {
       final totalCalories = controller.weeklyNutritionReportModel.value?.totalCalories?.value ?? 0;
-      if (totalCalories == 0) return SizedBox.shrink();
+      if (totalCalories == 0) return const SizedBox.shrink();
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,7 +216,7 @@ class WeeklyNutritionReportScreen
               boxShadow: [
                 BoxShadow(
                   color: appTheme.color6E196E.withOpacity(0.2),
-                  offset: Offset(0, 1),
+                  offset: const Offset(0, 1),
                   blurRadius: 8.h,
                 ),
               ],
@@ -248,7 +248,7 @@ class WeeklyNutritionReportScreen
   }
 
   Widget _buildNutritionChart(BuildContext context, int totalCalories) {
-    return Container(
+    return SizedBox(
       height: 214.h,
       width: 214.h,
       child: Stack(
@@ -350,7 +350,7 @@ class WeeklyNutritionReportScreen
   Widget _buildCongratulationsSection(BuildContext context) {
     return Obx(() {
       final recipes = controller.weeklyNutritionReportModel.value?.recipesList ?? [];
-      if (recipes.isEmpty) return SizedBox.shrink();
+      if (recipes.isEmpty) return const SizedBox.shrink();
 
       return Padding(
         padding: EdgeInsets.only(top: 18.h),

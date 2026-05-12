@@ -3,18 +3,16 @@ import 'package:flutter/material.dart';
 import '../core/app_export.dart';
 import './custom_image_view.dart';
 
-/**
- * CustomRecipeCard - A reusable card component for displaying recipe information
- */
+/// CustomRecipeCard - A reusable card component for displaying recipe information
 class CustomRecipeCard extends StatelessWidget {
-  CustomRecipeCard({
-    Key? key,
+  const CustomRecipeCard({
+    super.key,
     required this.title,
     required this.description,
     required this.imagePath,
     this.onTap,
     this.width,
-  }) : super(key: key);
+  });
 
   final String title;
   final String description;

@@ -3,22 +3,20 @@ import 'package:flutter/material.dart';
 import '../core/app_export.dart';
 import './custom_image_view.dart';
 
-/**
- * A customizable icon button widget that displays an SVG or image icon with
- * configurable styling including background color, border radius, padding, and dimensions.
- * 
- * @param iconPath - Path to the icon image (SVG, PNG, etc.)
- * @param onTap - Callback function triggered when the button is tapped
- * @param backgroundColor - Background color of the button
- * @param width - Width of the button
- * @param height - Height of the button  
- * @param borderRadius - Border radius for rounded corners
- * @param padding - Internal padding around the icon
- * @param iconColor - Color tint for the icon (optional)
- */
+/// A customizable icon button widget that displays an SVG or image icon with
+/// configurable styling including background color, border radius, padding, and dimensions.
+/// 
+/// @param iconPath - Path to the icon image (SVG, PNG, etc.)
+/// @param onTap - Callback function triggered when the button is tapped
+/// @param backgroundColor - Background color of the button
+/// @param width - Width of the button
+/// @param height - Height of the button  
+/// @param borderRadius - Border radius for rounded corners
+/// @param padding - Internal padding around the icon
+/// @param iconColor - Color tint for the icon (optional)
 class CustomIconButton extends StatelessWidget {
-  CustomIconButton({
-    Key? key,
+  const CustomIconButton({
+    super.key,
     this.iconPath,
     this.onTap,
     this.backgroundColor,
@@ -27,7 +25,7 @@ class CustomIconButton extends StatelessWidget {
     this.borderRadius,
     this.padding,
     this.iconColor,
-  }) : super(key: key);
+  });
 
   /// Path to the icon image (SVG, PNG, network URL, etc.)
   final String? iconPath;
@@ -63,7 +61,7 @@ class CustomIconButton extends StatelessWidget {
         height: height ?? 40.h,
         padding: padding ?? EdgeInsets.all(4.h),
         decoration: BoxDecoration(
-          color: backgroundColor ?? Color(0xFFEADDFF),
+          color: backgroundColor ?? const Color(0xFFEADDFF),
           borderRadius: BorderRadius.circular(borderRadius ?? 20.h),
         ),
         child: CustomImageView(

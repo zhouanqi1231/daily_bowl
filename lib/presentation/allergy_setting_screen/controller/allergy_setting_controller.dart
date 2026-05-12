@@ -139,7 +139,7 @@ class AllergySettingController extends GetxController {
       // 4. Success feedback
       Get.showSnackbar(GetSnackBar(
         message: 'Allergy settings updated',
-        duration: Duration(milliseconds: 800),
+        duration: const Duration(milliseconds: 800),
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.black87,
         borderRadius: 8.h,

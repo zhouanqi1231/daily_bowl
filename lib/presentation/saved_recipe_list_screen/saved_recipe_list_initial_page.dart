@@ -5,7 +5,7 @@ import '../../widgets/custom_recipe_card.dart';
 import './controller/saved_recipe_list_controller.dart';
 
 class SavedRecipeListInitialPage extends StatelessWidget {
-  SavedRecipeListInitialPage({Key? key}) : super(key: key);
+  SavedRecipeListInitialPage({super.key});
 
   final SavedRecipeListController controller = Get.put(SavedRecipeListController());
 
@@ -16,7 +16,7 @@ class SavedRecipeListInitialPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: appTheme.white_A700,
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         child: Column(
           children: [

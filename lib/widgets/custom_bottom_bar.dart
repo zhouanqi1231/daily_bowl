@@ -3,16 +3,14 @@ import 'package:flutter/material.dart';
 import '../core/app_export.dart';
 import './custom_image_view.dart';
 
-/**
- * CustomBottomBar - A customizable bottom navigation bar component
- */
+/// CustomBottomBar - A customizable bottom navigation bar component
 class CustomBottomBar extends StatelessWidget {
-  CustomBottomBar({
-    Key? key,
+  const CustomBottomBar({
+    super.key,
     required this.bottomBarItemList,
     required this.onChanged,
     this.selectedIndex = 0,
-  }) : super(key: key);
+  });
 
   final List<CustomBottomBarItem> bottomBarItemList;
   final int selectedIndex;

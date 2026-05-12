@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
@@ -239,7 +238,7 @@ class UserProfileController extends GetxController {
 
     heatmapScrollController.animateTo(
       targetOffset,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
   }
@@ -268,7 +267,7 @@ class UserProfileController extends GetxController {
     popupActivity.value = activity;
     showPopup.value = true;
 
-    _popupTimer = Timer(Duration(seconds: 4), () {
+    _popupTimer = Timer(const Duration(seconds: 4), () {
       if (!isClosed) {
         showPopup.value = false;
       }
@@ -298,8 +297,8 @@ class UserProfileController extends GetxController {
 
     Get.dialog(
       AlertDialog(
-        title: Text('Delete Recipe'),
-        content: Text('Are you sure you want to delete this recipe?'),
+        title: const Text('Delete Recipe'),
+        content: const Text('Are you sure you want to delete this recipe?'),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
@@ -318,7 +317,7 @@ class UserProfileController extends GetxController {
                 Get.snackbar('Error', 'Failed to delete recipe');
               }
             },
-            child: Text('Delete', style: TextStyle(color: Colors.red)),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

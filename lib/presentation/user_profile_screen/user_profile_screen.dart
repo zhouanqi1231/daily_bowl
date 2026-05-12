@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../core/app_export.dart';
@@ -9,7 +8,7 @@ import '../../widgets/custom_recipe_card.dart';
 import './controller/user_profile_controller.dart';
 
 class UserProfileScreen extends StatelessWidget {
-  UserProfileScreen({Key? key}) : super(key: key);
+  UserProfileScreen({super.key});
 
   final UserProfileController controller = Get.put(UserProfileController());
 
@@ -36,7 +35,7 @@ class UserProfileScreen extends StatelessWidget {
       body: RefreshIndicator(
         onRefresh: () async => controller.refreshUserProfile(),
         child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -119,7 +118,7 @@ class UserProfileScreen extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: appTheme.gray_300,
-            offset: Offset(0, 1),
+            offset: const Offset(0, 1),
             blurRadius: 4.h,
           ),
         ],
@@ -148,13 +147,13 @@ class UserProfileScreen extends StatelessWidget {
                   weeks.add(currentWeek);
                   currentWeek = [];
                 }
-                iter = iter.add(Duration(days: 1));
+                iter = iter.add(const Duration(days: 1));
               }
               if (currentWeek.isNotEmpty) {
-                DateTime fillIter = currentWeek.last.add(Duration(days: 1));
+                DateTime fillIter = currentWeek.last.add(const Duration(days: 1));
                 while (currentWeek.length < 7) {
                   currentWeek.add(fillIter);
-                  fillIter = fillIter.add(Duration(days: 1));
+                  fillIter = fillIter.add(const Duration(days: 1));
                 }
                 weeks.add(currentWeek);
               }
@@ -195,7 +194,7 @@ class UserProfileScreen extends StatelessWidget {
 
   Widget _buildActivityPopup() {
     if (controller.popupDate.value == null || controller.popupActivity.value == null) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
 
     final date = controller.popupDate.value!;
@@ -207,7 +206,7 @@ class UserProfileScreen extends StatelessWidget {
       right: 0,
       child: AnimatedOpacity(
         opacity: controller.showPopup.value ? 1.0 : 0.0,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         child: Container(
           width: 140.h,
           padding: EdgeInsets.all(8.h),
@@ -218,7 +217,7 @@ class UserProfileScreen extends StatelessWidget {
               BoxShadow(
                 color: Colors.black12,
                 blurRadius: 4.h,
-                offset: Offset(0, 2),
+                offset: const Offset(0, 2),
               ),
             ],
             border: Border.all(color: appTheme.gray_200),
@@ -280,7 +279,7 @@ class UserProfileScreen extends StatelessWidget {
     List<int> sortedMonths = monthStartWeeks.keys.toList()..sort();
     double weekColumnWidth = 18.h; 
 
-    return Container(
+    return SizedBox(
       height: 18.h,
       width: weeks.length * weekColumnWidth,
       child: Stack(
@@ -317,7 +316,7 @@ class UserProfileScreen extends StatelessWidget {
               child: Obx(() {
                 bool isSelected = controller.popupDate.value == day && controller.showPopup.value;
                 return AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   width: 16.h,
                   height: 16.h,
                   margin: EdgeInsets.all(1.h),
@@ -340,10 +339,10 @@ class UserProfileScreen extends StatelessWidget {
 
   Color _getHeatMapColor(int score) {
     if (score == -1) return Colors.transparent;
-    if (score == 0) return Color(0xB0F3F3F3);
-    if (score <= 1) return Color(0xFFACAAFF);
-    if (score <= 3) return Color(0xFF7A56FF);
-    return Color(0xFF5609C8);
+    if (score == 0) return const Color(0xB0F3F3F3);
+    if (score <= 1) return const Color(0xFFACAAFF);
+    if (score <= 3) return const Color(0xFF7A56FF);
+    return const Color(0xFF5609C8);
   }
 
   Widget _buildMonthLabel(String month) {
@@ -379,7 +378,7 @@ class UserProfileScreen extends StatelessWidget {
                   shadows: [
                     Shadow(
                       color: Colors.black,
-                      offset: Offset(0, 2),
+                      offset: const Offset(0, 2),
                       blurRadius: 4.h,
                     ),
                   ],
@@ -429,7 +428,7 @@ class UserProfileScreen extends StatelessWidget {
                             child: Container(
                               width: 48.h,
                               height: 48.h,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Colors.deepPurple,
                                 shape: BoxShape.circle,
                               ),
@@ -444,7 +443,7 @@ class UserProfileScreen extends StatelessWidget {
                             child: Container(
                               width: 48.h,
                               height: 48.h,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Color(0xFFFE4A49),
                                 shape: BoxShape.circle,
                               ),

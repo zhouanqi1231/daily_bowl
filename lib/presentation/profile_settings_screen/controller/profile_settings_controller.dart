@@ -167,7 +167,7 @@ class ProfileSettingsController extends GetxController {
 
       Get.showSnackbar(GetSnackBar(
         message: 'Profile updated successfully',
-        duration: Duration(milliseconds: 1500),
+        duration: const Duration(milliseconds: 1500),
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.black87,
         borderRadius: 8.h,

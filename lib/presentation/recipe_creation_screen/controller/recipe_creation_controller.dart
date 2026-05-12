@@ -84,7 +84,9 @@ class RecipeCreationController extends GetxController {
 
   void _disposeIngredientControllers() {
     for (var controllerMap in ingredientControllers) {
-      controllerMap.values.forEach((controller) => controller.dispose());
+      for (var controller in controllerMap.values) {
+        controller.dispose();
+      }
     }
   }
 
@@ -184,7 +186,9 @@ class RecipeCreationController extends GetxController {
   void removeIngredientRow(int index) {
     if (index >= 0 && index < ingredientControllers.length) {
       var controllerMap = ingredientControllers[index];
-      controllerMap.values.forEach((c) => c.dispose());
+      for (var c in controllerMap.values) {
+        c.dispose();
+      }
       ingredientControllers.removeAt(index);
     }
   }
@@ -212,18 +216,18 @@ class RecipeCreationController extends GetxController {
       if (cameraStatus.isGranted || storageStatus.isGranted) {
         final result = await Get.dialog<String>(
           AlertDialog(
-            title: Text('Select Image'),
+            title: const Text('Select Image'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
-                  leading: Icon(Icons.camera_alt),
-                  title: Text('Camera'),
+                  leading: const Icon(Icons.camera_alt),
+                  title: const Text('Camera'),
                   onTap: () => Get.back(result: 'camera'),
                 ),
                 ListTile(
-                  leading: Icon(Icons.photo_library),
-                  title: Text('Gallery'),
+                  leading: const Icon(Icons.photo_library),
+                  title: const Text('Gallery'),
                   onTap: () => Get.back(result: 'gallery'),
                 ),
               ],
@@ -415,7 +419,7 @@ class RecipeCreationController extends GetxController {
          Get.find<ExploreController>().refreshData(); 
       }
 
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       Get.offNamed(AppRoutes.recipeDetailScreen, arguments: {'id': currentRecipeId});
 
     } catch (e) {
@@ -429,15 +433,15 @@ class RecipeCreationController extends GetxController {
     Get.dialog(
       AlertDialog(
         title: Text(isEditMode.value ? 'Discard Changes?' : 'Discard Recipe?'),
-        content: Text('Are you sure you want to discard? All unsaved changes will be lost.'),
+        content: const Text('Are you sure you want to discard? All unsaved changes will be lost.'),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
               Get.back();
               Get.back();
             },
-            child: Text('Discard'),
+            child: const Text('Discard'),
           ),
         ],
       ),

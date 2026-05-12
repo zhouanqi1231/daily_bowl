@@ -10,7 +10,7 @@ import './controller/allergy_setting_controller.dart';
 /// This screen displays a list of common allergies that the user can toggle
 /// to update their profile settings.
 class AllergySettingScreen extends GetWidget<AllergySettingController> {
-  const AllergySettingScreen({Key? key}) : super(key: key);
+  const AllergySettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class AllergySettingScreen extends GetWidget<AllergySettingController> {
       child: Obx(
         () => ListView.separated(
           padding: EdgeInsets.only(bottom: 24.h),
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           shrinkWrap: true,
           separatorBuilder: (context, index) => SizedBox(height: 12.h),
           itemCount: controller.allergyItems.length,

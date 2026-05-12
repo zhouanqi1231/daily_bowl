@@ -16,7 +16,7 @@ import './saved_recipe_list_initial_page.dart';
 // Modified: Added missing import
 
 class SavedRecipeListScreen extends GetWidget<SavedRecipeListController> {
-  SavedRecipeListScreen({Key? key}) : super(key: key);
+  const SavedRecipeListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -94,13 +94,13 @@ class SavedRecipeListScreen extends GetWidget<SavedRecipeListController> {
       case AppRoutes.userProfileScreen:
         return UserProfileScreen();
       case AppRoutes.recipeCreationScreen:
-        return RecipeCreationScreen(); // Modified: Fixed undefined method by adding import
+        return const RecipeCreationScreen(); // Modified: Fixed undefined method by adding import
       case AppRoutes.weeklyNutritionReportScreen:
-        return WeeklyNutritionReportScreen(); // Modified: Fixed undefined method by adding import
+        return const WeeklyNutritionReportScreen(); // Modified: Fixed undefined method by adding import
       case AppRoutes.settingsMenuScreen:
-        return SettingsMenuScreen(); // Modified: Fixed undefined method by adding import
+        return const SettingsMenuScreen(); // Modified: Fixed undefined method by adding import
       case AppRoutes.allergySettingScreen:
-        return AllergySettingScreen(); // Modified: Fixed undefined method by adding import
+        return const AllergySettingScreen(); // Modified: Fixed undefined method by adding import
       default:
         return SavedRecipeListInitialPage();
     }

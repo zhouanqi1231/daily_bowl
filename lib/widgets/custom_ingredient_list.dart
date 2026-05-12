@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../core/app_export.dart';
 
-/** CustomIngredientList - A reusable component for displaying ingredient names and quantities in a structured list format with consistent styling and spacing */
+/// CustomIngredientList - A reusable component for displaying ingredient names and quantities in a structured list format with consistent styling and spacing
 class CustomIngredientList extends StatelessWidget {
-  CustomIngredientList({
-    Key? key,
+  const CustomIngredientList({
+    super.key,
     required this.ingredientList,
     this.textStyle,
     this.spacing,
     this.margin,
-  }) : super(key: key);
+  });
 
   /// List of ingredients with names and quantities
   final List<IngredientItem> ingredientList;

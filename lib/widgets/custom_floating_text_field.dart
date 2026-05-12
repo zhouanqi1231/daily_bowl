@@ -3,36 +3,34 @@ import 'package:flutter/services.dart';
 
 import '../core/app_export.dart';
 
-/**
- * CustomFloatingTextField - A Material Design floating label text field component
- * 
- * Features:
- * - Floating label animation
- * - Customizable input types and keyboard types  
- * - Validator support for form validation
- * - Responsive design using SizeUtils
- * - Material Design styling with custom colors
- * 
- * @param placeholder - The placeholder/label text
- * @param validator - Optional validation function
- * @param keyboardType - Keyboard type based on input type
- * @param inputFormatters - Optional input formatters for validation
- * @param controller - Text editing controller
- * @param focusNode - Optional focus node for accessibility and autocomplete
- * @param onChanged - Callback when text changes
- * @param enabled - Whether the field is enabled
- * @param maxLines - Maximum number of lines
- * @param width - Custom width for the field
- * @param topMargin - Top margin spacing
- * @param topPadding - Additional top padding for content
- * @param textStyle - Optional custom text style
- * @param labelStyle - Optional custom label style
- * @param obscureText - Whether the text is obscured (for passwords)
- * @param suffixIcon - Optional suffix icon widget
- */
+/// CustomFloatingTextField - A Material Design floating label text field component
+/// 
+/// Features:
+/// - Floating label animation
+/// - Customizable input types and keyboard types  
+/// - Validator support for form validation
+/// - Responsive design using SizeUtils
+/// - Material Design styling with custom colors
+/// 
+/// @param placeholder - The placeholder/label text
+/// @param validator - Optional validation function
+/// @param keyboardType - Keyboard type based on input type
+/// @param inputFormatters - Optional input formatters for validation
+/// @param controller - Text editing controller
+/// @param focusNode - Optional focus node for accessibility and autocomplete
+/// @param onChanged - Callback when text changes
+/// @param enabled - Whether the field is enabled
+/// @param maxLines - Maximum number of lines
+/// @param width - Custom width for the field
+/// @param topMargin - Top margin spacing
+/// @param topPadding - Additional top padding for content
+/// @param textStyle - Optional custom text style
+/// @param labelStyle - Optional custom label style
+/// @param obscureText - Whether the text is obscured (for passwords)
+/// @param suffixIcon - Optional suffix icon widget
 class CustomFloatingTextField extends StatelessWidget {
-  CustomFloatingTextField({
-    Key? key,
+  const CustomFloatingTextField({
+    super.key,
     required this.placeholder,
     this.validator,
     this.keyboardType,
@@ -49,7 +47,7 @@ class CustomFloatingTextField extends StatelessWidget {
     this.labelStyle,
     this.obscureText = false,
     this.suffixIcon,
-  }) : super(key: key);
+  });
 
   /// Placeholder text that becomes the floating label
   final String placeholder;

@@ -6,7 +6,7 @@ import '../../widgets/custom_floating_text_field.dart';
 import './controller/profile_settings_controller.dart';
 
 class ProfileSettingsScreen extends GetWidget<ProfileSettingsController> {
-  ProfileSettingsScreen({Key? key}) : super(key: key);
+  const ProfileSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

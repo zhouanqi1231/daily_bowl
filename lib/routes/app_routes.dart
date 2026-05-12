@@ -31,6 +31,7 @@ import '../presentation/profile_settings_screen/binding/profile_settings_binding
 class AppRoutes {
   static const String mainContainer = '/main_container';
   static const String categoryScreen = '/category_screen';
+  static const String recipe_creation_screen = '/recipe_creation_screen'; // Fixed typo if needed or kept consistent
   static const String recipeCreationScreen = '/recipe_creation_screen';
   static const String weeklyNutritionReportScreen =
       '/weekly_nutrition_report_screen';
@@ -56,7 +57,7 @@ class AppRoutes {
       page: () => MainContainerScreen(),
       bindings: [
         LoginBinding(),
-        RegisterBinding(), // Added RegisterBinding here
+        RegisterBinding(), 
       ],
     ),
     GetPage(
@@ -65,12 +66,12 @@ class AppRoutes {
     ),
     GetPage(
       name: recipeCreationScreen,
-      page: () => RecipeCreationScreen(),
+      page: () => const RecipeCreationScreen(),
       bindings: [RecipeCreationBinding()],
     ),
     GetPage(
       name: weeklyNutritionReportScreen,
-      page: () => WeeklyNutritionReportScreen(),
+      page: () => const WeeklyNutritionReportScreen(),
       bindings: [WeeklyNutritionReportBinding()],
     ),
     GetPage(
@@ -80,17 +81,17 @@ class AppRoutes {
     ),
     GetPage(
       name: savedRecipeListScreen,
-      page: () => SavedRecipeListScreen(),
+      page: () => const SavedRecipeListScreen(),
       bindings: [SavedRecipeListBinding()],
     ),
     GetPage(
       name: settingsMenuScreen,
-      page: () => SettingsMenuScreen(),
+      page: () => const SettingsMenuScreen(),
       bindings: [SettingsMenuBinding()],
     ),
     GetPage(
       name: allergySettingScreen,
-      page: () => AllergySettingScreen(),
+      page: () => const AllergySettingScreen(),
       bindings: [AllergySettingBinding()],
     ),
     GetPage(
@@ -105,22 +106,22 @@ class AppRoutes {
     ),
     GetPage(
       name: categorizedRecipePage,
-      page: () => CategorizedRecipePage(),
+      page: () => const CategorizedRecipePage(),
       bindings: [CategorizedRecipeBinding()],
     ),
     GetPage(
       name: loginScreen,
-      page: () => LoginScreen(),
+      page: () => const LoginScreen(),
       bindings: [LoginBinding()],
     ),
     GetPage(
       name: registerScreen,
-      page: () => RegisterScreen(),
+      page: () => const RegisterScreen(),
       bindings: [RegisterBinding()],
     ),
     GetPage(
       name: appNavigationScreen,
-      page: () => AppNavigationScreen(),
+      page: () => const AppNavigationScreen(),
       bindings: [AppNavigationBinding()],
     ),
     GetPage(
@@ -128,7 +129,7 @@ class AppRoutes {
       page: () => MainContainerScreen(),
       bindings: [
         LoginBinding(),
-        RegisterBinding(), // Added RegisterBinding here as well
+        RegisterBinding(), 
       ],
     ),
   ];

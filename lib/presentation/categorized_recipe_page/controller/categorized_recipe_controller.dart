@@ -69,7 +69,7 @@ class CategorizedRecipeController extends GetxController {
       }
 
       if (params.isNotEmpty) {
-        endpoint += '?' + params.join('&');
+        endpoint += '?${params.join('&')}';
       }
 
       final response = await ApiClient.get(endpoint);

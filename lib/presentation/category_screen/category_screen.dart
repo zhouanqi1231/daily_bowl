@@ -9,7 +9,7 @@ import './models/category_model.dart';
 /// Each category item displays the cuisine name, the number of recipes available,
 /// and a representative image.
 class CategoryScreen extends StatelessWidget {
-  CategoryScreen({Key? key}) : super(key: key);
+  CategoryScreen({super.key});
 
   final CategoryController controller = Get.put(CategoryController());
 
@@ -41,7 +41,7 @@ class CategoryScreen extends StatelessWidget {
           onRefresh: () => controller.fetchCategories(),
           child: GridView.builder(
             padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 40.h),
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: 16.h,
@@ -74,7 +74,7 @@ class CategoryScreen extends StatelessWidget {
             BoxShadow(
               color: appTheme.gray_300.withOpacity(0.3),
               blurRadius: 4.h,
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
             ),
           ],
         ),

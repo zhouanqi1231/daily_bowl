@@ -10,7 +10,7 @@ import './controller/explore_controller.dart';
 /// This screen includes features like pull-to-refresh, infinite scrolling,
 /// and a floating action button for creating new recipes (when logged in).
 class ExploreScreen extends StatelessWidget {
-  ExploreScreen({Key? key}) : super(key: key);
+  ExploreScreen({super.key});
 
   final ExploreController controller = Get.put(ExploreController());
 

@@ -5,7 +5,7 @@ import '../../widgets/custom_recipe_card.dart';
 import './controller/categorized_recipe_controller.dart';
 
 class CategorizedRecipePageInitialPage extends StatelessWidget {
-  CategorizedRecipePageInitialPage({Key? key}) : super(key: key);
+  CategorizedRecipePageInitialPage({super.key});
 
   final CategorizedRecipeController controller = Get.put(
     CategorizedRecipeController(),

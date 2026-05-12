@@ -11,15 +11,15 @@ import './custom_image_view.dart';
 /// - Responsive design with SizeUtils
 /// - Consistent styling with configurable properties
 class CustomButton extends StatelessWidget {
-  CustomButton({
-    Key? key,
+  const CustomButton({
+    super.key,
     required this.text,
     required this.width,
     this.backgroundColor,
     this.textColor,
     this.leftIcon,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   /// The text to display on the button
   final String text;
@@ -46,7 +46,7 @@ class CustomButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? Color(0xFFE8DEF8),
+          backgroundColor: backgroundColor ?? const Color(0xFFE8DEF8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24.h),
           ),
@@ -64,7 +64,7 @@ class CustomButton extends StatelessWidget {
             Text(
               text,
               style: TextStyleHelper.instance.body14MediumRoboto.copyWith(
-                color: textColor ?? Color(0xFF4A4459),
+                color: textColor ?? const Color(0xFF4A4459),
               ),
             ),
           ],

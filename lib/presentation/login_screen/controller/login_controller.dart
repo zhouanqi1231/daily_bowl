@@ -45,7 +45,7 @@ class LoginController extends GetxController {
     FocusManager.instance.primaryFocus?.unfocus();
     
     // Use a small delay to ensure keyboard is hiding
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
 
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       Get.snackbar('Error', 'Please enter both email and password');

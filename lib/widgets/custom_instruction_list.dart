@@ -2,27 +2,25 @@ import 'package:flutter/material.dart';
 
 import '../core/app_export.dart';
 
-/** 
- * CustomInstructionList - A reusable component for displaying a vertical list of text instructions.
- * 
- * This component renders a series of instructions in a column layout with consistent spacing
- * and typography. Perfect for recipe steps, tutorial instructions, or any sequential text content.
- * 
- * @param instructions List of instruction text strings to display
- * @param textStyle Optional custom text style for the instructions
- * @param spacing Vertical spacing between instruction items
- * @param alignment Cross axis alignment for the column
- * @param padding Optional padding around the entire instruction list
- */
+/// CustomInstructionList - A reusable component for displaying a vertical list of text instructions.
+/// 
+/// This component renders a series of instructions in a column layout with consistent spacing
+/// and typography. Perfect for recipe steps, tutorial instructions, or any sequential text content.
+/// 
+/// @param instructions List of instruction text strings to display
+/// @param textStyle Optional custom text style for the instructions
+/// @param spacing Vertical spacing between instruction items
+/// @param alignment Cross axis alignment for the column
+/// @param padding Optional padding around the entire instruction list
 class CustomInstructionList extends StatelessWidget {
-  CustomInstructionList({
-    Key? key,
+  const CustomInstructionList({
+    super.key,
     required this.instructions,
     this.textStyle,
     this.spacing,
     this.alignment,
     this.padding,
-  }) : super(key: key);
+  });
 
   /// List of instruction text strings to display
   final List<String> instructions;
