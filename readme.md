@@ -1,6 +1,6 @@
 <div align="center">
 
-# Daily Bowl
+<h1>Daily Bowl</h1>
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![GetX](https://img.shields.io/badge/GetX-8C2CE6?style=for-the-badge&logo=dart&logoColor=white)](https://pub.dev/packages/get)
@@ -106,13 +106,41 @@ flutter run
 2. Select your target device from the device selector.
 3. Press **F5** (VS Code) or the **Run** icon (Android Studio).
 
-# Deploy as a Web Application
+# Compile and Deploy
 
+## Android
+Use Android Studio to conveniently compile the Flutter project into an Android release APK. You can generate the APK via the IDE interface (Build > Flutter > Build APK) or run the following command in your terminal:
 
+```bash
+flutter build apk --release
+````
 
-# 7 Download the Mobile App
+The generated APK can be found at `build/app/outputs/flutter-apk/app-release.apk`.
 
-Download the Released Apk from the Release.
+## Web Application
 
+You can also use the terminal to compile the project into web pages. The compilation yields a set of static web files which you can deploy anywhere (Nginx, Vercel, Firebase, etc.). In our case, we deployed it on **GitHub Pages**.
 
+**1. Build the Web Release**
 
+If you are deploying to a GitHub project repository (e.g., `https://<username>.github.io/<repository-name>/`), you must specify the `base-href` to ensure assets load correctly:
+
+```bash
+flutter build web --base-href "/<repository-name>/"
+```
+
+_(Note: If deploying to a root user site `https://<username>.github.io/`, simply use `flutter build web`)_
+
+**2. Fix SPA Routing (GitHub Pages Specific)**
+
+Because Flutter Web is a Single Page Application (SPA), direct links or page refreshes will result in a 404 error on GitHub Pages. To fix this, copy the generated `index.html` and rename it to `404.html` in the build output directory.
+
+**3. Deploy**
+
+Push the entire contents of the `build/web` directory to your target GitHub repository. Then, navigate to your repository's **Settings > Pages** and set the source branch (e.g., `main`) to deploy your site.
+
+# 7 Try the client
+
+Download the Released Apk from the Release page. 
+
+Or visit this Web app: https://zhouanqi1231.github.io/daily_bowl_page/
