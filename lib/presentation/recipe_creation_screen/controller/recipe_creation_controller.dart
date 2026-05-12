@@ -328,8 +328,7 @@ class RecipeCreationController extends GetxController {
          Get.find<ExploreController>().refreshData(); 
       }
 
-      await Future.delayed(Duration(milliseconds: 800));
-      Get.back();
+      Get.offNamed(AppRoutes.recipeDetailScreen, arguments: {'id': currentRecipeId});
 
     } catch (e) {
       isLoading.value = false;
