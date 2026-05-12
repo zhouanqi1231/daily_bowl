@@ -29,7 +29,7 @@ class CustomRecipeCard extends StatelessWidget {
         height: 80.h,
         decoration: BoxDecoration(
           color: appTheme.gray_50,
-          border: Border.all(color: appTheme.blue_gray_100, width: 1.h),
+          border: Border.all(color: appTheme.blueGray100, width: 1.h),
           borderRadius: BorderRadius.circular(12.h),
         ),
         child: Row(

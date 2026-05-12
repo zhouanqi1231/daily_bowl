@@ -38,7 +38,7 @@ class RecipeCardItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: appTheme.gray_50,
           borderRadius: BorderRadius.circular(12.h),
-          border: Border.all(color: appTheme.blue_gray_100, width: 1.h),
+          border: Border.all(color: appTheme.blueGray100, width: 1.h),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
