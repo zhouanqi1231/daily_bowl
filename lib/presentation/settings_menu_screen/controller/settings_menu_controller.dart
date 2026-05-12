@@ -28,16 +28,7 @@ class SettingsMenuController extends GetxController {
   }
 
   void onProfileSettingsTap() {
-    // Show "under development" snackbar as requested
-    Get.snackbar(
-      'Notice',
-      'Under development',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.black87,
-      colorText: Colors.white,
-      duration: Duration(seconds: 2),
-      margin: EdgeInsets.all(16.h),
-    );
+    Get.toNamed(AppRoutes.profileSettingsScreen);
   }
 
   void onMyAllergiesTap() {
