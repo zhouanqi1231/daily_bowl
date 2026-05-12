@@ -11,7 +11,7 @@ class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.deep_purple_50,
+      backgroundColor: appTheme.deepPurple50,
       appBar: CustomAppBar(
         leadingIcon: ImageConstant.imgArrowLeft,
         onLeadingTap: () => Get.back(),

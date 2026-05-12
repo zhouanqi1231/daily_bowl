@@ -59,12 +59,10 @@ class LightCodeColors {
   Color get gray_900_01 => const Color(0xFF212121);
   
   Color get blueGray100 => const Color(0xFFCAC4D0);
-  Color get blue_gray_400 => const Color(0xFF8E8D8D);
-  Color get blue_gray_800 => const Color(0xFF4A4459);
-  Color get blue_gray_800_01 => const Color(0xFF414D55);
+  Color get blueGray400 => const Color(0xFF8E8D8D);
+  Color get blueGray800 => const Color(0xFF4A4459);
   
-  Color get deep_purple_50 => const Color(0xFFE8DEF8);
-  Color get deep_purple_50_01 => const Color(0xFFECE6F0);
+  Color get deepPurple50 => const Color(0xFFE8DEF8);
   Color get deep_purple_300 => const Color(0xFF9F86C6);
   Color get deep_purple_800 => const Color(0xFF4F378A);
   

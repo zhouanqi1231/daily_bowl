@@ -339,8 +339,8 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
         CustomButton(
           text: "Add more ingredients",
           width: double.infinity,
-          backgroundColor: appTheme.deep_purple_50,
-          textColor: appTheme.blue_gray_800,
+          backgroundColor: appTheme.deepPurple50,
+          textColor: appTheme.blueGray800,
           leftIcon: ImageConstant.imgIconBlueGray800,
           onPressed: () => controller.addIngredientRow(),
         ),
@@ -402,8 +402,8 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
         CustomButton(
           text: "Add more steps",
           width: double.infinity,
-          backgroundColor: appTheme.deep_purple_50,
-          textColor: appTheme.blue_gray_800,
+          backgroundColor: appTheme.deepPurple50,
+          textColor: appTheme.blueGray800,
           leftIcon: ImageConstant.imgIconBlueGray800,
           onPressed: () => controller.addStepRow(),
         ),

@@ -68,7 +68,7 @@ class CategoryScreen extends StatelessWidget {
       onTap: () => controller.onCategoryTap(category),
       child: Container(
         decoration: BoxDecoration(
-          color: appTheme.deep_purple_50,
+          color: appTheme.deepPurple50,
           borderRadius: BorderRadius.circular(16.h),
           boxShadow: [
             BoxShadow(

@@ -68,7 +68,7 @@ class RecipeCardItem extends StatelessWidget {
             height: 40.h,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: appTheme.deep_purple_50,
+              color: appTheme.deepPurple50,
               borderRadius: BorderRadius.circular(20.h),
             ),
             child: Text(

@@ -120,7 +120,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
             children: [
               CustomIconButton(
                 iconPath: ImageConstant.imgGenericAvatar,
-                backgroundColor: appTheme.deep_purple_50,
+                backgroundColor: appTheme.deepPurple50,
                 width: 40.h,
                 height: 40.h,
                 borderRadius: 20.h,
@@ -317,7 +317,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               backgroundColor:
                   controller.isSaved.value
                       ? appTheme.deep_purple_800
-                      : appTheme.deep_purple_50,
+                      : appTheme.deepPurple50,
               child: Icon( 
                 controller.isSaved.value ? Icons.star : Icons.star_border, // Changed to star icon
                 color:

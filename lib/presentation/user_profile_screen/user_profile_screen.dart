@@ -87,7 +87,7 @@ class UserProfileScreen extends StatelessWidget {
                       () => Text(
                         "${controller.userProfileModel.value?.recipeCount?.value ?? 0} Recipes",
                         style: TextStyleHelper.instance.body14MediumRoboto
-                            .copyWith(color: appTheme.blue_gray_400),
+                            .copyWith(color: appTheme.blueGray400),
                       ),
                     ),
                     SizedBox(width: 24.h),
@@ -95,7 +95,7 @@ class UserProfileScreen extends StatelessWidget {
                       () => Text(
                         "${controller.userProfileModel.value?.saveCount?.value ?? 0} Saves",
                         style: TextStyleHelper.instance.body14MediumRoboto
-                            .copyWith(color: appTheme.blue_gray_400),
+                            .copyWith(color: appTheme.blueGray400),
                       ),
                     ),
                   ],
@@ -229,7 +229,7 @@ class UserProfileScreen extends StatelessWidget {
               Text(
                 dateStr,
                 style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
-                  color: appTheme.blue_gray_400,
+                  color: appTheme.blueGray400,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -324,7 +324,7 @@ class UserProfileScreen extends StatelessWidget {
                     color: _getHeatMapColor(score),
                     borderRadius: BorderRadius.circular(0.h),
                     border: Border.all(
-                      color: isSelected ? appTheme.blue_gray_400 : Colors.transparent,
+                      color: isSelected ? appTheme.blueGray400 : Colors.transparent,
                       width: 1.8.h,
                     ),
                   ),

@@ -47,7 +47,7 @@ class CustomBottomBar extends StatelessWidget {
           width: 56.h,
           decoration: isSelected
               ? BoxDecoration(
-                  color: appTheme.deep_purple_50,
+                  color: appTheme.deepPurple50,
                   borderRadius: BorderRadius.circular(16.h),
                 )
               : null,
