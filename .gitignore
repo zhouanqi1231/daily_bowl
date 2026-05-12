@@ -9,3 +9,6 @@
 /.idea/.wiseGPT/
 /ios/Podfile
 /pubspec.lock
+
+swagger.yaml
+log

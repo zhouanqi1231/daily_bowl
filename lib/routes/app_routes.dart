@@ -6,11 +6,12 @@ import '../presentation/saved_recipe_list_screen/saved_recipe_list_screen.dart';
 import '../presentation/settings_menu_screen/settings_menu_screen.dart';
 import '../presentation/allergy_setting_screen/allergy_setting_screen.dart';
 import '../presentation/recipe_detail_screen/recipe_detail_screen.dart';
-import '../presentation/recipe_search_results_screen/recipe_search_results_screen.dart';
+import '../presentation/categorized_recipe_page/categorized_recipe_page.dart';
 import '../presentation/main_container_screen/main_container_screen.dart';
 import '../presentation/category_screen/category_screen.dart';
 import '../presentation/login_screen/login_screen.dart';
 import '../presentation/register_screen/register_screen.dart';
+import '../presentation/profile_settings_screen/profile_settings_screen.dart';
 
 import '../presentation/recipe_creation_screen/binding/recipe_creation_binding.dart';
 import '../presentation/weekly_nutrition_report_screen/binding/weekly_nutrition_report_binding.dart';
@@ -21,9 +22,10 @@ import '../presentation/allergy_setting_screen/binding/allergy_setting_binding.d
 import '../presentation/app_navigation_screen/app_navigation_screen.dart';
 import '../presentation/app_navigation_screen/binding/app_navigation_binding.dart';
 import '../presentation/recipe_detail_screen/binding/recipe_detail_binding.dart';
-import '../presentation/recipe_search_results_screen/binding/recipe_search_results_binding.dart';
+import '../presentation/categorized_recipe_page/binding/categorized_recipe_binding.dart';
 import '../presentation/login_screen/binding/login_binding.dart';
 import '../presentation/register_screen/binding/register_binding.dart';
+import '../presentation/profile_settings_screen/binding/profile_settings_binding.dart';
 
 // ignore_for_file: must_be_immutable
 class AppRoutes {
@@ -39,10 +41,11 @@ class AppRoutes {
   static const String settingsMenuScreen = '/settings_menu_screen';
   static const String allergySettingScreen = '/allergy_setting_screen';
   static const String recipeDetailScreen = '/recipe_detail_screen';
-  static const String recipeSearchResultsScreen =
-      '/recipe_search_results_screen';
+  static const String categorizedRecipePage =
+      '/categorized_recipe_page';
   static const String loginScreen = '/login_screen';
   static const String registerScreen = '/register_screen';
+  static const String profileSettingsScreen = '/profile_settings_screen';
 
   static const String appNavigationScreen = '/app_navigation_screen';
   static const String initialRoute = '/';
@@ -91,14 +94,19 @@ class AppRoutes {
       bindings: [AllergySettingBinding()],
     ),
     GetPage(
+      name: profileSettingsScreen,
+      page: () => ProfileSettingsScreen(),
+      bindings: [ProfileSettingsBinding()],
+    ),
+    GetPage(
       name: recipeDetailScreen,
       page: () => RecipeDetailScreen(),
       bindings: [RecipeDetailBinding()],
     ),
     GetPage(
-      name: recipeSearchResultsScreen,
-      page: () => RecipeSearchResultsScreen(),
-      bindings: [RecipeSearchResultsBinding()],
+      name: categorizedRecipePage,
+      page: () => CategorizedRecipePage(),
+      bindings: [CategorizedRecipeBinding()],
     ),
     GetPage(
       name: loginScreen,

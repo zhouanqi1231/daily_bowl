@@ -1,6 +1,6 @@
 import '../../../core/app_export.dart';
 
-/// This class is used for individual recipe items in the recipe search results screen.
+/// This class is used for individual recipe items in the categorized recipe page.
 class RecipeItemModel {
   int? id;
   Rx<String>? userInitial;

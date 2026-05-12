@@ -66,16 +66,20 @@ class CustomIngredientsList extends StatelessWidget {
         Expanded(
           child: Text(
             ingredient.name ?? '',
-            style: TextStyleHelper.instance.bodyTextRoboto.copyWith(
+            style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
               color: textColor ?? Color(0xFF000000),
+              fontSize: fontSize?.fSize,
+              fontWeight: fontWeight,
               height: 1.25,
             ),
           ),
         ),
         Text(
           ingredient.quantity ?? '',
-          style: TextStyleHelper.instance.bodyTextRoboto.copyWith(
+          style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
             color: textColor ?? Color(0xFF000000),
+            fontSize: fontSize?.fSize,
+            fontWeight: fontWeight,
             height: 1.25,
           ),
         ),

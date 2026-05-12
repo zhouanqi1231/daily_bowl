@@ -74,7 +74,7 @@ class AppNavigationScreen extends GetWidget<AppNavigationController> {
                         screenTitle: "Explore",
                         onTapScreenTitle: () => onTapScreenTitle(
                           context,
-                          AppRoutes.recipeSearchResultsScreen,
+                          AppRoutes.categorizedRecipePage,
                         ),
                       ),
                       _buildScreenTitle(

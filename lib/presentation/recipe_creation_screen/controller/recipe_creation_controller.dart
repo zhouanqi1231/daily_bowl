@@ -23,7 +23,14 @@ class RecipeCreationController extends GetxController {
   late TextEditingController cuisineTypeController;
   late TextEditingController servingsController;
   late TextEditingController cookingMethodController;
-  
+  late TextEditingController imageUrlController;
+
+  // List of all ingredients from server for suggestions
+  final allIngredients = <String>[].obs;
+
+  // Edit mode variables
+  final isEditMode = false.obs;
+  int? recipeId;
 
   // Image picker
   final ImagePicker _imagePicker = ImagePicker();
@@ -33,6 +40,14 @@ class RecipeCreationController extends GetxController {
     super.onInit();
     _initializeControllers();
     recipeCreationModel.value = RecipeCreationModel();
+    _fetchIngredients();
+    
+    // Check for edit mode
+    if (Get.arguments != null && Get.arguments['id'] != null) {
+      isEditMode.value = true;
+      recipeId = Get.arguments['id'];
+      _loadRecipeData(recipeId!);
+    }
   }
 
   @override
@@ -46,6 +61,7 @@ class RecipeCreationController extends GetxController {
     cuisineTypeController = TextEditingController();
     servingsController = TextEditingController();
     cookingMethodController = TextEditingController();
+    imageUrlController = TextEditingController();
     
     // Initialize with 1 ingredient row by default
     addIngredientRow();
@@ -56,11 +72,104 @@ class RecipeCreationController extends GetxController {
 
   void _disposeControllers() {
     titleController.dispose();
+    cuisineTypeController.dispose();
+    servingsController.dispose();
+    cookingMethodController.dispose();
+    imageUrlController.dispose();
+    _disposeIngredientControllers();
     for (var controller in stepControllers) {
       controller.dispose();
     }
+  }
+
+  void _disposeIngredientControllers() {
     for (var controllerMap in ingredientControllers) {
       controllerMap.values.forEach((controller) => controller.dispose());
+    }
+  }
+
+  Future<void> _fetchIngredients() async {
+    try {
+      final response = await ApiClient.get('/ingredients/');
+      if (response is List) {
+        allIngredients.value = response
+            .map((e) => e['name']?.toString() ?? "")
+            .where((name) => name.isNotEmpty)
+            .toList();
+      }
+    } catch (e) {
+      print("Error fetching ingredients for suggestions: $e");
+    }
+  }
+
+  Future<void> _loadRecipeData(int id) async {
+    isLoading.value = true;
+    try {
+      final recipe = await ApiClient.get('/recipes/$id/');
+      titleController.text = recipe['title'] ?? '';
+      cuisineTypeController.text = recipe['cuisine_type'] ?? '';
+      servingsController.text = (recipe['servings'] ?? 1).toString();
+      cookingMethodController.text = recipe['cooking_method'] ?? '';
+      imageUrlController.text = recipe['img_url'] ?? '';
+
+      // Load steps
+      String procedure = recipe['procedure'] ?? '';
+      if (procedure.isNotEmpty) {
+        stepControllers.clear();
+        List<String> steps = procedure.split(RegExp(r'\d+\.\s*|\n'))
+            .map((s) => s.trim())
+            .where((s) => s.isNotEmpty)
+            .toList();
+            
+        for (var step in steps) {
+          stepControllers.add(TextEditingController(text: step));
+        }
+      }
+      if (stepControllers.isEmpty) {
+        addStepRow();
+      }
+
+      // Load ingredients
+      final ingredientsData = await ApiClient.get('/recipes/$id/ingredients/');
+      if (ingredientsData is List && ingredientsData.isNotEmpty) {
+        var ingredientFutures = ingredientsData.map((item) async {
+          int? ingId = item['ingredient_id'];
+          String name = item['ingredient_name'] ?? "";
+          
+          if (name.isEmpty && ingId != null) {
+            try {
+              final ingDetail = await ApiClient.get('/ingredients/$ingId/');
+              name = ingDetail['name'] ?? "Unknown Ingredient";
+            } catch (e) {
+              name = "Unknown Ingredient";
+            }
+          }
+          
+          return {
+            'name': name,
+            'quantity': (item['amount'] ?? '').toString(),
+            'unit': item['unit'] ?? 'g',
+          };
+        }).toList();
+
+        final results = await Future.wait(ingredientFutures);
+        
+        _disposeIngredientControllers();
+        ingredientControllers.assignAll(results.map((res) => {
+          'name': TextEditingController(text: res['name'] as String),
+          'quantity': TextEditingController(text: res['quantity'] as String),
+          'unit': TextEditingController(text: res['unit'] as String),
+        }).toList());
+      } else {
+        _disposeIngredientControllers();
+        ingredientControllers.clear();
+        addIngredientRow();
+      }
+    } catch (e) {
+      print("Error loading recipe for edit: $e");
+      Get.snackbar('Error', 'Failed to load recipe details');
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -68,22 +177,39 @@ class RecipeCreationController extends GetxController {
     ingredientControllers.add({
       'name': TextEditingController(),
       'quantity': TextEditingController(),
-      'unit': TextEditingController(text: 'g'), // Default unit to 'g'
+      'unit': TextEditingController(text: 'g'),
     });
+  }
+
+  void removeIngredientRow(int index) {
+    if (index >= 0 && index < ingredientControllers.length) {
+      var controllerMap = ingredientControllers[index];
+      controllerMap.values.forEach((c) => c.dispose());
+      ingredientControllers.removeAt(index);
+    }
   }
 
   void addStepRow() {
     stepControllers.add(TextEditingController());
   }
 
+  void removeStepRow(int index) {
+    if (index >= 0 && index < stepControllers.length) {
+      stepControllers[index].dispose();
+      stepControllers.removeAt(index);
+    }
+  }
+
+  void onUploadClicked() {
+    pickImage();
+  }
+
   Future<void> pickImage() async {
     try {
-      // Request camera permission
       var cameraStatus = await Permission.camera.request();
       var storageStatus = await Permission.storage.request();
 
       if (cameraStatus.isGranted || storageStatus.isGranted) {
-        // Show dialog to choose between camera and gallery
         final result = await Get.dialog<String>(
           AlertDialog(
             title: Text('Select Image'),
@@ -107,9 +233,7 @@ class RecipeCreationController extends GetxController {
 
         if (result != null) {
           final XFile? pickedFile = await _imagePicker.pickImage(
-            source: result == 'camera'
-                ? ImageSource.camera
-                : ImageSource.gallery,
+            source: result == 'camera' ? ImageSource.camera : ImageSource.gallery,
             maxWidth: 800,
             maxHeight: 800,
             imageQuality: 85,
@@ -118,111 +242,54 @@ class RecipeCreationController extends GetxController {
           if (pickedFile != null) {
             selectedImage.value = File(pickedFile.path);
             recipeCreationModel.value?.imagePath?.value = pickedFile.path;
+            imageUrlController.clear();
           }
         }
       } else {
-        Get.snackbar(
-          'Permission Required',
-          'Camera and storage permissions are needed to add photos',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        Get.snackbar('Permission Required', 'Camera and storage permissions are needed');
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to pick image. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('Error', 'Failed to pick image');
     }
   }
 
   String? validateTitle(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter a recipe title';
-    }
-    if (value.trim().length < 3) {
-      return 'Title must be at least 3 characters';
-    }
+    if (value == null || value.trim().isEmpty) return 'Please enter a recipe title';
+    if (value.trim().length < 3) return 'Title must be at least 3 characters';
     return null;
   }
 
   String? validateIngredientName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter ingredient name';
-    }
+    if (value == null || value.trim().isEmpty) return 'Please enter ingredient name';
     return null;
   }
 
   String? validateIngredientQuantity(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter quantity';
-    }
-    if (double.tryParse(value) == null) {
-      return 'Please enter a valid number';
-    }
-    return null;
-  }
-
-  String? validateIngredientUnit(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter unit';
-    }
-    if (value != 'g' && value != 'ml') {
-      return 'Invalid unit';
-    }
+    if (value == null || value.trim().isEmpty) return 'Please enter quantity';
+    if (double.tryParse(value) == null) return 'Please enter a valid number';
     return null;
   }
 
   String? validateStep(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter step instruction';
-    }
-    if (value.trim().length < 10) {
-      return 'Step instruction should be more detailed';
-    }
+    if (value == null || value.trim().isEmpty) return 'Please enter step instruction';
+    if (value.trim().length < 5) return 'Step instruction too short';
     return null;
   }
 
   bool _validateForm() {
-    if (!formKey.currentState!.validate()) {
-      return false;
-    }
+    if (!formKey.currentState!.validate()) return false;
 
-    // Check if at least one ingredient is filled
-    bool hasIngredient = false;
-    for (var controllerMap in ingredientControllers) {
-      if (controllerMap['name']!.text.trim().isNotEmpty &&
-          controllerMap['quantity']!.text.trim().isNotEmpty &&
-          controllerMap['unit']!.text.trim().isNotEmpty) {
-        hasIngredient = true;
-        break;
-      }
-    }
+    bool hasIngredient = ingredientControllers.any((c) => 
+      c['name']!.text.trim().isNotEmpty && c['quantity']!.text.trim().isNotEmpty);
 
     if (!hasIngredient) {
-      Get.snackbar(
-        'Incomplete Recipe',
-        'Please add at least one complete ingredient',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('Incomplete Recipe', 'Please add at least one complete ingredient');
       return false;
     }
 
-    // Check if at least one step is filled
-    bool hasStep = false;
-    for (var controller in stepControllers) {
-      if (controller.text.trim().isNotEmpty) {
-        hasStep = true;
-        break;
-      }
-    }
-
+    bool hasStep = stepControllers.any((c) => c.text.trim().isNotEmpty);
     if (!hasStep) {
-      Get.snackbar(
-        'Incomplete Recipe',
-        'Please add at least one step instruction',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('Incomplete Recipe', 'Please add at least one step instruction');
       return false;
     }
 
@@ -251,41 +318,86 @@ class RecipeCreationController extends GetxController {
         'cooking_method': cookingMethodController.text.trim(),
         'procedure': procedureStr,
         'description': '', 
+        'img_url': imageUrlController.text.trim(),
       };
 
-      final recipeResponse = await ApiClient.post('/recipes/', recipePayload);
-      
-      String? recipeLoc = recipeResponse?['location'];
-      if (recipeLoc == null) throw Exception("No Location header returned from API.");
-      
-      int recipeId = int.parse(recipeLoc.split('/').lastWhere((e) => e.isNotEmpty));
-      print("Extracted Recipe ID: $recipeId");
+      int currentRecipeId;
+      Set<int> originalIngredientIds = {};
 
+      if (isEditMode.value) {
+        await ApiClient.put('/recipes/$recipeId/', recipePayload);
+        currentRecipeId = recipeId!;
+        
+        try {
+          final ingredientsData = await ApiClient.get('/recipes/$currentRecipeId/ingredients/');
+          if (ingredientsData is List) {
+            for (var item in ingredientsData) {
+              if (item['ingredient_id'] != null) {
+                originalIngredientIds.add(item['ingredient_id']);
+              }
+            }
+          }
+        } catch (e) {
+          print("Error fetching original ingredients: $e");
+        }
+      } else {
+        final recipeResponse = await ApiClient.post('/recipes/', recipePayload);
+        String? recipeLoc = recipeResponse?['location'];
+        if (recipeLoc == null) throw Exception("No Location header returned from API.");
+        currentRecipeId = int.parse(recipeLoc.split('/').lastWhere((e) => e.isNotEmpty));
+      }
+
+      Set<int> processedIngredientIds = {};
+      List<Future> ingredientTasks = [];
+      
       for (var controllerMap in ingredientControllers) {
         String name = controllerMap['name']!.text.trim();
         String quantityStr = controllerMap['quantity']!.text.trim();
         String unit = controllerMap['unit']!.text.trim();
 
         if (name.isNotEmpty && quantityStr.isNotEmpty) {
-          double amount = double.tryParse(quantityStr) ?? 0.0;
-
-          final ingredientResponse = await ApiClient.post('/ingredients/', {'name': name});
-          
-          String? ingredientLoc = ingredientResponse?['location'];
-          if (ingredientLoc != null) {
-            int ingredientId = int.parse(ingredientLoc.split('/').lastWhere((e) => e.isNotEmpty));
+          ingredientTasks.add(() async {
+            double amount = double.tryParse(quantityStr) ?? 0.0;
             
-            final bindingPayload = {
-              'ingredient_id': ingredientId,
-              'amount': amount,
-              'unit': unit,
-            };
-            
+            int? ingredientId;
             try {
-              await ApiClient.post('/recipes/$recipeId/ingredients/', bindingPayload);
-              print("Bound ingredient $ingredientId to recipe $recipeId");
+              final ingredientResponse = await ApiClient.post('/ingredients/', {'name': name});
+              String? ingredientLoc = ingredientResponse?['location'];
+              if (ingredientLoc != null) {
+                ingredientId = int.parse(ingredientLoc.split('/').lastWhere((e) => e.isNotEmpty));
+              }
             } catch (e) {
-              print("Ingredient binding warning (maybe duplicate): $e");
+              print("Error ensuring ingredient exists ($name): $e");
+            }
+            
+            if (ingredientId != null) {
+              processedIngredientIds.add(ingredientId);
+              
+              if (originalIngredientIds.contains(ingredientId)) {
+                await ApiClient.put(
+                  '/recipes/$currentRecipeId/ingredients/$ingredientId/', 
+                  {'amount': amount, 'unit': unit}
+                );
+              } else {
+                await ApiClient.post(
+                  '/recipes/$currentRecipeId/ingredients/', 
+                  {'ingredient_id': ingredientId, 'amount': amount, 'unit': unit}
+                );
+              }
+            }
+          }());
+        }
+      }
+      
+      await Future.wait(ingredientTasks);
+
+      if (isEditMode.value) {
+        for (int id in originalIngredientIds) {
+          if (!processedIngredientIds.contains(id)) {
+            try {
+              await ApiClient.delete('/recipes/$currentRecipeId/ingredients/$id/');
+            } catch (e) {
+              print("Error removing ingredient $id from recipe: $e");
             }
           }
         }
@@ -294,12 +406,7 @@ class RecipeCreationController extends GetxController {
       isLoading.value = false;
       isSuccess.value = true;
 
-      Get.snackbar(
-        'Success', 
-        'Recipe created successfully!',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      Get.snackbar('Success', isEditMode.value ? 'Recipe updated!' : 'Recipe created!');
 
       if (Get.isRegistered<UserProfileController>()) {
         Get.find<UserProfileController>().refreshUserProfile();
@@ -308,34 +415,26 @@ class RecipeCreationController extends GetxController {
          Get.find<ExploreController>().refreshData(); 
       }
 
-      _clearForm();
-      await Future.delayed(Duration(milliseconds: 800));
-      Get.back();
+      await Future.delayed(Duration(milliseconds: 500));
+      Get.offNamed(AppRoutes.recipeDetailScreen, arguments: {'id': currentRecipeId});
 
     } catch (e) {
       isLoading.value = false;
-      print("Create Recipe Error: $e");
-      Get.snackbar(
-        'Error', 
-        'Failed to create recipe. Check console.',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      print("Error saving recipe: $e");
+      Get.snackbar('Error', 'Failed to save recipe');
     }
   }
+
   void discardRecipe() {
     Get.dialog(
       AlertDialog(
-        title: Text('Discard Recipe?'),
-        content: Text(
-          'Are you sure you want to discard this recipe? All changes will be lost.',
-        ),
+        title: Text(isEditMode.value ? 'Discard Changes?' : 'Discard Recipe?'),
+        content: Text('Are you sure you want to discard? All unsaved changes will be lost.'),
         actions: [
           TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
           TextButton(
             onPressed: () {
               Get.back();
-              _clearForm();
               Get.back();
             },
             child: Text('Discard'),
@@ -343,20 +442,5 @@ class RecipeCreationController extends GetxController {
         ],
       ),
     );
-  }
-
-  void _clearForm() {
-    titleController.clear();
-    cuisineTypeController.clear();
-    servingsController.clear();
-    cookingMethodController.clear();
-    for (var controller in stepControllers) {
-      controller.clear();
-    }
-    for (var controllerMap in ingredientControllers) {
-      controllerMap.values.forEach((controller) => controller.clear());
-    }
-    selectedImage.value = null;
-    recipeCreationModel.value = RecipeCreationModel();
   }
 }

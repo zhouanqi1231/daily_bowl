@@ -68,19 +68,26 @@ class RecipeCardItem extends StatelessWidget {
           ),
           SizedBox(width: 16.h),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  recipeItemModel?.userName?.value ?? "Name",
-                  style: TextStyleHelper.instance.title16MediumRoboto,
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  recipeItemModel?.userInfo?.value ?? "info",
-                  style: TextStyleHelper.instance.body14RegularRoboto,
-                ),
-              ],
+            child: Padding(
+              padding: EdgeInsets.only(right: 8.h), // Added padding for username/info
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    recipeItemModel?.userName?.value ?? "Name",
+                    style: TextStyleHelper.instance.title16MediumRoboto,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    recipeItemModel?.userInfo?.value ?? "info",
+                    style: TextStyleHelper.instance.body14RegularRoboto,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -104,10 +111,17 @@ class RecipeCardItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            recipeItemModel?.recipeName?.value ?? "Recipe name",
-            style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
-              color: appTheme.gray_900,
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(right: 16.h),
+              child: Text(
+                recipeItemModel?.recipeName?.value ?? "Recipe name",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
+                  color: appTheme.gray_900,
+                ),
+              ),
             ),
           ),
           if (showBookmark)
@@ -115,7 +129,7 @@ class RecipeCardItem extends StatelessWidget {
               onTap: onBookmarkTap,
               behavior: HitTestBehavior.opaque,
               child: Padding(
-                padding: EdgeInsets.all(12.h), // Increase tap area
+                padding: EdgeInsets.only(left: 8.h, top: 12.h, bottom: 12.h), 
                 child: Obx(
                   () => Icon(
                     (recipeItemModel?.isBookmarked?.value ?? false)

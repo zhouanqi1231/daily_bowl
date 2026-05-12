@@ -27,6 +27,8 @@ class LoginController extends GetxController {
 
   Future<void> login() async {
     FocusManager.instance.primaryFocus?.unfocus();
+    
+    // Use a small delay to ensure keyboard is hiding
     await Future.delayed(Duration(milliseconds: 100));
 
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
@@ -34,25 +36,32 @@ class LoginController extends GetxController {
       return;
     }
 
+    // Store email to avoid accessing emailController.text after potential disposal
+    final email = emailController.text;
+    final password = passwordController.text;
+
     try {
+      // get a token from the server, logging in with email and pwd
       final response = await ApiClient.post('/tokens/', {
-        'email': emailController.text,
-        'pwd': passwordController.text,
+        'email': email,
+        'pwd': password,
       });
+
+      // Check if controller is still active/not disposed
+      if (isClosed) return;
 
       if (response != null && response['token'] != null) {
         // Persist session token
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('api_key', response['token']);
-        // We might want to store the email too
-        await prefs.setString('user_email', emailController.text);
+        await prefs.setString('user_email', email);
 
         // Fetch user profile to get the username and ID
         try {
           final usersResponse = await ApiClient.get('/users/');
           if (usersResponse is List) {
             final currentUser = usersResponse.firstWhere(
-              (u) => u['email'] == emailController.text,
+              (u) => u['email'] == email,
               orElse: () => null,
             );
             if (currentUser != null) {
@@ -67,8 +76,12 @@ class LoginController extends GetxController {
         } catch (e) {
           print("Error fetching user profile after login: $e");
         }
-        emailController.clear();
-        passwordController.clear();
+        
+        // Safety check before clearing
+        if (!isClosed) {
+          emailController.clear();
+          passwordController.clear();
+        }
 
         await Get.find<GlobalSaveManager>().fetchInitialSaves();
 
@@ -88,26 +101,29 @@ class LoginController extends GetxController {
 
         Get.snackbar('Success', 'Login successful!');
         
+        // Only go back if we are on the login route specifically 
+        // (not when it's embedded in a tab)
         if (Get.currentRoute == AppRoutes.loginScreen) {
           Get.back();
         }
       }
     } catch (e) {
+      if (isClosed) return;
       Get.snackbar('Login Failed', 'Invalid email or password.');
     }
   }
 
-  // void onLoginPressed() {
-  //   // This is handled by the parent
-  // }
-
   void onRegisterPressed() {
-    Get.snackbar(
-      'Notice', 
-      'Registration is under development',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.black87,
-      colorText: Colors.white,
-    );
+    if (Get.isRegistered<MainContainerController>()) {
+      Get.find<MainContainerController>().toggleRegister(true);
+    } else {
+      Get.snackbar(
+        'Notice', 
+        'Registration is under development',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.black87,
+        colorText: Colors.white,
+      );
+    }
   }
 }

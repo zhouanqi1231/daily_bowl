@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
-import '../../recipe_search_results_screen/models/recipe_item_model.dart';
+import '../../categorized_recipe_page/models/recipe_item_model.dart';
 import '../models/explore_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/global_save_manager.dart';
@@ -18,6 +18,9 @@ class ExploreController extends GetxController {
   // user login status vars
   RxBool isLoggedIn = false.obs;
   int currentUserId = 0;
+
+  // Map to store userId -> username for quick lookup
+  final Map<int, String> _userMap = {};
 
   @override
   void onInit() {
@@ -37,8 +40,26 @@ class ExploreController extends GetxController {
   }
 
   Future<void> _initializeData() async {
+    await _fetchUsers(); // Fetch users first to populate names
     await checkLoginStatus();
     await fetchRecipes();
+  }
+
+  Future<void> _fetchUsers() async {
+    try {
+      final response = await ApiClient.get('/users/');
+      if (response is List) {
+        for (var user in response) {
+          int? id = user['id'];
+          String? name = user['username'];
+          if (id != null && name != null) {
+            _userMap[id] = name;
+          }
+        }
+      }
+    } catch (e) {
+      print("Error fetching users for map: $e");
+    }
   }
 
   Future<void> checkLoginStatus() async {
@@ -79,13 +100,25 @@ class ExploreController extends GetxController {
       } else {
         List<RecipeItemModel> newRecipes = data.map((json) {
           int rId = json['id'];
+          int creatorId = json['created_by'] ?? 0;
+          
+          // Use the fetched user name or fallback to ID
+          String displayName = _userMap[creatorId] ?? "User $creatorId";
+          String initial = displayName.isNotEmpty ? displayName[0].toUpperCase() : "U";
+          
+          // Use img_url if available, otherwise use default image
+          String imageUrl = json['img_url']?.toString() ?? "";
+          if (imageUrl.isEmpty) {
+            imageUrl = ImageConstant.imgMedia188x364;
+          }
+
           return RecipeItemModel(
             id: rId,
             recipeName: (json['title'] ?? 'Unknown Recipe').toString().obs,
-            userName: "User ${json['created_by']}".obs,
-            userInitial: "U".obs,
+            userName: displayName.obs,
+            userInitial: initial.obs,
             userInfo: (json['cuisine_type'] ?? 'Home Chef').toString().obs,
-            recipeImage: ImageConstant.imgMedia188x364.obs,
+            recipeImage: imageUrl.obs,
             isBookmarked: Get.find<GlobalSaveManager>().savedIds.contains(rId).obs,
           );
         }).toList();
@@ -101,8 +134,11 @@ class ExploreController extends GetxController {
       }
     } catch (e) {
       print("Error fetching recipes: $e");
-      Get.snackbar("Fail to load",
-          "Cannot get recipe data, please check internet connection.");
+      // Use addPostFrameCallback to avoid LateInitializationError if triggered during build
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.snackbar("Fail to load",
+            "Cannot get recipe data, please check internet connection.");
+      });
     } finally {
       isLoading.value = false;
     }
@@ -112,7 +148,7 @@ class ExploreController extends GetxController {
     hasMoreData.value = true;
     
     exploreModelObj.value.recipeList?.clear();
-    
+    await _fetchUsers(); // Refresh users map too
     await fetchRecipes();
   }
 

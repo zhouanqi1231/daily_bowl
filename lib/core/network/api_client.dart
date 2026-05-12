@@ -2,6 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../app_export.dart';
+import '../../presentation/main_container_screen/controller/main_container_controller.dart';
+import '../../presentation/explore_screen/controller/explore_controller.dart';
+import '../../presentation/user_profile_screen/controller/user_profile_controller.dart';
 
 class ApiClient {
   static String? _baseUrl;
@@ -27,12 +31,59 @@ class ApiClient {
     };
   }
 
+  static void _checkUnauthorized(int statusCode) {
+    if (statusCode == 401) {
+      _handleUnauthorized();
+      throw Exception('Unauthorized');
+    }
+  }
+
+  static void _handleUnauthorized() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('api_key');
+    await prefs.remove('user_name');
+    await prefs.remove('user_id');
+
+    // Notify MainContainerController to update UI
+    if (Get.isRegistered<MainContainerController>()) {
+      final mainController = Get.find<MainContainerController>();
+      mainController.isLoggedIn.value = false;
+      // If we are in the "Me" tab, it will automatically switch to LoginScreen via Obx
+    }
+
+    // Refresh other controllers to guest state
+    if (Get.isRegistered<ExploreController>()) {
+      Get.find<ExploreController>().checkLoginStatus();
+    }
+    
+    if (Get.isRegistered<UserProfileController>()) {
+      Get.find<UserProfileController>().refreshUserProfile();
+    }
+
+    // Redirect to main container if we are on a protected page
+    if (Get.currentRoute != AppRoutes.mainContainer && 
+        Get.currentRoute != AppRoutes.initialRoute &&
+        Get.currentRoute != AppRoutes.loginScreen) {
+      Get.offAllNamed(AppRoutes.mainContainer);
+    }
+    
+    Get.snackbar(
+      'Session Expired',
+      'Your session has expired. Please login again.',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: appTheme.red_900,
+      colorText: appTheme.whiteCustom,
+    );
+  }
+
   // encapsule GET
   static Future<dynamic> get(String endpoint) async {
     if (_baseUrl == null) await init();
 
     final url = Uri.parse('$_baseUrl$endpoint');
     final response = await http.get(url, headers: await _getHeaders());
+
+    _checkUnauthorized(response.statusCode);
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -53,6 +104,8 @@ class ApiClient {
       headers: await _getHeaders(),
       body: jsonEncode(body),
     );
+
+    _checkUnauthorized(response.statusCode);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       if (response.body.isEmpty) {
@@ -86,6 +139,8 @@ class ApiClient {
       body: jsonEncode(body),
     );
 
+    _checkUnauthorized(response.statusCode);
+
     if (response.statusCode == 200 || response.statusCode == 204) {
       if (response.body.isEmpty) return null;
       return jsonDecode(response.body);
@@ -104,6 +159,8 @@ class ApiClient {
       url,
       headers: await _getHeaders(),
     );
+
+    _checkUnauthorized(response.statusCode);
 
     if (response.statusCode == 200 || response.statusCode == 204) {
       if (response.body.isEmpty) return null;

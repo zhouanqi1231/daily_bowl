@@ -10,6 +10,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     Key? key,
     this.height,
+    this.title,
     this.leadingIcon,
     this.onLeadingTap,
     this.actionIcons,
@@ -30,6 +31,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }) : super(key: key);
 
   final double? height;
+  final String? title;
   final String? leadingIcon;
   final VoidCallback? onLeadingTap;
   final List<CustomAppBarAction>? actionIcons;
@@ -76,48 +78,61 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget _buildNavigationContent() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Stack(
+      alignment: Alignment.center,
       children: [
-        if (leadingIcon != null)
-          GestureDetector(
-            onTap: onLeadingTap,
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              padding: EdgeInsets.all(8.h),
-              child: CustomImageView(
-                imagePath: leadingIcon!,
-                height: 24.h,
-                width: 24.h,
-              ),
+        if (title != null)
+          Text(
+            title!,
+            style: TextStyleHelper.instance.title20RegularRoboto.copyWith(
+              color: appTheme.gray_900,
+              fontWeight: FontWeight.w500,
             ),
-          )
-        else
-          SizedBox(width: 40.h),
-        if (actionIcons != null && actionIcons!.isNotEmpty)
-          Row(
-            children: actionIcons!.map((action) {
-              return GestureDetector(
-                onTap: action.onTap,
+          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (leadingIcon != null)
+              GestureDetector(
+                onTap: onLeadingTap,
                 behavior: HitTestBehavior.opaque,
                 child: Padding(
-                  padding: EdgeInsets.only(
-                    left: action.margin ?? 8.h,
-                    top: 8.h,
-                    bottom: 8.h,
-                    right: 8.h,
-                  ),
+                  padding: EdgeInsets.all(8.h),
                   child: CustomImageView(
-                    imagePath: action.iconPath,
+                    imagePath: leadingIcon!,
                     height: 24.h,
                     width: 24.h,
                   ),
                 ),
-              );
-            }).toList(),
-          )
-        else
-          SizedBox(width: 40.h),
+              )
+            else
+              SizedBox(width: 40.h),
+            if (actionIcons != null && actionIcons!.isNotEmpty)
+              Row(
+                children: actionIcons!.map((action) {
+                  return GestureDetector(
+                    onTap: action.onTap,
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: action.margin ?? 8.h,
+                        top: 8.h,
+                        bottom: 8.h,
+                        right: 8.h,
+                      ),
+                      child: CustomImageView(
+                        imagePath: action.iconPath,
+                        height: 24.h,
+                        width: 24.h,
+                      ),
+                    ),
+                  );
+                }).toList(),
+              )
+            else
+              SizedBox(width: 40.h),
+          ],
+        ),
       ],
     );
   }

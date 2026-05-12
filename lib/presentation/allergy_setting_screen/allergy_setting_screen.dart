@@ -37,9 +37,13 @@ class AllergySettingScreen extends GetWidget<AllergySettingController> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4.h),
       child: Obx(
-        () => Column(
-          spacing: 12.h,
-          children: List.generate(controller.allergyItems.length, (index) {
+        () => ListView.separated(
+          padding: EdgeInsets.only(bottom: 24.h),
+          physics: BouncingScrollPhysics(),
+          shrinkWrap: true,
+          separatorBuilder: (context, index) => SizedBox(height: 12.h),
+          itemCount: controller.allergyItems.length,
+          itemBuilder: (context, index) {
             final item = controller.allergyItems[index];
             return CustomCheckBox(
               text: item.name?.value ?? "",
@@ -49,7 +53,7 @@ class AllergySettingScreen extends GetWidget<AllergySettingController> {
                 controller.toggleAllergy(index, value ?? false);
               },
             );
-          }),
+          },
         ),
       ),
     );

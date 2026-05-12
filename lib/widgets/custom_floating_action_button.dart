@@ -14,6 +14,7 @@ class CustomFloatingActionButton extends StatelessWidget {
     this.backgroundColor,
     this.iconSize,
     this.child, // Added child support
+    this.heroTag, // Added heroTag to prevent tag collisions
   }) : super(key: key);
 
   final VoidCallback? onPressed;
@@ -21,6 +22,7 @@ class CustomFloatingActionButton extends StatelessWidget {
   final Color? backgroundColor;
   final double? iconSize;
   final Widget? child; // New child property
+  final Object? heroTag; // New heroTag property
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class CustomFloatingActionButton extends StatelessWidget {
       width: 56.h,
       height: 56.h,
       child: FloatingActionButton(
+        heroTag: heroTag, // Pass the heroTag to the internal FAB
         onPressed: onPressed,
         backgroundColor: backgroundColor ?? Color(0xFFFFFFFF),
         elevation: 6.h,

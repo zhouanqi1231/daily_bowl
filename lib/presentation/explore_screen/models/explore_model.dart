@@ -1,4 +1,4 @@
-import '../../recipe_search_results_screen/models/recipe_item_model.dart';
+import '../../categorized_recipe_page/models/recipe_item_model.dart';
 
 class ExploreModel {
   List<RecipeItemModel>? recipeList = [];

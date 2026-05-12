@@ -102,6 +102,13 @@ class TextStyleHelper {
     color: _baseTextColor,
   );
 
+  TextStyle get profileHeatMapMonthLabel => TextStyle(
+    fontSize: 14.fSize,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Roboto',
+    color: appTheme.gray_500,
+  );
+
   TextStyle get body13RegularPingFangSC => TextStyle(
     fontSize: 13.fSize,
     fontWeight: FontWeight.w400,

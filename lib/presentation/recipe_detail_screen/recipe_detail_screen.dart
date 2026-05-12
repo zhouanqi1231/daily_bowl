@@ -15,6 +15,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      // top bar: back button + share button
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.h),
         child: Obx(
@@ -28,23 +29,24 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               actionIcons: [
                 CustomAppBarAction(
                   iconPath: ImageConstant.imgShare,
-                  onTap: () => controller.onShareTap(),
                   margin: 2.h,
                 ),
               ],
               backgroundColor: appTheme.white_A700.withOpacity(opacity),
-              horizontalPadding: 18.h,
+              horizontalPadding: 16.h,
             );
           },
         ),
       ),
       body: Obx(() {
+        // check if loading
         if (controller.isLoading.value) {
           return Center(child: CircularProgressIndicator(color: appTheme.deep_purple_800));
         }
 
         return Stack(
           children: [
+            // notification listener for scroll event
             NotificationListener<ScrollNotification>(
               onNotification: (scrollNotification) {
                 if (scrollNotification is ScrollUpdateNotification) {
@@ -55,8 +57,11 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    // top image, img_url or default
                     CustomImageView(
-                      imagePath: ImageConstant.imgMedia, // TODO: if return img
+                      imagePath: controller.recipeImageUrl.value.isNotEmpty 
+                          ? controller.recipeImageUrl.value 
+                          : ImageConstant.imgMedia,
                       width: double.infinity,
                       height: controller.imageHeight,
                       fit: BoxFit.cover,
@@ -64,14 +69,16 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
                     Padding(
                       padding: EdgeInsets.only(top: 12.h, left: 16.h, right: 16.h),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildRecipeHeaderSection(context),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: 24.h),
                           _buildIngredientsSection(context),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: 24.h),
                           _buildStepsSection(context),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: 24.h),
+                          _buildNutritionSection(context),
+                          SizedBox(height: 24.h),
                           _buildUpdatedDateSection(context),
                           SizedBox(height: 180.h),
                         ],
@@ -94,11 +101,13 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // recipe title
           Text(
             controller.recipeTitle.value,
             style: TextStyleHelper.instance.headline32RegularRoboto,
           ),
           SizedBox(height: 12.h),
+          // recipe owner
           Row(
             children: [
               CustomIconButton(
@@ -119,48 +128,86 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
             ],
           ),
           SizedBox(height: 12.h),
+          // recipe description: type, serving
           Text(
             controller.recipeDescription.value,
             style: TextStyleHelper.instance.body14RegularRoboto,
           ),
           SizedBox(height: 18.h),
+          // allergy section
           _buildAllergyAlertSection(context),
         ],
       ),
     );
   }
 
+  Widget _buildNutritionSection(BuildContext context) {
+    // nutrition of the recipe: calories, protein, carbs, fat
+    List<CustomIngredientsItem> nutritionItems = [
+      CustomIngredientsItem(name: "Calories", quantity: "${controller.totalCalories.value.toInt()} kcal"),
+      CustomIngredientsItem(name: "Protein", quantity: "${controller.totalProtein.value.toInt()} g"),
+      CustomIngredientsItem(name: "Carbohydrates", quantity: "${controller.totalCarbs.value.toInt()} g"),
+      CustomIngredientsItem(name: "Fat", quantity: "${controller.totalFat.value.toInt()} g"),
+    ];
+
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Nutrition Facts",
+            style: TextStyleHelper.instance.title16MediumRoboto,
+          ),
+          SizedBox(height: 14.h),
+          CustomIngredientsList(
+            ingredientsList: nutritionItems,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildAllergyAlertSection(BuildContext context) {
-    // render this only if have tag
     if (controller.allergyTags.isEmpty) return SizedBox.shrink();
-    return Row(
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 8.h,
+      runSpacing: 8.h,
       children: [
         Text(
           "Allergy Alert:",
-          style: TextStyleHelper.instance.body14RegularRoboto,
+          style: TextStyleHelper.instance.body14RegularRoboto
         ),
-        SizedBox(width: 8.h),
-        // 动态生成过敏源标签
-        ...controller.allergyTags.map((tag) => Padding(
-          padding: EdgeInsets.only(right: 8.h),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: appTheme.deep_orange_200,
-              border: Border.all(color: appTheme.red_900, width: 1.h),
-              borderRadius: BorderRadius.circular(14.h),
+        // allergy tags, from all the ingredient-allergy-tags
+        ...controller.allergyTags.map((tag) {
+          bool isMatched = controller.isUserAllergicTo(tag); // matched: red, unmatched: gray
+          return GestureDetector(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 2.h),
+              decoration: BoxDecoration(
+                color: isMatched ? appTheme.red_900 : appTheme.gray_200,
+                border: Border.all(
+                  color: isMatched ? appTheme.red_900 : appTheme.gray_300,
+                  width: 1.h,
+                ),
+                borderRadius: BorderRadius.circular(16.h),
+              ),
+              child: Text(
+                "#$tag",
+                style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
+                  color: isMatched ? appTheme.whiteCustom : appTheme.gray_700,
+                ),
+              ),
             ),
-            child: Text(
-              "#$tag",
-              style: TextStyleHelper.instance.label11MediumRoboto,
-            ),
-          ),
-        )).toList(),
+          );
+        }).toList(),
       ],
     );
   }
 
   Widget _buildIngredientsSection(BuildContext context) {
+    // ingredient list
     return SizedBox(
       width: double.infinity,
       child: Column(
@@ -180,6 +227,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
   }
 
  Widget _buildStepsSection(BuildContext context) {
+    // recipe procedures
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(right: 6.h),
@@ -204,7 +252,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
       padding: EdgeInsets.only(bottom: 12.h),
       child: Text(
         controller.updateDate.value,
-        style: TextStyleHelper.instance.body12RegularRoboto.copyWith(
+        style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
           color: appTheme.gray_600,
         ),
       ),
@@ -220,6 +268,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
         children: [
           Obx(
             () => CustomFloatingActionButton(
+              heroTag: 'detail_bookmark_fab',
               onPressed: () => controller.onBookmarkTap(),
               backgroundColor:
                   controller.isBookmarked.value
@@ -236,6 +285,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
           SizedBox(height: 16.h),
           Obx(
             () => CustomFloatingActionButton(
+              heroTag: 'detail_main_fab',
               onPressed: () => controller.onMainFabTap(),
               child: Icon( 
                 controller.isSaved.value ? Icons.star : Icons.star_border, // Changed to star icon

@@ -59,7 +59,7 @@ class CustomInstructionList extends StatelessWidget {
           instructions[i],
           style:
               textStyle ??
-              TextStyleHelper.instance.body12RegularRoboto.copyWith(
+              TextStyleHelper.instance.body14RegularRoboto.copyWith(
                 color: appTheme.black_900,
                 height: 1.33,
               ),

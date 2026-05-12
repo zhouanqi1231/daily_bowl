@@ -15,56 +15,71 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
       appBar: AppBar(
         backgroundColor: appTheme.white_A700,
         elevation: 0,
-        title: Text("Create a Recipe",
-            style: TextStyleHelper.instance.title22RegularRoboto),
+        title: Obx(() => Text(
+          controller.isEditMode.value ? "Edit Recipe" : "Create a Recipe",
+          style: TextStyleHelper.instance.title22RegularRoboto
+        )),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: appTheme.blackCustom),
           onPressed: () => Get.back(),
         ),
       ),
-      body: SafeArea(
-        top: false, // AppBar handles top safety
-        child: Form(
-          key: controller.formKey,
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.fromLTRB(24.h, 18.h, 24.h, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
+      body: Obx(() => Stack(
+        children: [
+          SafeArea(
+            top: false, 
+            child: Form(
+              key: controller.formKey,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.fromLTRB(24.h, 18.h, 24.h, 0),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildPhotoUploadSection(),
-                          SizedBox(height: 20.h),
-                          _buildTitleField(),
-                          SizedBox(height: 20.h),
-                          _buildDetailsSection(),
-                          SizedBox(height: 20.h),
-                          _buildIngredientsSection(),
-                          SizedBox(height: 12.h),
-                          _buildStepsSection(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildPhotoUploadSection(),
+                              SizedBox(height: 12.h),
+                              _buildImageUrlField(),
+                              SizedBox(height: 20.h),
+                              _buildTitleField(),
+                              SizedBox(height: 20.h),
+                              _buildDetailsSection(),
+                              SizedBox(height: 20.h),
+                              _buildIngredientsSection(),
+                              SizedBox(height: 12.h),
+                              _buildStepsSection(),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  _buildActionButtons(),
+                ],
               ),
-              _buildActionButtons(),
-            ],
+            ),
           ),
-        ),
-      ),
+          if (controller.isLoading.value)
+            Container(
+              color: Colors.black26,
+              child: Center(
+                child: CircularProgressIndicator(color: appTheme.deep_purple_800),
+              ),
+            ),
+        ],
+      )),
     );
   }
 
   Widget _buildPhotoUploadSection() {
     return Obx(
       () => GestureDetector(
-        onTap: () => controller.pickImage(),
+        onTap: () => controller.onUploadClicked(),
         child: Container(
           width: double.infinity,
           height: 180.h,
@@ -81,32 +96,55 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                     height: 180.h,
                     fit: BoxFit.cover,
                   )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(12.h),
-                        decoration: BoxDecoration(
-                          color: appTheme.white_A700,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.add_a_photo_outlined,
-                          color: appTheme.gray_500,
-                          size: 32.h,
-                        ),
-                      ),
-                      SizedBox(height: 12.h),
-                      Text(
-                        "Add a photo",
-                        style: TextStyleHelper.instance.body14MediumRoboto
-                            .copyWith(color: appTheme.gray_500),
-                      ),
-                    ],
-                  ),
+                : (controller.imageUrlController.text.isNotEmpty 
+                   ? Image.network(
+                      controller.imageUrlController.text,
+                      width: double.infinity,
+                      height: 180.h,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => _buildUploadPlaceholder(),
+                    )
+                   : _buildUploadPlaceholder()),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildUploadPlaceholder() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          padding: EdgeInsets.all(12.h),
+          decoration: BoxDecoration(
+            color: appTheme.white_A700,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.add_a_photo_outlined,
+            color: appTheme.gray_500,
+            size: 32.h,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Text(
+          "Upload Photo",
+          style: TextStyleHelper.instance.body14MediumRoboto
+              .copyWith(color: appTheme.gray_500),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImageUrlField() {
+    return CustomFloatingTextField(
+      placeholder: "Or paste image URL here",
+      controller: controller.imageUrlController,
+      textStyle: TextStyleHelper.instance.body14RegularRoboto
+          .copyWith(color: appTheme.gray_900),
+      labelStyle: TextStyleHelper.instance.body14RegularRoboto
+          .copyWith(color: appTheme.gray_600),
     );
   }
 
@@ -115,8 +153,6 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
       placeholder: "Title",
       controller: controller.titleController,
       validator: controller.validateTitle,
-      onChanged: (value) =>
-          controller.recipeCreationModel.value?.title?.value = value,
     );
   }
 
@@ -188,87 +224,112 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
           () => Column(
             children: [
               ...controller.ingredientControllers.asMap().entries.map((entry) {
+                int index = entry.key;
                 var controllers = entry.value;
-                return Container(
-                  margin: EdgeInsets.only(bottom: 12.h),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: CustomFloatingTextField(
-                          placeholder: "Name",
-                          controller: controllers['name'],
-                          validator: controller.validateIngredientName,
-                          textStyle: TextStyleHelper
-                              .instance.body14RegularRoboto
-                              .copyWith(color: appTheme.gray_900),
-                          labelStyle: TextStyleHelper
-                              .instance.body14RegularRoboto
-                              .copyWith(color: appTheme.gray_600),
-                        ),
-                      ),
-                      SizedBox(width: 10.h),
-                      SizedBox(
-                        width: 70.h,
-                        child: CustomFloatingTextField(
-                          placeholder: "number",
-                          controller: controllers['quantity'],
-                          keyboardType: CustomFloatingTextField.getKeyboardType(
-                            "NUMBER_ONLY",
+                String initialName = controllers['name']!.text;
+                
+                return Dismissible(
+                  key: ValueKey(controllers), // Use controllers map as unique key
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) {
+                    controller.removeIngredientRow(index);
+                  },
+                  background: Container(
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 20.h),
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade400,
+                      borderRadius: BorderRadius.circular(12.h),
+                    ),
+                    child: Icon(Icons.delete, color: Colors.white),
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Autocomplete<String>(
+                                initialValue: TextEditingValue(text: initialName),
+                                optionsBuilder: (TextEditingValue textEditingValue) {
+                                  if (textEditingValue.text == '') {
+                                    return const Iterable<String>.empty();
+                                  }
+                                  return controller.allIngredients.where((String option) {
+                                    return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+                                  });
+                                },
+                                onSelected: (String selection) {
+                                  controllers['name']!.text = selection;
+                                },
+                                fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                                  // Sync back to the main controller when user types or when pre-filled
+                                  if (textEditingController.text != controllers['name']!.text && controllers['name']!.text.isNotEmpty && textEditingController.text.isEmpty) {
+                                     textEditingController.text = controllers['name']!.text;
+                                  }
+                                  
+                                  textEditingController.addListener(() {
+                                    controllers['name']!.text = textEditingController.text;
+                                  });
+
+                                  return CustomFloatingTextField(
+                                    placeholder: "Name",
+                                    controller: textEditingController,
+                                    focusNode: focusNode,
+                                    validator: controller.validateIngredientName,
+                                    textStyle: TextStyleHelper.instance.body14RegularRoboto
+                                        .copyWith(color: appTheme.gray_900),
+                                    labelStyle: TextStyleHelper.instance.body14RegularRoboto
+                                        .copyWith(color: appTheme.gray_600),
+                                  );
+                                },
+                              );
+                            },
                           ),
-                          inputFormatters:
-                              CustomFloatingTextField.getInputFormatters(
-                            "NUMBER_ONLY",
-                          ),
-                          validator: controller.validateIngredientQuantity,
-                          textStyle: TextStyleHelper
-                              .instance.body14RegularRoboto
-                              .copyWith(color: appTheme.gray_900),
-                          labelStyle: TextStyleHelper
-                              .instance.body14RegularRoboto
-                              .copyWith(color: appTheme.gray_600),
                         ),
-                      ),
-                      SizedBox(width: 10.h),
-                      SizedBox(
-                        width: 90.h,
-                        child: DropdownButtonFormField<String>(
-                          value: controllers['unit']!.text,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 12.h,
-                              vertical: 12.h,
-                            ),
-                            filled: true,
-                            fillColor: appTheme.gray_50,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.h),
-                              borderSide: BorderSide.none,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.h),
-                              borderSide: BorderSide.none,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.h),
-                              borderSide: BorderSide.none,
-                            ),
+                        SizedBox(width: 10.h),
+                        SizedBox(
+                          width: 70.h,
+                          child: CustomFloatingTextField(
+                            placeholder: "number",
+                            controller: controllers['quantity'],
+                            keyboardType: TextInputType.number,
+                            validator: controller.validateIngredientQuantity,
+                            textStyle: TextStyleHelper.instance.body14RegularRoboto
+                                .copyWith(color: appTheme.gray_900),
+                            labelStyle: TextStyleHelper.instance.body14RegularRoboto
+                                .copyWith(color: appTheme.gray_600),
                           ),
-                          style: TextStyleHelper.instance.body14RegularRoboto
-                              .copyWith(color: appTheme.gray_900),
-                          items: ["g", "ml"]
-                              .map((unit) => DropdownMenuItem(
-                                    value: unit,
-                                    child: Text(unit),
-                                  ))
-                              .toList(),
-                          onChanged: (value) {
-                            if (value != null) {
-                              controllers['unit']!.text = value;
-                            }
-                          },
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 10.h),
+                        SizedBox(
+                          width: 90.h,
+                          child: DropdownButtonFormField<String>(
+                            value: controllers['unit']!.text.isEmpty ? 'g' : controllers['unit']!.text,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 12.h),
+                              filled: true,
+                              fillColor: appTheme.gray_50,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.h),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                            style: TextStyleHelper.instance.body14RegularRoboto
+                                .copyWith(color: appTheme.gray_900),
+                            items: ["g", "ml"]
+                                .map((unit) => DropdownMenuItem(value: unit, child: Text(unit)))
+                                .toList(),
+                            onChanged: (value) {
+                              if (value != null) controllers['unit']!.text = value;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }).toList(),
@@ -305,16 +366,33 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
               ...controller.stepControllers.asMap().entries.map((entry) {
                 int index = entry.key;
                 var stepController = entry.value;
-                return Container(
-                  margin: EdgeInsets.only(bottom: 12.h),
-                  child: CustomFloatingTextField(
-                    placeholder: "${index + 1}.",
-                    controller: stepController,
-                    validator: controller.validateStep,
-                    textStyle: TextStyleHelper.instance.body14RegularRoboto
-                        .copyWith(color: appTheme.gray_900),
-                    labelStyle: TextStyleHelper.instance.body14RegularRoboto
-                        .copyWith(color: appTheme.gray_600),
+                return Dismissible(
+                  key: ValueKey(stepController),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) {
+                    controller.removeStepRow(index);
+                  },
+                  background: Container(
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 20.h),
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade400,
+                      borderRadius: BorderRadius.circular(12.h),
+                    ),
+                    child: Icon(Icons.delete, color: Colors.white),
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    child: CustomFloatingTextField(
+                      placeholder: "${index + 1}.",
+                      controller: stepController,
+                      validator: controller.validateStep,
+                      textStyle: TextStyleHelper.instance.body14RegularRoboto
+                          .copyWith(color: appTheme.gray_900),
+                      labelStyle: TextStyleHelper.instance.body14RegularRoboto
+                          .copyWith(color: appTheme.gray_600),
+                    ),
                   ),
                 );
               }).toList(),
@@ -352,7 +430,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
           Expanded(
             child: Obx(
               () => CustomButton(
-                text: "Confirm",
+                text: controller.isLoading.value ? "Saving..." : "Confirm",
                 width: double.infinity,
                 backgroundColor: appTheme.deep_purple_800,
                 textColor: appTheme.white_A700,

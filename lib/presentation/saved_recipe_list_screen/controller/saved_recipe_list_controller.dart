@@ -36,12 +36,15 @@ class SavedRecipeListController extends GetxController {
         try {
           final recipeDetail = await ApiClient.get('/recipes/$recipeId/');
           if (recipeDetail != null) {
+            String? imageUrl = recipeDetail['img_url'];
             fetchedRecipes.add(
               SavedRecipeListModel(
                 id: recipeDetail['id'], 
                 title: (recipeDetail['title'] as String? ?? "No Title").obs,
                 description: (recipeDetail['procedure'] as String? ?? "").obs, 
-                imagePath: ImageConstant.imgMedia.obs,
+                imagePath: (imageUrl != null && imageUrl.isNotEmpty 
+                    ? imageUrl 
+                    : ImageConstant.imgMedia).obs,
               )
             );
           }
@@ -66,5 +69,6 @@ class SavedRecipeListController extends GetxController {
 
   Future<void> refreshRecipes() async {
     await Get.find<GlobalSaveManager>().fetchInitialSaves();
+    await initializeRecipeList();
   }
 }
