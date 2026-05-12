@@ -31,7 +31,6 @@ import '../presentation/profile_settings_screen/binding/profile_settings_binding
 class AppRoutes {
   static const String mainContainer = '/main_container';
   static const String categoryScreen = '/category_screen';
-  static const String recipe_creation_screen = '/recipe_creation_screen'; // Fixed typo if needed or kept consistent
   static const String recipeCreationScreen = '/recipe_creation_screen';
   static const String weeklyNutritionReportScreen =
       '/weekly_nutrition_report_screen';
