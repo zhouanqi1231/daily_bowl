@@ -72,7 +72,7 @@ class CategoryScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.h),
           boxShadow: [
             BoxShadow(
-              color: appTheme.gray_300.withOpacity(0.3),
+              color: appTheme.gray_300.withValues(alpha: 0.3),
               blurRadius: 4.h,
               offset: const Offset(0, 2),
             ),
@@ -103,7 +103,7 @@ class CategoryScreen extends StatelessWidget {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withOpacity(0.7),
+                            Colors.black.withValues(alpha: 0.7),
                           ],
                         ),
                       ),
@@ -139,7 +139,7 @@ class CategoryScreen extends StatelessWidget {
                       Text(
                         "${category.recipeCount.value} Recipes",
                         style: TextStyleHelper.instance.body12RegularRoboto.copyWith(
-                          color: hasImage ? Colors.white.withOpacity(0.8) : appTheme.gray_600,
+                          color: hasImage ? Colors.white.withValues(alpha: 0.8) : appTheme.gray_600,
                         ),
                       ),
                     ],

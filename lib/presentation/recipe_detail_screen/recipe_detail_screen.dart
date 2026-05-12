@@ -37,7 +37,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
                   margin: 2.h,
                 ),
               ],
-              backgroundColor: appTheme.white_A700.withOpacity(opacity),
+              backgroundColor: appTheme.white_A700.withValues(alpha: opacity),
               horizontalPadding: 16.h,
             );
           },

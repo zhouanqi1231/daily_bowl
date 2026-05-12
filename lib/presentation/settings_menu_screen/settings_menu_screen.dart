@@ -64,7 +64,7 @@ class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
           borderRadius: BorderRadius.circular(12.h),
           boxShadow: [
             BoxShadow(
-              color: appTheme.deep_purple_300.withOpacity(0.3),
+              color: appTheme.deep_purple_300.withValues(alpha: 0.3),
               offset: const Offset(0, 1),
               blurRadius: 5,
             ),

@@ -368,7 +368,7 @@ class UserProfileScreen extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
               Container(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
               ),
               Text(
                 "Check Your Weekly Report!",
@@ -489,7 +489,7 @@ class MonthBorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.grey.withOpacity(0.5)
+      ..color = Colors.grey.withValues(alpha: 0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 

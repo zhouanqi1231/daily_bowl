@@ -30,7 +30,7 @@ class WeeklyNutritionReportScreen
               topPadding: 0.h,
               leadingIcon: ImageConstant.imgArrowLeft,
               onLeadingTap: () => Get.back(),
-              backgroundColor: appTheme.white_A700.withOpacity(opacity),
+              backgroundColor: appTheme.white_A700.withValues(alpha: opacity),
               horizontalPadding: 16.h,
             );
           },
@@ -84,7 +84,7 @@ class WeeklyNutritionReportScreen
                       color: Colors.white,
                       shadows: [
                         Shadow(
-                          color: Colors.black.withOpacity(0.6),
+                          color: Colors.black.withValues(alpha: 0.6),
                           offset: const Offset(0, 2),
                           blurRadius: 6.h,
                         ),
@@ -215,7 +215,7 @@ class WeeklyNutritionReportScreen
               borderRadius: BorderRadius.circular(16.h),
               boxShadow: [
                 BoxShadow(
-                  color: appTheme.color6E196E.withOpacity(0.2),
+                  color: appTheme.color6E196E.withValues(alpha: 0.2),
                   offset: const Offset(0, 1),
                   blurRadius: 8.h,
                 ),
