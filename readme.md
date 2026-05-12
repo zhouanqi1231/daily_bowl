@@ -1,7 +1,7 @@
 Daily Bowl
 
 Daily Bowl is a Flutter application designed for food lovers to explore recipes, track their weekly nutrition, and manage their cooking activity. 
-# Features
+# 1 Features
 
 - Recipe Discovery & Browsing
 	- **Explore**: Scroll to discovery recipes.
@@ -19,66 +19,7 @@ Daily Bowl is a Flutter application designed for food lovers to explore recipes,
 	- **Automatic Summary**: Generates a nutritional summary of your cooking activity for the current week.
 	- **Interactive History**: View a list of recipes cooked this week, including cooking times.
 	- **Nutritional Analysis**: Visualizes your calorie and macro-nutrient (Protein, Carbs, Fat) consumption using dynamic charts.
-# Tech Stack
-
-- **Framework**: [Flutter](https://flutter.dev/)
-- **State Management**: [GetX](https://pub.dev/packages/get)
-- **Networking**: Custom API Client (REST) with integrated server validation.
-- **Architecture**: Presentation-Controller-Model pattern for high performance and maintainability.
-
-# Prerequisites
-
-Before you begin, ensure you have the following installed:
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) (Latest Stable Version)
-- [Dart SDK](https://dart.dev/get-started/sdk)
-- **Android Studio** or **VS Code**
-- An Emulator or Physical Device (Android/iOS)
-
-# Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/daily_bowl.git
-   cd daily_bowl
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   flutter pub get
-   ```
-
-# Setup
-
-## API Configuration
-Locate the API client configuration in `lib/core/network/api_client.dart` and update the `DBMS_BASE_URL` to point to your backend server:
-
-```dart
-// lib/core/network/api_client.dart
-static const String DBMS_BASE_URL = "http://your-server-ip/api";
-```
-# Running the App
-
-### Using CLI
-To run the app on the default connected device:
-```bash
-flutter run
-```
-
-To run in **Release Mode**:
-```bash
-flutter run --release
-```
-
-### Using IDE
-1. Open the project in your IDE.
-2. Select your target device from the device selector.
-3. Press **F5** (VS Code) or the **Run** icon (Android Studio).
-
-# Download the App
-
-Download the App from the Release: 
-
-## Project Structure
+# 2 Project Structure
 
 ```text
 lib/
@@ -94,4 +35,63 @@ lib/
 ├── routes/             # App routing and named navigation
 └── main.dart           # App entry point
 ```
+
+# 3 Tech Stack
+
+- **Framework**: [Flutter](https://flutter.dev/)
+- **State Management**: [GetX](https://pub.dev/packages/get)
+- **Networking**: Custom API Client (REST) with integrated server validation.
+- **Architecture**: Presentation-Controller-Model pattern for high performance and maintainability.
+
+# 4 Installation
+
+Before you begin, ensure you have the following installed:
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (Latest Stable Version)
+- [Dart SDK](https://dart.dev/get-started/sdk)
+- **Android Studio** or **VS Code**
+- An Emulator or Physical Device (Android/iOS)
+
+To run the project, first clone the repository:
+
+```bash
+git clone https://github.com/zhouanqi1231/daily_bowl.git
+```
+
+then Install dependencies:
+
+```bash
+flutter pub get
+```
+
+# 5 API Configuration
+
+Locate the API client configuration in `lib/core/network/api_client.dart` and update the `DBMS_BASE_URL` to point to your backend server:
+
+```dart
+// lib/core/network/api_client.dart
+static const String DBMS_BASE_URL = "http://your-server-ip/api";
+```
+
+❗️It's recommended that you config the server in a local env file.
+
+The documentation of the API we are using: https://34.24.220.134:10013/api/docs/
+The source code of the API we are using: https://github.com/TirpitzLing/PWP
+
+# 6 Running the App
+
+## 6.1 CLI
+Run the app on the default connected device:
+```bash
+flutter run
+```
+## 6.2 IDE
+1. Open the project in your IDE.
+2. Select your target device from the device selector.
+3. Press **F5** (VS Code) or the **Run** icon (Android Studio).
+
+# 7 Download the App
+
+Download the Released Apk from the Release.
+
+
 
