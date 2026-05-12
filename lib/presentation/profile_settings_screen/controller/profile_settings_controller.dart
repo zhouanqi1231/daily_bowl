@@ -114,10 +114,6 @@ class ProfileSettingsController extends GetxController {
         Get.snackbar('Error', 'New password is required');
         return;
       }
-      if (newPwd.length < 6) {
-        Get.snackbar('Error', 'New password must be at least 6 characters');
-        return;
-      }
       if (newPwd != confirmPasswordController.text) {
         Get.snackbar('Error', 'New passwords do not match');
         return;
