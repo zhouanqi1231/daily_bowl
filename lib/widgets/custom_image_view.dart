@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:universal_html/html.dart' as html;
 
 import '../core/app_export.dart';
 
@@ -147,19 +149,7 @@ class CustomImageView extends StatelessWidget {
         );
       case ImageType.network:
         if (kIsWeb) {
-          return Image.network(
-            imagePath,
-            height: height,
-            width: width,
-            fit: fit ?? BoxFit.cover,
-            color: color,
-            errorBuilder: (context, error, stackTrace) => Image.asset(
-              placeHolder ?? ImageConstant.imgImageNotFound,
-              height: height,
-              width: width,
-              fit: fit ?? BoxFit.cover,
-            ),
-          );
+          return _buildHtmlImage();
         }
         return CachedNetworkImage(
           height: height,
@@ -192,5 +182,25 @@ class CustomImageView extends StatelessWidget {
           color: color,
         );
     }
+  }
+
+  Widget _buildHtmlImage() {
+    final viewType = 'img_${identityHashCode(this)}';
+
+    ui.platformViewRegistry.registerViewFactory(viewType, (int viewId) {
+      final img = html.ImageElement()
+        ..src = imagePath
+        ..alt = ''
+        ..style.width = '100%'
+        ..style.height = '100%'
+        ..style.objectFit = fit == BoxFit.cover ? 'cover' : 'contain';
+      return img;
+    });
+
+    return HtmlElementView(
+      viewType: viewType,
+      // ignore: avoid_print
+      onPlatformViewCreated: (_) {},
+    );
   }
 }
