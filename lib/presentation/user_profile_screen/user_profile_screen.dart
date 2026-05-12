@@ -363,7 +363,7 @@ class UserProfileScreen extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               CustomImageView(
-                imagePath: ImageConstant.imgCoverImage,
+                imagePath: "https://www.worldanimalprotection.ca/cdn-cgi/image/width=800,format=auto,fit=cover/siteassets/shutterstock_722718097.jpg",
                 width: double.infinity,
                 height: 80.h,
                 fit: BoxFit.cover,

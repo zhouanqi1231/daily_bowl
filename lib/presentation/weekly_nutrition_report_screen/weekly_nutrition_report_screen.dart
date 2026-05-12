@@ -63,7 +63,7 @@ class WeeklyNutritionReportScreen
         alignment: Alignment.center,
         children: [
           CustomImageView(
-            imagePath: ImageConstant.imgCoverImage,
+            imagePath: "https://www.worldanimalprotection.ca/cdn-cgi/image/width=800,format=auto,fit=cover/siteassets/shutterstock_722718097.jpg",
             height: 200.h,
             width: double.infinity,
             fit: BoxFit.cover,
