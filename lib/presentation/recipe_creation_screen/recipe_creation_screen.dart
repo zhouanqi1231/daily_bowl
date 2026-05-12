@@ -25,43 +25,54 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
           onPressed: () => Get.back(),
         ),
       ),
-      body: SafeArea(
-        top: false, // AppBar handles top safety
-        child: Form(
-          key: controller.formKey,
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.fromLTRB(24.h, 18.h, 24.h, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
+      body: Obx(() => Stack(
+        children: [
+          SafeArea(
+            top: false, 
+            child: Form(
+              key: controller.formKey,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.fromLTRB(24.h, 18.h, 24.h, 0),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildPhotoUploadSection(),
-                          SizedBox(height: 12.h),
-                          _buildImageUrlField(),
-                          SizedBox(height: 20.h),
-                          _buildTitleField(),
-                          SizedBox(height: 20.h),
-                          _buildDetailsSection(),
-                          SizedBox(height: 20.h),
-                          _buildIngredientsSection(),
-                          SizedBox(height: 12.h),
-                          _buildStepsSection(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildPhotoUploadSection(),
+                              SizedBox(height: 12.h),
+                              _buildImageUrlField(),
+                              SizedBox(height: 20.h),
+                              _buildTitleField(),
+                              SizedBox(height: 20.h),
+                              _buildDetailsSection(),
+                              SizedBox(height: 20.h),
+                              _buildIngredientsSection(),
+                              SizedBox(height: 12.h),
+                              _buildStepsSection(),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  _buildActionButtons(),
+                ],
               ),
-              _buildActionButtons(),
-            ],
+            ),
           ),
-        ),
-      ),
+          if (controller.isLoading.value)
+            Container(
+              color: Colors.black26,
+              child: Center(
+                child: CircularProgressIndicator(color: appTheme.deep_purple_800),
+              ),
+            ),
+        ],
+      )),
     );
   }
 
@@ -214,7 +225,10 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
             children: [
               ...controller.ingredientControllers.asMap().entries.map((entry) {
                 var controllers = entry.value;
+                String initialName = controllers['name']!.text;
+                
                 return Container(
+                  key: ValueKey(controllers), // Help Flutter preserve state correctly
                   margin: EdgeInsets.only(bottom: 12.h),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,6 +237,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                         child: LayoutBuilder(
                           builder: (context, constraints) {
                             return Autocomplete<String>(
+                              initialValue: TextEditingValue(text: initialName),
                               optionsBuilder: (TextEditingValue textEditingValue) {
                                 if (textEditingValue.text == '') {
                                   return const Iterable<String>.empty();
@@ -235,9 +250,11 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                                 controllers['name']!.text = selection;
                               },
                               fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
-                                if (controllers['name']!.text != textEditingController.text && textEditingController.text.isEmpty) {
-                                  textEditingController.text = controllers['name']!.text;
+                                // Sync back to the main controller when user types or when pre-filled
+                                if (textEditingController.text != controllers['name']!.text && controllers['name']!.text.isNotEmpty && textEditingController.text.isEmpty) {
+                                   textEditingController.text = controllers['name']!.text;
                                 }
+                                
                                 textEditingController.addListener(() {
                                   controllers['name']!.text = textEditingController.text;
                                 });

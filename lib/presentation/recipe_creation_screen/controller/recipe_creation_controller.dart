@@ -76,9 +76,13 @@ class RecipeCreationController extends GetxController {
     servingsController.dispose();
     cookingMethodController.dispose();
     imageUrlController.dispose();
+    _disposeIngredientControllers();
     for (var controller in stepControllers) {
       controller.dispose();
     }
+  }
+
+  void _disposeIngredientControllers() {
     for (var controllerMap in ingredientControllers) {
       controllerMap.values.forEach((controller) => controller.dispose());
     }
@@ -108,39 +112,59 @@ class RecipeCreationController extends GetxController {
       cookingMethodController.text = recipe['cooking_method'] ?? '';
       imageUrlController.text = recipe['img_url'] ?? '';
 
-      // Load steps
+      // Load steps - improved parsing to match Detail view logic
       String procedure = recipe['procedure'] ?? '';
       if (procedure.isNotEmpty) {
         stepControllers.clear();
-        List<String> steps = procedure.split('\n');
+        List<String> steps = procedure.split(RegExp(r'\d+\.\s*|\n'))
+            .map((s) => s.trim())
+            .where((s) => s.isNotEmpty)
+            .toList();
+            
         for (var step in steps) {
-          // Remove "1. " numbering if present
-          String cleanStep = step.replaceFirst(RegExp(r'^\d+\.\s*'), '');
-          if (cleanStep.isNotEmpty) {
-            stepControllers.add(TextEditingController(text: cleanStep));
-          }
+          stepControllers.add(TextEditingController(text: step));
         }
       }
+      if (stepControllers.isEmpty) {
+        addStepRow();
+      }
 
-      // Load ingredients
+      // Load ingredients - robust fetching with name resolution
       final ingredientsData = await ApiClient.get('/recipes/$id/ingredients/');
       if (ingredientsData is List && ingredientsData.isNotEmpty) {
-        ingredientControllers.clear();
-        for (var item in ingredientsData) {
-          String ingredientName = '';
-          int? ingredientId = item['ingredient_id'];
-          if (ingredientId != null) {
+        // Fetch all ingredient details in parallel to get their names if missing
+        var ingredientFutures = ingredientsData.map((item) async {
+          int? ingId = item['ingredient_id'];
+          String name = item['ingredient_name'] ?? "";
+          
+          if (name.isEmpty && ingId != null) {
             try {
-              final ingDetail = await ApiClient.get('/ingredients/$ingredientId/');
-              ingredientName = ingDetail['name']?.toString() ?? '';
-            } catch (_) {}
+              final ingDetail = await ApiClient.get('/ingredients/$ingId/');
+              name = ingDetail['name'] ?? "Unknown Ingredient";
+            } catch (e) {
+              name = "Unknown Ingredient";
+            }
           }
-          ingredientControllers.add({
-            'name': TextEditingController(text: ingredientName),
-            'quantity': TextEditingController(text: (item['amount'] ?? '').toString()),
-            'unit': TextEditingController(text: item['unit'] ?? 'g'),
-          });
-        }
+          
+          return {
+            'name': name,
+            'quantity': (item['amount'] ?? '').toString(),
+            'unit': item['unit'] ?? 'g',
+          };
+        }).toList();
+
+        final results = await Future.wait(ingredientFutures);
+        
+        _disposeIngredientControllers();
+        ingredientControllers.assignAll(results.map((res) => {
+          'name': TextEditingController(text: res['name'] as String),
+          'quantity': TextEditingController(text: res['quantity'] as String),
+          'unit': TextEditingController(text: res['unit'] as String),
+        }).toList());
+      } else {
+        _disposeIngredientControllers();
+        ingredientControllers.clear();
+        addIngredientRow();
       }
     } catch (e) {
       print("Error loading recipe for edit: $e");
@@ -283,46 +307,47 @@ class RecipeCreationController extends GetxController {
         'img_url': imageUrlController.text.trim(),
       };
 
-      dynamic recipeResponse;
       int currentRecipeId;
 
       if (isEditMode.value) {
         await ApiClient.put('/recipes/$recipeId/', recipePayload);
         currentRecipeId = recipeId!;
-        // Delete old ingredients to replace with new ones
         try {
            await ApiClient.delete('/recipes/$currentRecipeId/ingredients/');
-        } catch (e) {
-          print("Warning deleting old ingredients: $e");
-        }
+        } catch (e) {}
       } else {
-        recipeResponse = await ApiClient.post('/recipes/', recipePayload);
+        final recipeResponse = await ApiClient.post('/recipes/', recipePayload);
         String? recipeLoc = recipeResponse?['location'];
         if (recipeLoc == null) throw Exception("No Location header returned from API.");
         currentRecipeId = int.parse(recipeLoc.split('/').lastWhere((e) => e.isNotEmpty));
       }
 
+      List<Future> ingredientTasks = [];
       for (var controllerMap in ingredientControllers) {
         String name = controllerMap['name']!.text.trim();
         String quantityStr = controllerMap['quantity']!.text.trim();
         String unit = controllerMap['unit']!.text.trim();
 
         if (name.isNotEmpty && quantityStr.isNotEmpty) {
-          double amount = double.tryParse(quantityStr) ?? 0.0;
-          final ingredientResponse = await ApiClient.post('/ingredients/', {'name': name});
-          
-          String? ingredientLoc = ingredientResponse?['location'];
-          if (ingredientLoc != null) {
-            int ingredientId = int.parse(ingredientLoc.split('/').lastWhere((e) => e.isNotEmpty));
-            final bindingPayload = {
-              'ingredient_id': ingredientId,
-              'amount': amount,
-              'unit': unit,
-            };
-            await ApiClient.post('/recipes/$currentRecipeId/ingredients/', bindingPayload);
-          }
+          ingredientTasks.add(() async {
+            double amount = double.tryParse(quantityStr) ?? 0.0;
+            final ingredientResponse = await ApiClient.post('/ingredients/', {'name': name});
+            
+            String? ingredientLoc = ingredientResponse?['location'];
+            if (ingredientLoc != null) {
+              int ingredientId = int.parse(ingredientLoc.split('/').lastWhere((e) => e.isNotEmpty));
+              final bindingPayload = {
+                'ingredient_id': ingredientId,
+                'amount': amount,
+                'unit': unit,
+              };
+              await ApiClient.post('/recipes/$currentRecipeId/ingredients/', bindingPayload);
+            }
+          }());
         }
       }
+      
+      await Future.wait(ingredientTasks);
 
       isLoading.value = false;
       isSuccess.value = true;
@@ -336,6 +361,7 @@ class RecipeCreationController extends GetxController {
          Get.find<ExploreController>().refreshData(); 
       }
 
+      await Future.delayed(Duration(milliseconds: 500));
       Get.offNamed(AppRoutes.recipeDetailScreen, arguments: {'id': currentRecipeId});
 
     } catch (e) {
