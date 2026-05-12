@@ -40,24 +40,48 @@ class RegisterScreen extends GetWidget<RegisterController> {
                     .copyWith(color: appTheme.gray_600),
               ),
               SizedBox(height: 16.h),
-              CustomFloatingTextField(
-                placeholder: "Password",
-                controller: controller.passwordController,
-                obscureText: true,
-                textStyle: TextStyleHelper.instance.body14RegularRoboto
-                    .copyWith(color: appTheme.gray_900),
-                labelStyle: TextStyleHelper.instance.body14RegularRoboto
-                    .copyWith(color: appTheme.gray_600),
+              Obx(
+                () => CustomFloatingTextField(
+                  placeholder: "Password",
+                  controller: controller.passwordController,
+                  obscureText: controller.obscurePassword.value,
+                  textStyle: TextStyleHelper.instance.body14RegularRoboto
+                      .copyWith(color: appTheme.gray_900),
+                  labelStyle: TextStyleHelper.instance.body14RegularRoboto
+                      .copyWith(color: appTheme.gray_600),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      controller.obscurePassword.value
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      size: 20.h,
+                      color: appTheme.gray_500,
+                    ),
+                    onPressed: () => controller.obscurePassword.toggle(),
+                  ),
+                ),
               ),
               SizedBox(height: 16.h),
-              CustomFloatingTextField(
-                placeholder: "Repeat Password",
-                controller: controller.repeatPasswordController,
-                obscureText: true,
-                textStyle: TextStyleHelper.instance.body14RegularRoboto
-                    .copyWith(color: appTheme.gray_900),
-                labelStyle: TextStyleHelper.instance.body14RegularRoboto
-                    .copyWith(color: appTheme.gray_600),
+              Obx(
+                () => CustomFloatingTextField(
+                  placeholder: "Repeat Password",
+                  controller: controller.repeatPasswordController,
+                  obscureText: controller.obscureRepeatPassword.value,
+                  textStyle: TextStyleHelper.instance.body14RegularRoboto
+                      .copyWith(color: appTheme.gray_900),
+                  labelStyle: TextStyleHelper.instance.body14RegularRoboto
+                      .copyWith(color: appTheme.gray_600),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      controller.obscureRepeatPassword.value
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      size: 20.h,
+                      color: appTheme.gray_500,
+                    ),
+                    onPressed: () => controller.obscureRepeatPassword.toggle(),
+                  ),
+                ),
               ),
               SizedBox(height: 24.h),
               Row(

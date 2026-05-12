@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/custom_floating_text_field.dart';
 import './controller/profile_settings_controller.dart';
 
 class ProfileSettingsScreen extends GetWidget<ProfileSettingsController> {
@@ -61,247 +62,97 @@ class ProfileSettingsScreen extends GetWidget<ProfileSettingsController> {
   }
 
   Widget _buildNameField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Name',
-          style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
-            color: appTheme.gray_700,
-          ),
-        ),
-        SizedBox(height: 8.h),
-        TextFormField(
-          controller: controller.nameController,
-          style: TextStyleHelper.instance.body14RegularRoboto,
-          decoration: InputDecoration(
-            hintText: 'Enter your name',
-            hintStyle: TextStyleHelper.instance.body14RegularRoboto.copyWith(
-              color: appTheme.gray_400,
-            ),
-            filled: true,
-            fillColor: appTheme.gray_50,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.h),
-              borderSide: BorderSide(color: appTheme.blue_gray_100),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.h),
-              borderSide: BorderSide(color: appTheme.blue_gray_100),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.h),
-              borderSide: BorderSide(color: appTheme.deep_purple_800),
-            ),
-            contentPadding:
-                EdgeInsets.symmetric(horizontal: 16.h, vertical: 14.h),
-          ),
-        ),
-      ],
+    return CustomFloatingTextField(
+      placeholder: "Name",
+      controller: controller.nameController,
+      textStyle: TextStyleHelper.instance.body14RegularRoboto
+          .copyWith(color: appTheme.gray_900),
+      labelStyle: TextStyleHelper.instance.body14RegularRoboto
+          .copyWith(color: appTheme.gray_600),
     );
   }
 
   Widget _buildEmailField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Email',
-          style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
-            color: appTheme.gray_700,
-          ),
-        ),
-        SizedBox(height: 8.h),
-        TextFormField(
-          controller: controller.emailController,
-          keyboardType: TextInputType.emailAddress,
-          style: TextStyleHelper.instance.body14RegularRoboto,
-          decoration: InputDecoration(
-            hintText: 'Enter your email',
-            hintStyle: TextStyleHelper.instance.body14RegularRoboto.copyWith(
-              color: appTheme.gray_400,
-            ),
-            filled: true,
-            fillColor: appTheme.gray_50,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.h),
-              borderSide: BorderSide(color: appTheme.blue_gray_100),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.h),
-              borderSide: BorderSide(color: appTheme.blue_gray_100),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.h),
-              borderSide: BorderSide(color: appTheme.deep_purple_800),
-            ),
-            contentPadding:
-                EdgeInsets.symmetric(horizontal: 16.h, vertical: 14.h),
-          ),
-        ),
-      ],
+    return CustomFloatingTextField(
+      placeholder: "Email",
+      controller: controller.emailController,
+      keyboardType: TextInputType.emailAddress,
+      textStyle: TextStyleHelper.instance.body14RegularRoboto
+          .copyWith(color: appTheme.gray_900),
+      labelStyle: TextStyleHelper.instance.body14RegularRoboto
+          .copyWith(color: appTheme.gray_600),
     );
   }
 
   Widget _buildCurrentPasswordField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Current Password',
-          style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
-            color: appTheme.gray_700,
+    return Obx(
+      () => CustomFloatingTextField(
+        placeholder: "Current Password",
+        controller: controller.currentPasswordController,
+        obscureText: controller.obscureCurrentPassword.value,
+        textStyle: TextStyleHelper.instance.body14RegularRoboto
+            .copyWith(color: appTheme.gray_900),
+        labelStyle: TextStyleHelper.instance.body14RegularRoboto
+            .copyWith(color: appTheme.gray_600),
+        suffixIcon: IconButton(
+          icon: Icon(
+            controller.obscureCurrentPassword.value
+                ? Icons.visibility_off
+                : Icons.visibility,
+            size: 20.h,
+            color: appTheme.gray_500,
           ),
+          onPressed: () => controller.obscureCurrentPassword.toggle(),
         ),
-        SizedBox(height: 8.h),
-        Obx(
-          () => TextFormField(
-            controller: controller.currentPasswordController,
-            obscureText: controller.obscureCurrentPassword.value,
-            style: TextStyleHelper.instance.body14RegularRoboto,
-            decoration: InputDecoration(
-              hintText: 'Enter current password',
-              hintStyle: TextStyleHelper.instance.body14RegularRoboto.copyWith(
-                color: appTheme.gray_400,
-              ),
-              filled: true,
-              fillColor: appTheme.gray_50,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.h),
-                borderSide: BorderSide(color: appTheme.blue_gray_100),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.h),
-                borderSide: BorderSide(color: appTheme.blue_gray_100),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.h),
-                borderSide: BorderSide(color: appTheme.deep_purple_800),
-              ),
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 16.h, vertical: 14.h),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  controller.obscureCurrentPassword.value
-                      ? Icons.visibility_off
-                      : Icons.visibility,
-                  size: 20.h,
-                  color: appTheme.gray_500,
-                ),
-                onPressed: () => controller.obscureCurrentPassword.toggle(),
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
   Widget _buildNewPasswordField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'New Password',
-          style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
-            color: appTheme.gray_700,
+    return Obx(
+      () => CustomFloatingTextField(
+        placeholder: "New Password",
+        controller: controller.newPasswordController,
+        obscureText: controller.obscureNewPassword.value,
+        textStyle: TextStyleHelper.instance.body14RegularRoboto
+            .copyWith(color: appTheme.gray_900),
+        labelStyle: TextStyleHelper.instance.body14RegularRoboto
+            .copyWith(color: appTheme.gray_600),
+        suffixIcon: IconButton(
+          icon: Icon(
+            controller.obscureNewPassword.value
+                ? Icons.visibility_off
+                : Icons.visibility,
+            size: 20.h,
+            color: appTheme.gray_500,
           ),
+          onPressed: () => controller.obscureNewPassword.toggle(),
         ),
-        SizedBox(height: 8.h),
-        Obx(
-          () => TextFormField(
-            controller: controller.newPasswordController,
-            obscureText: controller.obscureNewPassword.value,
-            style: TextStyleHelper.instance.body14RegularRoboto,
-            decoration: InputDecoration(
-              hintText: 'Enter new password',
-              hintStyle: TextStyleHelper.instance.body14RegularRoboto.copyWith(
-                color: appTheme.gray_400,
-              ),
-              filled: true,
-              fillColor: appTheme.gray_50,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.h),
-                borderSide: BorderSide(color: appTheme.blue_gray_100),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.h),
-                borderSide: BorderSide(color: appTheme.blue_gray_100),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.h),
-                borderSide: BorderSide(color: appTheme.deep_purple_800),
-              ),
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 16.h, vertical: 14.h),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  controller.obscureNewPassword.value
-                      ? Icons.visibility_off
-                      : Icons.visibility,
-                  size: 20.h,
-                  color: appTheme.gray_500,
-                ),
-                onPressed: () => controller.obscureNewPassword.toggle(),
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
   Widget _buildConfirmPasswordField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Confirm New Password',
-          style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
-            color: appTheme.gray_700,
+    return Obx(
+      () => CustomFloatingTextField(
+        placeholder: "Confirm New Password",
+        controller: controller.confirmPasswordController,
+        obscureText: controller.obscureConfirmPassword.value,
+        textStyle: TextStyleHelper.instance.body14RegularRoboto
+            .copyWith(color: appTheme.gray_900),
+        labelStyle: TextStyleHelper.instance.body14RegularRoboto
+            .copyWith(color: appTheme.gray_600),
+        suffixIcon: IconButton(
+          icon: Icon(
+            controller.obscureConfirmPassword.value
+                ? Icons.visibility_off
+                : Icons.visibility,
+            size: 20.h,
+            color: appTheme.gray_500,
           ),
+          onPressed: () => controller.obscureConfirmPassword.toggle(),
         ),
-        SizedBox(height: 8.h),
-        Obx(
-          () => TextFormField(
-            controller: controller.confirmPasswordController,
-            obscureText: controller.obscureConfirmPassword.value,
-            style: TextStyleHelper.instance.body14RegularRoboto,
-            decoration: InputDecoration(
-              hintText: 'Re-enter new password',
-              hintStyle: TextStyleHelper.instance.body14RegularRoboto.copyWith(
-                color: appTheme.gray_400,
-              ),
-              filled: true,
-              fillColor: appTheme.gray_50,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.h),
-                borderSide: BorderSide(color: appTheme.blue_gray_100),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.h),
-                borderSide: BorderSide(color: appTheme.blue_gray_100),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.h),
-                borderSide: BorderSide(color: appTheme.deep_purple_800),
-              ),
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 16.h, vertical: 14.h),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  controller.obscureConfirmPassword.value
-                      ? Icons.visibility_off
-                      : Icons.visibility,
-                  size: 20.h,
-                  color: appTheme.gray_500,
-                ),
-                onPressed: () => controller.obscureConfirmPassword.toggle(),
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 

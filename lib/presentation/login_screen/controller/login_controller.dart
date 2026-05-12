@@ -11,11 +11,14 @@ class LoginController extends GetxController {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  RxBool obscurePassword = true.obs;
+
   @override
   void onInit() {
     super.onInit();
     emailController.clear();
     passwordController.clear();
+    obscurePassword.value = true;
   }
 
   @override

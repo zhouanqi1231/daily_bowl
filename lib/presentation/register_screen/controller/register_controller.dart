@@ -8,6 +8,16 @@ class RegisterController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   TextEditingController repeatPasswordController = TextEditingController();
 
+  RxBool obscurePassword = true.obs;
+  RxBool obscureRepeatPassword = true.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    obscurePassword.value = true;
+    obscureRepeatPassword.value = true;
+  }
+
   @override
   void onClose() {
     usernameController.dispose();
