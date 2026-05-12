@@ -45,16 +45,15 @@ class CategorizedRecipeController extends GetxController {
     super.onClose();
   }
 
-  Future<void> fetchRecipes({String? query}) async {
+  Future<void> fetchRecipes() async {
+    // get recipe with filter condition of cuisine_type
     try {
       isLoading.value = true;
 
       String endpoint = '/recipes/';
       List<String> params = [];
 
-      if (query != null && query.isNotEmpty) {
-        params.add('title=$query');
-      } else if (cuisineType.value != null) {
+      if (cuisineType.value != null) {
         params.add('cuisine_type=${cuisineType.value}');
       }
 
@@ -88,22 +87,6 @@ class CategorizedRecipeController extends GetxController {
       Get.snackbar("Error", "Failed to load recipes");
     } finally {
       isLoading.value = false;
-    }
-  }
-
-  void performSearch() {
-    String searchText = searchController.value.text;
-    cuisineType.value = null; // Clear cuisine type filter when performing a manual search
-    fetchRecipes(query: searchText);
-  }
-
-  void toggleBookmark(int index) {
-    if (categorizedRecipeModelObj.value.recipeList != null &&
-        index < categorizedRecipeModelObj.value.recipeList!.length) {
-      var recipe = categorizedRecipeModelObj.value.recipeList![index];
-      if (recipe.id != null) {
-        Get.find<GlobalSaveManager>().toggleSave(recipe.id!);
-      }
     }
   }
 }
