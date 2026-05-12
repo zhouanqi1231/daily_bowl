@@ -68,7 +68,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
             Container(
               color: Colors.black26,
               child: Center(
-                child: CircularProgressIndicator(color: appTheme.deep_purple_800),
+                child: CircularProgressIndicator(color: appTheme.deepPurple800),
               ),
             ),
         ],
@@ -432,7 +432,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
               () => CustomButton(
                 text: controller.isLoading.value ? "Saving..." : "Confirm",
                 width: double.infinity,
-                backgroundColor: appTheme.deep_purple_800,
+                backgroundColor: appTheme.deepPurple800,
                 textColor: appTheme.white_A700,
                 onPressed: controller.isLoading.value
                     ? null

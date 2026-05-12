@@ -166,8 +166,8 @@ class ProfileSettingsScreen extends GetWidget<ProfileSettingsController> {
           onPressed:
               controller.isLoading.value ? null : () => controller.saveProfile(),
           style: ElevatedButton.styleFrom(
-            backgroundColor: appTheme.deep_purple_800,
-            disabledBackgroundColor: appTheme.deep_purple_300,
+            backgroundColor: appTheme.deepPurple800,
+            disabledBackgroundColor: appTheme.deepPurple300,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(32.h),
             ),

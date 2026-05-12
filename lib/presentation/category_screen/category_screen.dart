@@ -23,7 +23,7 @@ class CategoryScreen extends StatelessWidget {
         if (controller.isLoading.value) {
           return Center(
             child: CircularProgressIndicator(
-              color: appTheme.deep_purple_800,
+              color: appTheme.deepPurple800,
             ),
           );
         }
@@ -117,7 +117,7 @@ class CategoryScreen extends StatelessWidget {
                       child: Icon(
                         Icons.restaurant_menu,
                         size: 80.h,
-                        color: appTheme.deep_purple_800,
+                        color: appTheme.deepPurple800,
                       ),
                     ),
                   ),
@@ -132,7 +132,7 @@ class CategoryScreen extends StatelessWidget {
                       Text(
                         category.cuisineType.value,
                         style: TextStyleHelper.instance.title16BoldPoppins.copyWith(
-                          color: hasImage ? Colors.white : appTheme.deep_purple_800,
+                          color: hasImage ? Colors.white : appTheme.deepPurple800,
                         ),
                       ),
                       SizedBox(height: 4.h),

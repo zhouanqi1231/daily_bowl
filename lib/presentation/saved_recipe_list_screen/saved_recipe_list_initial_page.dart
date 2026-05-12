@@ -24,7 +24,7 @@ class SavedRecipeListInitialPage extends StatelessWidget {
               child: Obx(
                 () => RefreshIndicator(
                   onRefresh: () => controller.refreshRecipes(),
-                  color: appTheme.deep_purple_800,
+                  color: appTheme.deepPurple800,
                   child: ListView.separated(
                     // Use status bar height in padding to prevent coverage initially,
                     // but allow content to scroll behind status bar.

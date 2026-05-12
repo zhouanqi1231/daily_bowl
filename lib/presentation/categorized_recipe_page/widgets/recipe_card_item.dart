@@ -74,7 +74,7 @@ class RecipeCardItem extends StatelessWidget {
             child: Text(
               recipeItemModel?.userInitial?.value ?? "A",
               style: TextStyleHelper.instance.title16MediumRoboto.copyWith(
-                color: appTheme.deep_purple_800,
+                color: appTheme.deepPurple800,
               ),
             ),
           ),

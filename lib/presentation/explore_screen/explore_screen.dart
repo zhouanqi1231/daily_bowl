@@ -37,7 +37,7 @@ class ExploreScreen extends StatelessWidget {
             },
             child: RefreshIndicator(
               onRefresh: () => controller.refreshData(),
-              color: appTheme.deep_purple_800,
+              color: appTheme.deepPurple800,
               child: Obx(() {
                 int recipeCount =
                     controller.exploreModelObj.value.recipeList?.length ?? 0;
@@ -96,7 +96,7 @@ class ExploreScreen extends StatelessWidget {
               onPressed: () {
                 Get.toNamed(AppRoutes.recipeCreationScreen);
               },
-              backgroundColor: appTheme.deep_purple_800,
+              backgroundColor: appTheme.deepPurple800,
               child: CustomImageView(
                 imagePath: ImageConstant.imgCreateARecipe,
                 color: appTheme.white_A700,

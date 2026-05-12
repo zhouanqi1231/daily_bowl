@@ -63,7 +63,7 @@ class UserProfileScreen extends StatelessWidget {
             width: 104.h,
             radius: BorderRadius.circular(52.h),
             border: Border.all(
-              color: appTheme.deep_purple_800,
+              color: appTheme.deepPurple800,
               width: 1.h,
             ),
             margin: EdgeInsets.only(top: 6.h),
@@ -249,7 +249,7 @@ class UserProfileScreen extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 2.h),
       child: Row(
         children: [
-          Icon(icon, size: 10.h, color: appTheme.deep_purple_800),
+          Icon(icon, size: 10.h, color: appTheme.deepPurple800),
           SizedBox(width: 4.h),
           Text(
             text,

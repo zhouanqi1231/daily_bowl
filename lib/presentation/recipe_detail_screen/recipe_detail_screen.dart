@@ -46,7 +46,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
       body: Obx(() {
         // check if loading
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator(color: appTheme.deep_purple_800));
+          return Center(child: CircularProgressIndicator(color: appTheme.deepPurple800));
         }
 
         return Stack(
@@ -299,7 +299,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               onPressed: () => controller.onBookmarkTap(),
               backgroundColor:
                   controller.isBookmarked.value
-                      ? appTheme.deep_purple_800
+                      ? appTheme.deepPurple800
                       : appTheme.white_A700,
               child: CustomImageView(
                 imagePath: ImageConstant.imgFab,
@@ -316,14 +316,14 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               onPressed: () => controller.onMainFabTap(),
               backgroundColor:
                   controller.isSaved.value
-                      ? appTheme.deep_purple_800
+                      ? appTheme.deepPurple800
                       : appTheme.deepPurple50,
               child: Icon( 
                 controller.isSaved.value ? Icons.star : Icons.star_border, // Changed to star icon
                 color:
                     controller.isSaved.value
                         ? appTheme.white_A700
-                        : appTheme.deep_purple_800,
+                        : appTheme.deepPurple800,
               ),
             ),
           ),

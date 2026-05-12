@@ -76,7 +76,7 @@ class LoginScreen extends GetWidget<LoginController> {
                     child: CustomButton(
                       text: "Login",
                       width: double.infinity,
-                      backgroundColor: appTheme.deep_purple_800,
+                      backgroundColor: appTheme.deepPurple800,
                       textColor: appTheme.white_A700,
                       onPressed: () => controller.login(),
                     ),
