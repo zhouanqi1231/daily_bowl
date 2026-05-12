@@ -11,47 +11,47 @@ class CategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double statusBarHeight = MediaQuery.of(context).padding.top;
+
     return Scaffold(
       backgroundColor: appTheme.white_A700,
-      body: SafeArea(
-        child: Obx(() {
-          if (controller.isLoading.value) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: appTheme.deep_purple_800,
-              ),
-            );
-          }
-
-          if (controller.categoryList.isEmpty) {
-            return Center(
-              child: Text(
-                "No categories found",
-                style: TextStyleHelper.instance.body14RegularRoboto,
-              ),
-            );
-          }
-
-          return RefreshIndicator(
-            onRefresh: () => controller.fetchCategories(),
-            child: GridView.builder(
-              padding: EdgeInsets.fromLTRB(16.h, 20.h, 16.h, 40.h),
-              physics: AlwaysScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16.h,
-                crossAxisSpacing: 16.h,
-                childAspectRatio: 1.2, // Rectangular shape
-              ),
-              itemCount: controller.categoryList.length,
-              itemBuilder: (context, index) {
-                CategoryModel category = controller.categoryList[index];
-                return _buildCategoryItem(category);
-              },
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: appTheme.deep_purple_800,
             ),
           );
-        }),
-      ),
+        }
+
+        if (controller.categoryList.isEmpty) {
+          return Center(
+            child: Text(
+              "No categories found",
+              style: TextStyleHelper.instance.body14RegularRoboto,
+            ),
+          );
+        }
+
+        return RefreshIndicator(
+          onRefresh: () => controller.fetchCategories(),
+          child: GridView.builder(
+            padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 40.h),
+            physics: AlwaysScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 16.h,
+              crossAxisSpacing: 16.h,
+              childAspectRatio: 1.2,  // Rectangular shape
+            ),
+            itemCount: controller.categoryList.length,
+            itemBuilder: (context, index) {
+              CategoryModel category = controller.categoryList[index];
+              return _buildCategoryItem(category);
+            },
+          ),
+        );
+      }),
     );
   }
 
