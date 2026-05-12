@@ -19,19 +19,25 @@ class RecipeDetailController extends GetxController {
   final isLoading = true.obs;
 
   // data bind to UI
+  final recipeImageUrl = "".obs;
+
   final recipeTitle = "".obs;
   final recipeDescription = "".obs;
+
   final authorName = "".obs;
-  final updateDate = "".obs;
+
+  // match user allergies to ingredients
   final allergyTags = <String>[].obs;
   final userAllergies = <String>[].obs;
-  final recipeImageUrl = "".obs;
 
   // Nutrition data (stored for local persistence on "Cook")
   final totalCalories = 0.0.obs;
   final totalProtein = 0.0.obs;
   final totalCarbs = 0.0.obs;
   final totalFat = 0.0.obs;
+
+  // create date
+  final updateDate = "".obs;
 
   // For scrolling app bar color change
   final scrollOffset = 0.0.obs;
@@ -82,7 +88,11 @@ class RecipeDetailController extends GetxController {
         var allergiesValue = userData['allergies'] ?? userData['allergy'];
         if (allergiesValue != null) {
           String allergyStr = allergiesValue.toString();
-          userAllergies.value = allergyStr.split(',').map((e) => e.trim().toLowerCase()).where((e) => e.isNotEmpty).toList();
+          userAllergies.value = allergyStr
+              .split(',')
+              .map((e) => e.trim().toLowerCase())
+              .where((e) => e.isNotEmpty)
+              .toList();
         }
       }
     } catch (e) {
@@ -114,7 +124,8 @@ class RecipeDetailController extends GetxController {
       var nutritionData = responses[2];
 
       recipeTitle.value = recipeData['title'] ?? 'Unknown Recipe';
-      recipeDescription.value = "Cuisine Type: ${recipeData['cuisine_type'] ?? 'Default Type'} • Portion: ${recipeData['servings'] ?? 1} pax";
+      recipeDescription.value =
+          "Cuisine Type: ${recipeData['cuisine_type'] ?? 'Default Type'} • Portion: ${recipeData['servings'] ?? 1} pax";
       recipeImageUrl.value = recipeData['img_url'] ?? "";
 
       // Assign nutrition data
@@ -124,11 +135,13 @@ class RecipeDetailController extends GetxController {
       totalFat.value = (nutritionData['total_fat'] ?? 0.0).toDouble();
 
       // Fetch author name
-      authorName.value = recipeData['creator_username'] ?? "User ${recipeData['created_by'] ?? ''}";
+      authorName.value = recipeData['creator_username'] ??
+          "User ${recipeData['created_by'] ?? ''}";
 
       if (recipeData['created_at'] != null) {
         DateTime date = DateTime.parse(recipeData['created_at']);
-        updateDate.value = "Updated on ${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+        updateDate.value =
+            "Created on ${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
       }
 
       // Separate steps from procedure string
@@ -141,13 +154,14 @@ class RecipeDetailController extends GetxController {
             .map((s) => s.trim())
             .where((s) => s.isNotEmpty)
             .toList();
-        
+
         if (steps.isEmpty && procedure.trim().isNotEmpty) {
           steps = [procedure.trim()];
         }
       }
 
-      var ingredientFutures = ingredientsAssoc.map<Future<Map<String, dynamic>>>((assoc) async {
+      var ingredientFutures =
+          ingredientsAssoc.map<Future<Map<String, dynamic>>>((assoc) async {
         int ingId = assoc['ingredient_id'];
         var ingDetail = await ApiClient.get('/ingredients/$ingId/');
         return {
@@ -157,7 +171,7 @@ class RecipeDetailController extends GetxController {
       }).toList();
 
       var results = await Future.wait(ingredientFutures);
-      
+
       if (isClosed) return;
 
       List<CustomIngredientsItem> loadedIngredients = [];
@@ -172,9 +186,14 @@ class RecipeDetailController extends GetxController {
           quantity: "${assoc['amount']} ${assoc['unit'] ?? ''}",
         ));
 
-        if (ingDetail['allergy'] != null && ingDetail['allergy'].toString().isNotEmpty) {
+        if (ingDetail['allergy'] != null &&
+            ingDetail['allergy'].toString().isNotEmpty) {
           String allergyField = ingDetail['allergy'].toString();
-          List<String> splitAllergies = allergyField.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+          List<String> splitAllergies = allergyField
+              .split(',')
+              .map((e) => e.trim())
+              .where((e) => e.isNotEmpty)
+              .toList();
           allergiesSet.addAll(splitAllergies);
         }
       }
@@ -185,7 +204,6 @@ class RecipeDetailController extends GetxController {
         ingredientsList: loadedIngredients,
         instructionsList: steps,
       );
-
     } catch (e) {
       print("Failed to fetch recipe details: $e");
       if (!isClosed) {
@@ -205,7 +223,8 @@ class RecipeDetailController extends GetxController {
   bool isUserAllergicTo(String tag) {
     String normalizedTag = tag.toLowerCase();
     return userAllergies.any((userAllergy) {
-      return normalizedTag.contains(userAllergy) || userAllergy.contains(normalizedTag);
+      return normalizedTag.contains(userAllergy) ||
+          userAllergy.contains(normalizedTag);
     });
   }
 
@@ -232,36 +251,30 @@ class RecipeDetailController extends GetxController {
     );
   }
 
+  // cooked button
   Future<void> onBookmarkTap() async {
     isBookmarked.value = !isBookmarked.value;
     if (isBookmarked.value) {
       // Save "followed to cook" action locally
       final prefs = await SharedPreferences.getInstance();
-      
-      // 1. Update heatmap data (cooked_dates)
+
+      // Update heatmap data (cooked_dates)
       List<String> cookedDates = prefs.getStringList('cooked_dates') ?? [];
       String todayStr = DateTime.now().toIso8601String().split('T')[0];
       cookedDates.add(todayStr);
       await prefs.setStringList('cooked_dates', cookedDates);
 
-      // 2. Save detailed recipe JSON for weekly report
-      List<String> followedRecipesJson = prefs.getStringList('followed_recipes') ?? [];
-      
-      List<Map<String, String>> ingredients = [];
-      if (recipeDetailModel.value != null && recipeDetailModel.value!.ingredientsList != null) {
-        ingredients = recipeDetailModel.value!.ingredientsList!.value.map((e) => {
-          'name': e.name ?? '',
-          'quantity': e.quantity ?? '',
-        }).toList();
-      }
+      // Save detailed recipe JSON for weekly report
+      List<String> followedRecipesJson =
+          prefs.getStringList('followed_recipes') ?? [];
 
+      // store cooked info locally, in a json form
       Map<String, dynamic> recipeInfo = {
         'id': recipeId,
         'title': recipeTitle.value,
         'description': recipeDescription.value,
         'image_path': recipeImageUrl.value,
         'cooked_at': DateTime.now().toIso8601String(),
-        'ingredients': ingredients,
         'nutrition': {
           'calories': totalCalories.value,
           'protein': totalProtein.value,
@@ -290,6 +303,7 @@ class RecipeDetailController extends GetxController {
     }
   }
 
+  // save button
   void onMainFabTap() {
     if (recipeId != -1) {
       bool willBeSaved = !isSaved.value;
@@ -298,7 +312,9 @@ class RecipeDetailController extends GetxController {
 
       Get.showSnackbar(
         GetSnackBar(
-          message: willBeSaved ? 'Recipe saved to your collection' : 'Recipe removed from your collection',
+          message: willBeSaved
+              ? 'Recipe saved to your collection'
+              : 'Recipe removed from your collection',
           duration: Duration(milliseconds: 1000),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.black87,

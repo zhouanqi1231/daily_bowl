@@ -15,6 +15,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      // top bar: back button + share button
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.h),
         child: Obx(
@@ -39,12 +40,14 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
         ),
       ),
       body: Obx(() {
+        // check if loading
         if (controller.isLoading.value) {
           return Center(child: CircularProgressIndicator(color: appTheme.deep_purple_800));
         }
 
         return Stack(
           children: [
+            // notification listener for scroll event
             NotificationListener<ScrollNotification>(
               onNotification: (scrollNotification) {
                 if (scrollNotification is ScrollUpdateNotification) {
@@ -55,6 +58,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    // top image, img_url or default
                     CustomImageView(
                       imagePath: controller.recipeImageUrl.value.isNotEmpty 
                           ? controller.recipeImageUrl.value 
@@ -98,11 +102,13 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // recipe title
           Text(
             controller.recipeTitle.value,
             style: TextStyleHelper.instance.headline32RegularRoboto,
           ),
           SizedBox(height: 12.h),
+          // recipe owner
           Row(
             children: [
               CustomIconButton(
@@ -123,11 +129,13 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
             ],
           ),
           SizedBox(height: 12.h),
+          // recipe description: type, serving
           Text(
             controller.recipeDescription.value,
             style: TextStyleHelper.instance.body14RegularRoboto,
           ),
           SizedBox(height: 18.h),
+          // allergy section
           _buildAllergyAlertSection(context),
         ],
       ),
@@ -135,6 +143,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
   }
 
   Widget _buildNutritionSection(BuildContext context) {
+    // nutrition of the recipe: calories, protein, carbs, fat
     List<CustomIngredientsItem> nutritionItems = [
       CustomIngredientsItem(name: "Calories", quantity: "${controller.totalCalories.value.toInt()} kcal"),
       CustomIngredientsItem(name: "Protein", quantity: "${controller.totalProtein.value.toInt()} g"),
@@ -171,12 +180,13 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
           "Allergy Alert:",
           style: TextStyleHelper.instance.body14RegularRoboto
         ),
+        // allergy tags, from all the ingredient-allergy-tags
         ...controller.allergyTags.map((tag) {
           bool isMatched = controller.isUserAllergicTo(tag);
           return GestureDetector(
             onTap: () => controller.onAllergyTagTap(tag),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 4.h),
+              padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 2.h),
               decoration: BoxDecoration(
                 color: isMatched ? appTheme.red_900 : appTheme.gray_200,
                 border: Border.all(
@@ -187,9 +197,8 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               ),
               child: Text(
                 "#$tag",
-                style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
+                style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
                   color: isMatched ? appTheme.whiteCustom : appTheme.gray_700,
-                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -200,6 +209,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
   }
 
   Widget _buildIngredientsSection(BuildContext context) {
+    // ingredient list
     return SizedBox(
       width: double.infinity,
       child: Column(
@@ -219,6 +229,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
   }
 
  Widget _buildStepsSection(BuildContext context) {
+    // recipe procedures
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(right: 6.h),
