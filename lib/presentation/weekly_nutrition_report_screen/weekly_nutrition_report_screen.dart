@@ -235,116 +235,12 @@ class WeeklyNutritionReportScreen
                     ),
                   ),
                 ),
-                SizedBox(height: 28.h),
-                _buildNutritionChart(context, totalCalories),
-                SizedBox(height: 28.h),
-                _buildNutritionLegend(context),
               ],
             ),
           ),
         ],
       );
     });
-  }
-
-  Widget _buildNutritionChart(BuildContext context, int totalCalories) {
-    return SizedBox(
-      height: 214.h,
-      width: 214.h,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          PieChart(
-            PieChartData(
-              sectionsSpace: 2,
-              centerSpaceRadius: 70.h,
-              sections: [
-                PieChartSectionData(
-                  value: 35,
-                  color: appTheme.indigo_400,
-                  radius: 25.h,
-                  showTitle: false,
-                ),
-                PieChartSectionData(
-                  value: 32,
-                  color: appTheme.deep_orange_400,
-                  radius: 25.h,
-                  showTitle: false,
-                ),
-                PieChartSectionData(
-                  value: 33,
-                  color: appTheme.cyan_400,
-                  radius: 25.h,
-                  showTitle: false,
-                ),
-              ],
-            ),
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '$totalCalories',
-                style: TextStyleHelper.instance.headline32BoldPoppins,
-              ),
-              Text(
-                'CALORIES',
-                style: TextStyleHelper.instance.body12MediumPoppins,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNutritionLegend(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.fromLTRB(4.h, 2.h, 4.h, 2.h),
-          decoration: BoxDecoration(
-            color: appTheme.deep_orange_400,
-            borderRadius: BorderRadius.circular(4.h),
-          ),
-          child: Text(
-            'PROTEIN',
-            style: TextStyleHelper.instance.label10BoldRoboto.copyWith(
-              height: 1.2,
-            ),
-          ),
-        ),
-        SizedBox(width: 10.h),
-        Container(
-          padding: EdgeInsets.fromLTRB(2.h, 2.h, 2.h, 2.h),
-          decoration: BoxDecoration(
-            color: appTheme.indigo_400,
-            borderRadius: BorderRadius.circular(4.h),
-          ),
-          child: Text(
-            'CARBS',
-            style: TextStyleHelper.instance.label10BoldRoboto.copyWith(
-              height: 1.2,
-            ),
-          ),
-        ),
-        SizedBox(width: 10.h),
-        Container(
-          padding: EdgeInsets.fromLTRB(2.h, 2.h, 2.h, 2.h),
-          decoration: BoxDecoration(
-            color: appTheme.cyan_400,
-            borderRadius: BorderRadius.circular(4.h),
-          ),
-          child: Text(
-            'FAT',
-            style: TextStyleHelper.instance.label10BoldRoboto.copyWith(
-              height: 1.2,
-            ),
-          ),
-        ),
-      ],
-    );
   }
 
   Widget _buildCongratulationsSection(BuildContext context) {

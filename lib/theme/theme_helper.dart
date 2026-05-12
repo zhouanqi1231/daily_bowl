@@ -72,8 +72,6 @@ class LightCodeColors {
   Color get orange_200 => const Color(0xFFFFC369);
   Color get orange_300 => const Color(0xFFFFBB48);
   
-  Color get deep_orange_200 => const Color(0xFFFFAAA5);
-  Color get deep_orange_400 => const Color(0xFFFF715B);
   
   Color get white_A700 => const Color(0xFFFFFFFF);
   Color get black_900 => const Color(0xFF000000);
