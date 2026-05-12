@@ -48,13 +48,13 @@ class SavedRecipeListController extends GetxController {
             );
           }
         } catch (e) {
-          print("Failed to load details for recipe $recipeId: $e");
+          // print("Failed to load details for recipe $recipeId: $e");
         }
       }
 
       recipeList.value = fetchedRecipes;
     } catch (e) {
-      print("Error fetching saved recipes details: $e");
+      // print("Error fetching saved recipes details: $e");
     } finally {
       isLoading.value = false;
     }

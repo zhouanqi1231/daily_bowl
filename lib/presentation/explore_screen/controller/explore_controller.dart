@@ -74,7 +74,7 @@ class ExploreController extends GetxController {
         }
       }
     } catch (e) {
-      print("Error fetching users for map: $e");
+      // print("Error fetching users for map: $e");
     }
   }
 
@@ -156,7 +156,7 @@ class ExploreController extends GetxController {
         }
       }
     } catch (e) {
-      print("Error fetching recipes: $e");
+      // print("Error fetching recipes: $e");
       // Use addPostFrameCallback to avoid LateInitializationError if triggered during build
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Get.snackbar("Fail to load",

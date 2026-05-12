@@ -177,7 +177,7 @@ class ProfileSettingsController extends GetxController {
       // Jump back to my profile
       Get.back();
     } catch (e) {
-      print("Error updating profile: $e");
+      // print("Error updating profile: $e");
       Get.snackbar('Error', 'Failed to update profile. Please try again.');
     } finally {
       isLoading.value = false;

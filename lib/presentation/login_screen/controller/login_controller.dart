@@ -90,7 +90,7 @@ class LoginController extends GetxController {
             }
           }
         } catch (e) {
-          print("Error fetching user profile after login: $e");
+          // print("Error fetching user profile after login: $e");
         }
         
         // Safety check before clearing

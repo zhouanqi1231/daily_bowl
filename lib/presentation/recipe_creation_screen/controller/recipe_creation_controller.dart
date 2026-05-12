@@ -100,7 +100,7 @@ class RecipeCreationController extends GetxController {
             .toList();
       }
     } catch (e) {
-      print("Error fetching ingredients for suggestions: $e");
+      // print("Error fetching ingredients for suggestions: $e");
     }
   }
 
@@ -168,7 +168,7 @@ class RecipeCreationController extends GetxController {
         addIngredientRow();
       }
     } catch (e) {
-      print("Error loading recipe for edit: $e");
+      // print("Error loading recipe for edit: $e");
       Get.snackbar('Error', 'Failed to load recipe details');
     } finally {
       isLoading.value = false;
@@ -342,7 +342,7 @@ class RecipeCreationController extends GetxController {
             }
           }
         } catch (e) {
-          print("Error fetching original ingredients: $e");
+          // print("Error fetching original ingredients: $e");
         }
       } else {
         final recipeResponse = await ApiClient.post('/recipes/', recipePayload);
@@ -371,7 +371,7 @@ class RecipeCreationController extends GetxController {
                 ingredientId = int.parse(ingredientLoc.split('/').lastWhere((e) => e.isNotEmpty));
               }
             } catch (e) {
-              print("Error ensuring ingredient exists ($name): $e");
+              // print("Error ensuring ingredient exists ($name): $e");
             }
             
             if (ingredientId != null) {
@@ -401,7 +401,7 @@ class RecipeCreationController extends GetxController {
             try {
               await ApiClient.delete('/recipes/$currentRecipeId/ingredients/$id/');
             } catch (e) {
-              print("Error removing ingredient $id from recipe: $e");
+              // print("Error removing ingredient $id from recipe: $e");
             }
           }
         }
@@ -424,7 +424,7 @@ class RecipeCreationController extends GetxController {
 
     } catch (e) {
       isLoading.value = false;
-      print("Error saving recipe: $e");
+      // print("Error saving recipe: $e");
       Get.snackbar('Error', 'Failed to save recipe');
     }
   }

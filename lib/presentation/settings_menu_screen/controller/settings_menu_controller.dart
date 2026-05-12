@@ -36,7 +36,7 @@ class SettingsMenuController extends GetxController {
       // delete token
       await ApiClient.delete('/tokens/');
     } catch (e) {
-      print("Logout API call failed: $e");
+      // print("Logout API call failed: $e");
     } finally {
       // clear locally
       final prefs = await SharedPreferences.getInstance();

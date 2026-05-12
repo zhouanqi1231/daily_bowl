@@ -130,7 +130,7 @@ class UserProfileController extends GetxController {
           await prefs.setString('user_allergies', allergyStr);
         }
       } catch (e) {
-        print("Error fetching user details: $e");
+        // print("Error fetching user details: $e");
       }
 
       // 1. Fetch created recipes and update activity
@@ -150,7 +150,7 @@ class UserProfileController extends GetxController {
         );
       }
     } catch (e) {
-      print("Error fetching profile details: $e");
+      // print("Error fetching profile details: $e");
       if (!isClosed) {
         activityData.value = tempActivity;
         _loadMockData(displayName);

@@ -122,7 +122,7 @@ class RecipeDetailController extends GetxController {
         }
       }
     } catch (e) {
-      print("Error loading user allergies: $e");
+      // print("Error loading user allergies: $e");
     }
   }
 
@@ -242,7 +242,7 @@ class RecipeDetailController extends GetxController {
         instructionsList: steps,
       );
     } catch (e) {
-      print("Failed to fetch recipe details: $e");
+      // print("Failed to fetch recipe details: $e");
       if (!isClosed) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!isClosed) {

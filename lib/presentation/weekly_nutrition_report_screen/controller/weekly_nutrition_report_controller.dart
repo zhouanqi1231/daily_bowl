@@ -101,7 +101,7 @@ class WeeklyNutritionReportController extends GetxController {
               title = recipeDetail['title'] ?? 'Unknown Recipe';
               imagePath = recipeDetail['img_url'] ?? ImageConstant.imgMedia;
             } catch (e) {
-              print("Failed to fetch info for recipe $recipeId: $e");
+              // print("Failed to fetch info for recipe $recipeId: $e");
               // If server request fails (e.g. 404), don't show the item
               continue;
             }
@@ -126,7 +126,7 @@ class WeeklyNutritionReportController extends GetxController {
             }
           }
         } catch (e) {
-          print("Error parsing followed recipe: $e");
+          // print("Error parsing followed recipe: $e");
         }
       }
 
@@ -154,7 +154,7 @@ class WeeklyNutritionReportController extends GetxController {
         weeklyNutritionReportModel.refresh();
       }
     } catch (e) {
-      print("Error loading followed recipes for current week: $e");
+      // print("Error loading followed recipes for current week: $e");
     } finally {
       isLoading.value = false;
     }

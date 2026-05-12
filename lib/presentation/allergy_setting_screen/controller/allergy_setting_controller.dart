@@ -74,7 +74,7 @@ class AllergySettingController extends GetxController {
         }
       }
     } catch (e) {
-      print("Error loading allergies: $e");
+      // print("Error loading allergies: $e");
     } finally {
       isLoading.value = false;
     }
@@ -147,7 +147,7 @@ class AllergySettingController extends GetxController {
       ));
 
     } catch (e) {
-      print("Error saving allergies: $e");
+      // print("Error saving allergies: $e");
       Get.snackbar("Error", "Failed to sync settings with server", 
         backgroundColor: Colors.red[900], colorText: Colors.white);
     }
