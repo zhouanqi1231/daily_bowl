@@ -20,6 +20,7 @@ class LoginScreen extends GetWidget<LoginController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 100.h),
+              // email input field
               CustomFloatingTextField(
                 placeholder: "Email",
                 controller: controller.emailController,
@@ -29,6 +30,7 @@ class LoginScreen extends GetWidget<LoginController> {
                     .copyWith(color: appTheme.gray_600),
               ),
               SizedBox(height: 16.h),
+              // pwd input field
               CustomFloatingTextField(
                 placeholder: "Password",
                 controller: controller.passwordController,
@@ -40,6 +42,7 @@ class LoginScreen extends GetWidget<LoginController> {
               SizedBox(height: 24.h),
               Row(
                 children: [
+                  // register button: jump to register
                   Expanded(
                     child: CustomButton(
                       text: "Register",
@@ -50,6 +53,7 @@ class LoginScreen extends GetWidget<LoginController> {
                     ),
                   ),
                   SizedBox(width: 20.h),
+                  // login button
                   Expanded(
                     child: CustomButton(
                       text: "Login",

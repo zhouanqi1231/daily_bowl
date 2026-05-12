@@ -41,6 +41,7 @@ class LoginController extends GetxController {
     final password = passwordController.text;
 
     try {
+      // get a token from the server, logging in with email and pwd
       final response = await ApiClient.post('/tokens/', {
         'email': email,
         'pwd': password,
