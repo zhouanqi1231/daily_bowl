@@ -106,7 +106,11 @@ flutter run
 2. Select your target device from the device selector.
 3. Press **F5** (VS Code) or the **Run** icon (Android Studio).
 
-# 7 Download the App
+# Deploy as a Web Application
+
+
+
+# 7 Download the Mobile App
 
 Download the Released Apk from the Release.
 

@@ -4,7 +4,12 @@ import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
 import '../../user_profile_screen/controller/user_profile_controller.dart';
 
+/// A controller class for the ProfileSettingsScreen.
+///
+/// This class manages the state of the user profile settings, including
+/// editing user information (name, email) and changing the password.
 class ProfileSettingsController extends GetxController {
+  /// Observable boolean to track loading state during save operations.
   final isLoading = false.obs;
 
   late TextEditingController nameController;
@@ -13,10 +18,16 @@ class ProfileSettingsController extends GetxController {
   late TextEditingController newPasswordController;
   late TextEditingController confirmPasswordController;
 
+  /// Observable boolean to track visibility of the current password.
   final obscureCurrentPassword = true.obs;
+
+  /// Observable boolean to track visibility of the new password.
   final obscureNewPassword = true.obs;
+
+  /// Observable boolean to track visibility of the confirm password field.
   final obscureConfirmPassword = true.obs;
 
+  /// The ID of the current user.
   int? userId;
 
   @override
@@ -40,6 +51,7 @@ class ProfileSettingsController extends GetxController {
     super.onClose();
   }
 
+  /// Loads the user's current data from local storage to populate the form.
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('user_id');
@@ -47,12 +59,14 @@ class ProfileSettingsController extends GetxController {
     emailController.text = prefs.getString('user_email') ?? '';
   }
 
+  /// Validates the name field.
   String? validateName(String? value) {
     if (value == null || value.trim().isEmpty) return 'Name is required';
     if (value.trim().length < 2) return 'Name must be at least 2 characters';
     return null;
   }
 
+  /// Validates the email field.
   String? validateEmail(String? value) {
     if (value == null || value.trim().isEmpty) return 'Email is required';
     final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
@@ -60,6 +74,7 @@ class ProfileSettingsController extends GetxController {
     return null;
   }
 
+  /// Validates the new password field.
   String? validateNewPassword(String? value) {
     // Only validate if user is trying to change password
     if (currentPasswordController.text.isEmpty &&
@@ -72,6 +87,7 @@ class ProfileSettingsController extends GetxController {
     return null;
   }
 
+  /// Validates the password confirmation field.
   String? validateConfirmPassword(String? value) {
     if (currentPasswordController.text.isEmpty &&
         newPasswordController.text.isEmpty &&
@@ -82,6 +98,10 @@ class ProfileSettingsController extends GetxController {
     return null;
   }
 
+  /// Saves the updated profile information to the backend and local storage.
+  ///
+  /// Upon successful update, it refreshes the [UserProfileController] and
+  /// navigates back to the profile screen.
   Future<void> saveProfile() async {
     if (userId == null) {
       Get.snackbar('Error', 'User not found. Please log in again.');
@@ -114,10 +134,6 @@ class ProfileSettingsController extends GetxController {
         Get.snackbar('Error', 'New password is required');
         return;
       }
-      if (newPwd.length < 6) {
-        Get.snackbar('Error', 'New password must be at least 6 characters');
-        return;
-      }
       if (newPwd != confirmPasswordController.text) {
         Get.snackbar('Error', 'New passwords do not match');
         return;
@@ -146,7 +162,7 @@ class ProfileSettingsController extends GetxController {
 
       // Refresh user profile controller
       if (Get.isRegistered<UserProfileController>()) {
-        Get.find<UserProfileController>().refreshUserProfile();
+        await Get.find<UserProfileController>().refreshUserProfile();
       }
 
       Get.showSnackbar(GetSnackBar(
@@ -158,6 +174,7 @@ class ProfileSettingsController extends GetxController {
         margin: EdgeInsets.all(16.h),
       ));
 
+      // Jump back to my profile
       Get.back();
     } catch (e) {
       print("Error updating profile: $e");

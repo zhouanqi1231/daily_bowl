@@ -9,29 +9,50 @@ import '../../../core/global_save_manager.dart';
 import '../models/recipe_item_model.dart';
 import '../models/user_profile_model.dart';
 
+/// Represents the daily activity counts for a user.
 class DailyActivity {
+  /// Number of recipes created on this day.
   int created = 0;
+
+  /// Number of recipes saved on this day.
   int saved = 0;
+
+  /// Number of recipes cooked on this day.
   int cooked = 0;
 
+  /// Total count of all activities for the day.
   int get total => created + saved + cooked;
 }
 
+/// A controller class for the UserProfileScreen.
+///
+/// This class manages the user's profile information, activity history (heatmap),
+/// and the list of recipes they have created. It handles fetching data from
+/// both local storage (cooked dates) and the backend API.
 class UserProfileController extends GetxController {
+  /// Observable boolean to track loading state.
   final isLoading = false.obs;
+
+  /// Observable object for the user profile model.
   final userProfileModel = Rx<UserProfileModel?>(null);
+
   final GlobalSaveManager _saveManager = Get.find<GlobalSaveManager>();
   
-  // Detailed activity data
+  /// Observable map of dates to daily activity data, used for the heatmap.
   final activityData = <DateTime, DailyActivity>{}.obs;
 
-  // Popup state
+  /// Observable boolean to show/hide the activity detail popup.
   final showPopup = false.obs;
+
+  /// Observable object for the activity data currently shown in the popup.
   final popupActivity = Rx<DailyActivity?>(null);
+
+  /// Observable object for the date currently shown in the popup.
   final popupDate = Rx<DateTime?>(null);
+
   Timer? _popupTimer;
 
-  // Heatmap scrolling
+  /// Scroll controller for the activity heatmap.
   final heatmapScrollController = ScrollController();
 
   @override
@@ -39,7 +60,7 @@ class UserProfileController extends GetxController {
     super.onInit();
     _initializeUserProfile();
     
-    // Listen to changes in savedIds
+    // Listen to changes in savedIds to update save count and profile data.
     ever(_saveManager.savedIds, (Set<int> ids) {
       if (userProfileModel.value != null && !isClosed) {
         userProfileModel.value!.saveCount?.value = ids.length;
@@ -48,7 +69,7 @@ class UserProfileController extends GetxController {
     });
   }
 
-  /// Main initialization flow
+  /// Main initialization flow to load all profile data.
   Future<void> _initializeUserProfile() async {
     isLoading.value = true;
     final prefs = await SharedPreferences.getInstance();
@@ -68,7 +89,7 @@ class UserProfileController extends GetxController {
     _completeLoading();
   }
 
-  /// Helper to determine the display name from preferences
+  /// Determines the user's display name from preferences (username or email).
   String _getDisplayName(SharedPreferences prefs) {
     String? storedName = prefs.getString('user_name');
     String? email = prefs.getString('user_email');
@@ -82,7 +103,7 @@ class UserProfileController extends GetxController {
     return "UserName";
   }
 
-  /// Loads cooked dates from local storage into the activity map
+  /// Loads cooked dates from local storage and populates the [tempActivity] map.
   void _loadLocalCookedActivity(SharedPreferences prefs, Map<DateTime, DailyActivity> tempActivity) {
     List<String> cookedDates = prefs.getStringList('cooked_dates') ?? [];
     for (var dateStr in cookedDates) {
@@ -96,9 +117,23 @@ class UserProfileController extends GetxController {
     }
   }
 
-  /// Fetches recipes and saves from the server
+  /// Fetches recipes and saves from the server to populate the profile and activity map.
   Future<void> _loadServerData(int userId, String displayName, Map<DateTime, DailyActivity> tempActivity) async {
     try {
+      // 0. Fetch basic user details (including allergies)
+      String allergyStr = "";
+      try {
+        final userData = await ApiClient.get('/users/$userId/');
+        if (userData != null) {
+          allergyStr = (userData['allergies'] ?? userData['allergy'] ?? "").toString();
+          // Update local cache
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('user_allergies', allergyStr);
+        }
+      } catch (e) {
+        print("Error fetching user details: $e");
+      }
+
       // 1. Fetch created recipes and update activity
       final recipes = await _fetchCreatedRecipes(userId, tempActivity);
       
@@ -112,6 +147,7 @@ class UserProfileController extends GetxController {
           recipeCount: recipes.length.obs,
           saveCount: _saveManager.savedIds.length.obs,
           recipes: recipes.obs,
+          allergies: allergyStr.obs,
         );
       }
     } catch (e) {
@@ -123,7 +159,7 @@ class UserProfileController extends GetxController {
     }
   }
 
-  /// Fetches created recipes for a user and populates activity map
+  /// Fetches recipes created by the user and updates the [tempActivity] map.
   Future<List<RecipeItemModel>> _fetchCreatedRecipes(int userId, Map<DateTime, DailyActivity> tempActivity) async {
     final response = await ApiClient.get('/users/$userId/recipes/');
     if (isClosed || response is! List) return [];
@@ -147,7 +183,7 @@ class UserProfileController extends GetxController {
     }).toList();
   }
 
-  /// Fetches saved recipes for a user to update activity map
+  /// Fetches recipes saved by the user and updates the [tempActivity] map.
   Future<void> _fetchSavedRecipes(int userId, Map<DateTime, DailyActivity> tempActivity) async {
     final response = await ApiClient.get('/users/$userId/saves/');
     if (isClosed || response is! List) return;
@@ -161,7 +197,7 @@ class UserProfileController extends GetxController {
     }
   }
 
-  /// Fallback to mock data if user is not logged in or an error occurs
+  /// Sets up mock profile data for unauthenticated users.
   void _setMockProfile(String displayName, Map<DateTime, DailyActivity> tempActivity) {
     if (!isClosed) {
       activityData.value = tempActivity;
@@ -169,7 +205,7 @@ class UserProfileController extends GetxController {
     }
   }
 
-  /// Cleans up loading state and triggers UI updates
+  /// Cleans up the loading state and scrolls the heatmap to the current week.
   void _completeLoading() {
     if (!isClosed) {
       isLoading.value = false;
@@ -179,6 +215,7 @@ class UserProfileController extends GetxController {
     }
   }
 
+  /// Animates the heatmap scroll position to the current week.
   void scrollToCurrentWeek() {
     if (!heatmapScrollController.hasClients) return;
 
@@ -207,6 +244,7 @@ class UserProfileController extends GetxController {
     );
   }
   
+  /// Loads static mock data for the profile.
   void _loadMockData(String displayName) {
      userProfileModel.value = UserProfileModel(
       userName: displayName.obs,
@@ -223,7 +261,7 @@ class UserProfileController extends GetxController {
     );
   }
 
-  // heatmap tap: date, created, saved, cooked
+  /// Shows the activity detail popup for a specific [date] and [activity].
   void onActivityTap(DateTime date, DailyActivity activity) {
     _popupTimer?.cancel();
     popupDate.value = date;
@@ -237,7 +275,7 @@ class UserProfileController extends GetxController {
     });
   }
 
-  // go to recipe detail screen
+  /// Navigates to the recipe detail screen for the selected recipe.
   void onRecipeTap(int index) {
     final recipe = userProfileModel.value?.recipes?[index];
     if (recipe != null && recipe.id != null) {
@@ -245,7 +283,7 @@ class UserProfileController extends GetxController {
     }
   }
 
-  // slide recipe list item to edit
+  /// Navigates to the recipe creation/edit screen for the selected recipe.
   void onEditRecipe(int index) {
     final recipe = userProfileModel.value?.recipes?[index];
     if (recipe != null && recipe.id != null) {
@@ -253,7 +291,7 @@ class UserProfileController extends GetxController {
     }
   }
 
-  // slide recipe list item to delete
+  /// Shows a confirmation dialog and deletes the selected recipe if confirmed.
   void onDeleteRecipe(int index) {
     final recipe = userProfileModel.value?.recipes?[index];
     if (recipe == null || recipe.id == null) return;
@@ -287,8 +325,9 @@ class UserProfileController extends GetxController {
     );
   }
 
-  void refreshUserProfile() {
-    _initializeUserProfile();
+  /// Refreshes the user profile data.
+  Future<void> refreshUserProfile() async {
+    await _initializeUserProfile();
   }
 
   @override

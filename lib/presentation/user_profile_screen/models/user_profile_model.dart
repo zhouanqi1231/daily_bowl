@@ -8,16 +8,19 @@ class UserProfileModel {
   Rx<int>? recipeCount;
   Rx<int>? saveCount;
   RxList<RecipeItemModel>? recipes;
+  Rx<String>? allergies; // Added to store user allergies
 
   UserProfileModel({
     this.userName,
     this.recipeCount,
     this.saveCount,
     this.recipes,
+    this.allergies,
   }) {
     userName = userName ?? Rx("User Name");
     recipeCount = recipeCount ?? Rx(4);
     saveCount = saveCount ?? Rx(128);
     recipes = recipes ?? RxList<RecipeItemModel>([]);
+    allergies = allergies ?? Rx("");
   }
 }

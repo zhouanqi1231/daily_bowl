@@ -2,13 +2,27 @@ import 'package:flutter/material.dart';
 import '../../../core/app_export.dart';
 import '../../../core/network/api_client.dart';
 
+/// A controller class for the RegisterScreen.
+///
+/// This class manages the registration process, including text controllers
+/// for user input, validation, and interaction with the backend API.
 class RegisterController extends GetxController {
+  /// Controller for the username input field.
   TextEditingController usernameController = TextEditingController();
+
+  /// Controller for the email input field.
   TextEditingController emailController = TextEditingController();
+
+  /// Controller for the password input field.
   TextEditingController passwordController = TextEditingController();
+
+  /// Controller for the repeat password input field to verify password entry.
   TextEditingController repeatPasswordController = TextEditingController();
 
+  /// Observable boolean to track password visibility.
   RxBool obscurePassword = true.obs;
+
+  /// Observable boolean to track repeat password visibility.
   RxBool obscureRepeatPassword = true.obs;
 
   @override
@@ -27,6 +41,9 @@ class RegisterController extends GetxController {
     super.onClose();
   }
 
+  /// Attempts to register a new user with the provided credentials.
+  ///
+  /// [onSuccess] A callback function executed when registration is successful.
   Future<void> register(VoidCallback onSuccess) async {
     if (usernameController.text.isEmpty || 
         emailController.text.isEmpty || 
@@ -63,5 +80,6 @@ class RegisterController extends GetxController {
     }
   }
 
+  /// Placeholder for login button press action.
   void onLoginPressed() {}
 }
