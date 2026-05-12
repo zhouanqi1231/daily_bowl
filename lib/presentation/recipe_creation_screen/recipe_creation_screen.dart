@@ -224,95 +224,112 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
           () => Column(
             children: [
               ...controller.ingredientControllers.asMap().entries.map((entry) {
+                int index = entry.key;
                 var controllers = entry.value;
                 String initialName = controllers['name']!.text;
                 
-                return Container(
-                  key: ValueKey(controllers), // Help Flutter preserve state correctly
-                  margin: EdgeInsets.only(bottom: 12.h),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return Autocomplete<String>(
-                              initialValue: TextEditingValue(text: initialName),
-                              optionsBuilder: (TextEditingValue textEditingValue) {
-                                if (textEditingValue.text == '') {
-                                  return const Iterable<String>.empty();
-                                }
-                                return controller.allIngredients.where((String option) {
-                                  return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
-                                });
-                              },
-                              onSelected: (String selection) {
-                                controllers['name']!.text = selection;
-                              },
-                              fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
-                                // Sync back to the main controller when user types or when pre-filled
-                                if (textEditingController.text != controllers['name']!.text && controllers['name']!.text.isNotEmpty && textEditingController.text.isEmpty) {
-                                   textEditingController.text = controllers['name']!.text;
-                                }
-                                
-                                textEditingController.addListener(() {
-                                  controllers['name']!.text = textEditingController.text;
-                                });
+                return Dismissible(
+                  key: ValueKey(controllers), // Use controllers map as unique key
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) {
+                    controller.removeIngredientRow(index);
+                  },
+                  background: Container(
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 20.h),
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade400,
+                      borderRadius: BorderRadius.circular(12.h),
+                    ),
+                    child: Icon(Icons.delete, color: Colors.white),
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Autocomplete<String>(
+                                initialValue: TextEditingValue(text: initialName),
+                                optionsBuilder: (TextEditingValue textEditingValue) {
+                                  if (textEditingValue.text == '') {
+                                    return const Iterable<String>.empty();
+                                  }
+                                  return controller.allIngredients.where((String option) {
+                                    return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+                                  });
+                                },
+                                onSelected: (String selection) {
+                                  controllers['name']!.text = selection;
+                                },
+                                fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                                  // Sync back to the main controller when user types or when pre-filled
+                                  if (textEditingController.text != controllers['name']!.text && controllers['name']!.text.isNotEmpty && textEditingController.text.isEmpty) {
+                                     textEditingController.text = controllers['name']!.text;
+                                  }
+                                  
+                                  textEditingController.addListener(() {
+                                    controllers['name']!.text = textEditingController.text;
+                                  });
 
-                                return CustomFloatingTextField(
-                                  placeholder: "Name",
-                                  controller: textEditingController,
-                                  focusNode: focusNode,
-                                  validator: controller.validateIngredientName,
-                                  textStyle: TextStyleHelper.instance.body14RegularRoboto
-                                      .copyWith(color: appTheme.gray_900),
-                                  labelStyle: TextStyleHelper.instance.body14RegularRoboto
-                                      .copyWith(color: appTheme.gray_600),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 10.h),
-                      SizedBox(
-                        width: 70.h,
-                        child: CustomFloatingTextField(
-                          placeholder: "number",
-                          controller: controllers['quantity'],
-                          keyboardType: TextInputType.number,
-                          validator: controller.validateIngredientQuantity,
-                          textStyle: TextStyleHelper.instance.body14RegularRoboto
-                              .copyWith(color: appTheme.gray_900),
-                          labelStyle: TextStyleHelper.instance.body14RegularRoboto
-                              .copyWith(color: appTheme.gray_600),
-                        ),
-                      ),
-                      SizedBox(width: 10.h),
-                      SizedBox(
-                        width: 90.h,
-                        child: DropdownButtonFormField<String>(
-                          value: controllers['unit']!.text.isEmpty ? 'g' : controllers['unit']!.text,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 12.h),
-                            filled: true,
-                            fillColor: appTheme.gray_50,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.h),
-                              borderSide: BorderSide.none,
-                            ),
+                                  return CustomFloatingTextField(
+                                    placeholder: "Name",
+                                    controller: textEditingController,
+                                    focusNode: focusNode,
+                                    validator: controller.validateIngredientName,
+                                    textStyle: TextStyleHelper.instance.body14RegularRoboto
+                                        .copyWith(color: appTheme.gray_900),
+                                    labelStyle: TextStyleHelper.instance.body14RegularRoboto
+                                        .copyWith(color: appTheme.gray_600),
+                                  );
+                                },
+                              );
+                            },
                           ),
-                          style: TextStyleHelper.instance.body14RegularRoboto
-                              .copyWith(color: appTheme.gray_900),
-                          items: ["g", "ml"]
-                              .map((unit) => DropdownMenuItem(value: unit, child: Text(unit)))
-                              .toList(),
-                          onChanged: (value) {
-                            if (value != null) controllers['unit']!.text = value;
-                          },
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 10.h),
+                        SizedBox(
+                          width: 70.h,
+                          child: CustomFloatingTextField(
+                            placeholder: "number",
+                            controller: controllers['quantity'],
+                            keyboardType: TextInputType.number,
+                            validator: controller.validateIngredientQuantity,
+                            textStyle: TextStyleHelper.instance.body14RegularRoboto
+                                .copyWith(color: appTheme.gray_900),
+                            labelStyle: TextStyleHelper.instance.body14RegularRoboto
+                                .copyWith(color: appTheme.gray_600),
+                          ),
+                        ),
+                        SizedBox(width: 10.h),
+                        SizedBox(
+                          width: 90.h,
+                          child: DropdownButtonFormField<String>(
+                            value: controllers['unit']!.text.isEmpty ? 'g' : controllers['unit']!.text,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 12.h),
+                              filled: true,
+                              fillColor: appTheme.gray_50,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.h),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                            style: TextStyleHelper.instance.body14RegularRoboto
+                                .copyWith(color: appTheme.gray_900),
+                            items: ["g", "ml"]
+                                .map((unit) => DropdownMenuItem(value: unit, child: Text(unit)))
+                                .toList(),
+                            onChanged: (value) {
+                              if (value != null) controllers['unit']!.text = value;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }).toList(),
@@ -349,16 +366,33 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
               ...controller.stepControllers.asMap().entries.map((entry) {
                 int index = entry.key;
                 var stepController = entry.value;
-                return Container(
-                  margin: EdgeInsets.only(bottom: 12.h),
-                  child: CustomFloatingTextField(
-                    placeholder: "${index + 1}.",
-                    controller: stepController,
-                    validator: controller.validateStep,
-                    textStyle: TextStyleHelper.instance.body14RegularRoboto
-                        .copyWith(color: appTheme.gray_900),
-                    labelStyle: TextStyleHelper.instance.body14RegularRoboto
-                        .copyWith(color: appTheme.gray_600),
+                return Dismissible(
+                  key: ValueKey(stepController),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) {
+                    controller.removeStepRow(index);
+                  },
+                  background: Container(
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 20.h),
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade400,
+                      borderRadius: BorderRadius.circular(12.h),
+                    ),
+                    child: Icon(Icons.delete, color: Colors.white),
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    child: CustomFloatingTextField(
+                      placeholder: "${index + 1}.",
+                      controller: stepController,
+                      validator: controller.validateStep,
+                      textStyle: TextStyleHelper.instance.body14RegularRoboto
+                          .copyWith(color: appTheme.gray_900),
+                      labelStyle: TextStyleHelper.instance.body14RegularRoboto
+                          .copyWith(color: appTheme.gray_600),
+                    ),
                   ),
                 );
               }).toList(),

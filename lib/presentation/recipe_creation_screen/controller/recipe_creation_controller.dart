@@ -112,7 +112,7 @@ class RecipeCreationController extends GetxController {
       cookingMethodController.text = recipe['cooking_method'] ?? '';
       imageUrlController.text = recipe['img_url'] ?? '';
 
-      // Load steps - improved parsing to match Detail view logic
+      // Load steps
       String procedure = recipe['procedure'] ?? '';
       if (procedure.isNotEmpty) {
         stepControllers.clear();
@@ -129,10 +129,9 @@ class RecipeCreationController extends GetxController {
         addStepRow();
       }
 
-      // Load ingredients - robust fetching with name resolution
+      // Load ingredients
       final ingredientsData = await ApiClient.get('/recipes/$id/ingredients/');
       if (ingredientsData is List && ingredientsData.isNotEmpty) {
-        // Fetch all ingredient details in parallel to get their names if missing
         var ingredientFutures = ingredientsData.map((item) async {
           int? ingId = item['ingredient_id'];
           String name = item['ingredient_name'] ?? "";
@@ -182,8 +181,23 @@ class RecipeCreationController extends GetxController {
     });
   }
 
+  void removeIngredientRow(int index) {
+    if (index >= 0 && index < ingredientControllers.length) {
+      var controllerMap = ingredientControllers[index];
+      controllerMap.values.forEach((c) => c.dispose());
+      ingredientControllers.removeAt(index);
+    }
+  }
+
   void addStepRow() {
     stepControllers.add(TextEditingController());
+  }
+
+  void removeStepRow(int index) {
+    if (index >= 0 && index < stepControllers.length) {
+      stepControllers[index].dispose();
+      stepControllers.removeAt(index);
+    }
   }
 
   void onUploadClicked() {
@@ -308,13 +322,24 @@ class RecipeCreationController extends GetxController {
       };
 
       int currentRecipeId;
+      Set<int> originalIngredientIds = {};
 
       if (isEditMode.value) {
         await ApiClient.put('/recipes/$recipeId/', recipePayload);
         currentRecipeId = recipeId!;
+        
         try {
-           await ApiClient.delete('/recipes/$currentRecipeId/ingredients/');
-        } catch (e) {}
+          final ingredientsData = await ApiClient.get('/recipes/$currentRecipeId/ingredients/');
+          if (ingredientsData is List) {
+            for (var item in ingredientsData) {
+              if (item['ingredient_id'] != null) {
+                originalIngredientIds.add(item['ingredient_id']);
+              }
+            }
+          }
+        } catch (e) {
+          print("Error fetching original ingredients: $e");
+        }
       } else {
         final recipeResponse = await ApiClient.post('/recipes/', recipePayload);
         String? recipeLoc = recipeResponse?['location'];
@@ -322,7 +347,9 @@ class RecipeCreationController extends GetxController {
         currentRecipeId = int.parse(recipeLoc.split('/').lastWhere((e) => e.isNotEmpty));
       }
 
+      Set<int> processedIngredientIds = {};
       List<Future> ingredientTasks = [];
+      
       for (var controllerMap in ingredientControllers) {
         String name = controllerMap['name']!.text.trim();
         String quantityStr = controllerMap['quantity']!.text.trim();
@@ -331,23 +358,50 @@ class RecipeCreationController extends GetxController {
         if (name.isNotEmpty && quantityStr.isNotEmpty) {
           ingredientTasks.add(() async {
             double amount = double.tryParse(quantityStr) ?? 0.0;
-            final ingredientResponse = await ApiClient.post('/ingredients/', {'name': name});
             
-            String? ingredientLoc = ingredientResponse?['location'];
-            if (ingredientLoc != null) {
-              int ingredientId = int.parse(ingredientLoc.split('/').lastWhere((e) => e.isNotEmpty));
-              final bindingPayload = {
-                'ingredient_id': ingredientId,
-                'amount': amount,
-                'unit': unit,
-              };
-              await ApiClient.post('/recipes/$currentRecipeId/ingredients/', bindingPayload);
+            int? ingredientId;
+            try {
+              final ingredientResponse = await ApiClient.post('/ingredients/', {'name': name});
+              String? ingredientLoc = ingredientResponse?['location'];
+              if (ingredientLoc != null) {
+                ingredientId = int.parse(ingredientLoc.split('/').lastWhere((e) => e.isNotEmpty));
+              }
+            } catch (e) {
+              print("Error ensuring ingredient exists ($name): $e");
+            }
+            
+            if (ingredientId != null) {
+              processedIngredientIds.add(ingredientId);
+              
+              if (originalIngredientIds.contains(ingredientId)) {
+                await ApiClient.put(
+                  '/recipes/$currentRecipeId/ingredients/$ingredientId/', 
+                  {'amount': amount, 'unit': unit}
+                );
+              } else {
+                await ApiClient.post(
+                  '/recipes/$currentRecipeId/ingredients/', 
+                  {'ingredient_id': ingredientId, 'amount': amount, 'unit': unit}
+                );
+              }
             }
           }());
         }
       }
       
       await Future.wait(ingredientTasks);
+
+      if (isEditMode.value) {
+        for (int id in originalIngredientIds) {
+          if (!processedIngredientIds.contains(id)) {
+            try {
+              await ApiClient.delete('/recipes/$currentRecipeId/ingredients/$id/');
+            } catch (e) {
+              print("Error removing ingredient $id from recipe: $e");
+            }
+          }
+        }
+      }
 
       isLoading.value = false;
       isSuccess.value = true;
