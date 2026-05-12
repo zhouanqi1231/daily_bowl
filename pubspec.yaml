@@ -58,3 +58,10 @@ flutter:
       fonts: 
         - asset: assets/fonts/RozhaOneRegular.ttf
           weight: 400
+
+flutter_icons:
+  web:
+    generate: true
+    image_path: "assets/images/bowl.png"
+    background_color: "#ffffff"
+    theme_color: "#ffffff"
