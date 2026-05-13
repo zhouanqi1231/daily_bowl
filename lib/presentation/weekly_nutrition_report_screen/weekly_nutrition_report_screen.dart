@@ -116,7 +116,7 @@ class WeeklyNutritionReportScreen
           SizedBox(height: 24.h),
           _buildGenerateReportButton(context),
           SizedBox(height: 24.h),
-          _buildCongratulationsSection(context),
+          // _buildCongratulationsSection(context),
           SizedBox(height: 60.h),
         ],
       ),
