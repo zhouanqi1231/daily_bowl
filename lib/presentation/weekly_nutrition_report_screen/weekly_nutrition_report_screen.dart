@@ -304,56 +304,56 @@ class WeeklyNutritionReportScreen
     });
   }
 
-  Widget _buildNutritionChart(BuildContext context, int totalCalories) {
-    return Container(
-      height: 214.h,
-      width: 214.h,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          PieChart(
-            PieChartData(
-              sectionsSpace: 2,
-              centerSpaceRadius: 70.h,
-              sections: [
-                PieChartSectionData(
-                  value: 35,
-                  color: appTheme.deepPurple_800,
-                  radius: 25.h,
-                  showTitle: false,
-                ),
-                PieChartSectionData(
-                  value: 32,
-                  color: appTheme.redCustom,
-                  radius: 25.h,
-                  showTitle: false,
-                ),
-                PieChartSectionData(
-                  value: 33,
-                  color: appTheme.deepPurple_300,
-                  radius: 25.h,
-                  showTitle: false,
-                ),
-              ],
-            ),
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '$totalCalories',
-                style: TextStyleHelper.instance.headline32BoldPoppins,
-              ),
-              Text(
-                'CALORIES',
-                style: TextStyleHelper.instance.body12MediumPoppins,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildNutritionChart(BuildContext context, int totalCalories) {
+  //   return Container(
+  //     height: 214.h,
+  //     width: 214.h,
+  //     child: Stack(
+  //       alignment: Alignment.center,
+  //       children: [
+  //         PieChart(
+  //           PieChartData(
+  //             sectionsSpace: 2,
+  //             centerSpaceRadius: 70.h,
+  //             sections: [
+  //               PieChartSectionData(
+  //                 value: 35,
+  //                 color: appTheme.deepPurple_800,
+  //                 radius: 25.h,
+  //                 showTitle: false,
+  //               ),
+  //               PieChartSectionData(
+  //                 value: 32,
+  //                 color: appTheme.redCustom,
+  //                 radius: 25.h,
+  //                 showTitle: false,
+  //               ),
+  //               PieChartSectionData(
+  //                 value: 33,
+  //                 color: appTheme.deepPurple_300,
+  //                 radius: 25.h,
+  //                 showTitle: false,
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             Text(
+  //               '$totalCalories',
+  //               style: TextStyleHelper.instance.headline32BoldPoppins,
+  //             ),
+  //             Text(
+  //               'CALORIES',
+  //               style: TextStyleHelper.instance.body12MediumPoppins,
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildNutritionLegend(BuildContext context) {
     return Row(
@@ -446,20 +446,20 @@ class WeeklyNutritionReportScreen
       );
     });
   }
-  Widget _buildCongratulationsSection(BuildContext context) {
-    return Obx(() {
-      final recipes = controller.weeklyNutritionReportModel.value?.recipesList ?? [];
-      if (recipes.isEmpty) return const SizedBox.shrink();
+  // Widget _buildCongratulationsSection(BuildContext context) {
+  //   return Obx(() {
+  //     final recipes = controller.weeklyNutritionReportModel.value?.recipesList ?? [];
+  //     if (recipes.isEmpty) return const SizedBox.shrink();
 
-      return Padding(
-        padding: EdgeInsets.only(top: 18.h),
-        child: Text(
-          'Congratulations! This is a remarkably healthy week in terms of food. You have a balanced diet and nutrition consumption. Keep going!',
-          style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
-            height: 1.5,
-          ),
-        ),
-      );
-    });
-  }
+  //     return Padding(
+  //       padding: EdgeInsets.only(top: 18.h),
+  //       child: Text(
+  //         'Congratulations! This is a remarkably healthy week in terms of food. You have a balanced diet and nutrition consumption. Keep going!',
+  //         style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
+  //           height: 1.5,
+  //         ),
+  //       ),
+  //     );
+  //   });
+  // }
 }
