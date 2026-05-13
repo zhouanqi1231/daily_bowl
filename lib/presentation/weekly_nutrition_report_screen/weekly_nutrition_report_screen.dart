@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
@@ -258,19 +259,19 @@ class WeeklyNutritionReportScreen
               sections: [
                 PieChartSectionData(
                   value: 35,
-                  color: appTheme.indigo_400,
+                  color: appTheme.deepPurple_800,
                   radius: 25.h,
                   showTitle: false,
                 ),
                 PieChartSectionData(
                   value: 32,
-                  color: appTheme.deep_orange_400,
+                  color: appTheme.redCustom,
                   radius: 25.h,
                   showTitle: false,
                 ),
                 PieChartSectionData(
                   value: 33,
-                  color: appTheme.cyan_400,
+                  color: appTheme.deepPurple_300,
                   radius: 25.h,
                   showTitle: false,
                 ),
@@ -302,7 +303,7 @@ class WeeklyNutritionReportScreen
         Container(
           padding: EdgeInsets.fromLTRB(4.h, 2.h, 4.h, 2.h),
           decoration: BoxDecoration(
-            color: appTheme.deep_orange_400,
+            color: appTheme.redCustom,
             borderRadius: BorderRadius.circular(4.h),
           ),
           child: Text(
@@ -316,7 +317,7 @@ class WeeklyNutritionReportScreen
         Container(
           padding: EdgeInsets.fromLTRB(2.h, 2.h, 2.h, 2.h),
           decoration: BoxDecoration(
-            color: appTheme.indigo_400,
+            color: appTheme.deepPurple_800,
             borderRadius: BorderRadius.circular(4.h),
           ),
           child: Text(
@@ -330,7 +331,7 @@ class WeeklyNutritionReportScreen
         Container(
           padding: EdgeInsets.fromLTRB(2.h, 2.h, 2.h, 2.h),
           decoration: BoxDecoration(
-            color: appTheme.cyan_400,
+            color: appTheme.deepPurple_300,
             borderRadius: BorderRadius.circular(4.h),
           ),
           child: Text(
@@ -363,7 +364,7 @@ class WeeklyNutritionReportScreen
                   height: 20.h,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: appTheme.white_A700,
+                    color: appTheme.white_700,
                   ),
                 )
               : const Icon(Icons.picture_as_pdf, size: 20),
@@ -372,11 +373,11 @@ class WeeklyNutritionReportScreen
                 ? 'Generating...'
                 : 'Generate Nutrition Report (PDF)',
             style: TextStyleHelper.instance.title16MediumRoboto
-                .copyWith(color: appTheme.white_A700),
+                .copyWith(color: appTheme.white_700),
           ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: appTheme.deep_purple_800,
-            disabledBackgroundColor: appTheme.deep_purple_300,
+            backgroundColor: appTheme.deepPurple_800,
+            disabledBackgroundColor: appTheme.deepPurple_300,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.h),
             ),
