@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io' show File;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_html/html.dart' as html;
 import '../../../core/app_export.dart';
@@ -216,11 +219,23 @@ class WeeklyNutritionReportController extends GetxController {
       final jobId = job['id'];
       final downloadUrl = '$auxBase/reports/$jobId/download/';
 
-      // Trigger download via hidden anchor (avoids popup blocker)
-      final anchor = html.AnchorElement(href: downloadUrl)
-        ..setAttribute('download', 'report-$jobId.pdf')
-        ..click();
-      Future.delayed(const Duration(seconds: 1), () => anchor.remove());
+      if (kIsWeb) {
+        // Server sends Content-Disposition: attachment → browser downloads
+        html.window.open(downloadUrl, '_blank');
+      } else {
+        // Mobile: download bytes, save to temp, share
+        final pdfResp = await http.get(Uri.parse(downloadUrl));
+        if (pdfResp.statusCode != 200) {
+          throw Exception('Failed to download PDF');
+        }
+        final dir = Directory.systemTemp;
+        final file = File('${dir.path}/report-$jobId.pdf');
+        await file.writeAsBytes(pdfResp.bodyBytes);
+        await Share.shareXFiles(
+          [XFile(file.path)],
+          text: 'Weekly Nutrition Report',
+        );
+      }
 
       Get.snackbar('Success', 'Report downloaded.');
     } catch (e) {
