@@ -215,7 +215,12 @@ class WeeklyNutritionReportController extends GetxController {
       final job = jsonDecode(resp.body);
       final jobId = job['id'];
       final downloadUrl = '$auxBase/reports/$jobId/download/';
-      html.window.open(downloadUrl, '_blank');
+
+      // Trigger download via hidden anchor (avoids popup blocker)
+      final anchor = html.AnchorElement(href: downloadUrl)
+        ..setAttribute('download', 'report-$jobId.pdf')
+        ..click();
+      Future.delayed(const Duration(seconds: 1), () => anchor.remove());
 
       Get.snackbar('Success', 'Report downloaded.');
     } catch (e) {
