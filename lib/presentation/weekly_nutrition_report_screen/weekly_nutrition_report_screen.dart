@@ -280,14 +280,14 @@ class WeeklyNutritionReportScreen
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            totalCalories.toString(),
+                            '${totalCalories.toInt()}',
                             style: TextStyleHelper.instance.headline28MediumRoboto
-                                .copyWith(height: 1.6),
+                                .copyWith(height: 1.6, color: appTheme.gray_900),
                           ),
                           Text(
                             'Cal',
                             style: TextStyleHelper.instance.title16MediumRoboto
-                                .copyWith(height: 1.6),
+                                .copyWith(height: 1.6, color: appTheme.gray_600),
                           ),
                         ],
                       ),
