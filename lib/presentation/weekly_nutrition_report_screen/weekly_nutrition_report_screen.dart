@@ -237,6 +237,65 @@ class WeeklyNutritionReportScreen
                     ),
                   ),
                 ),
+                SizedBox(height: 16.h),
+                SizedBox(
+                  height: 214.h,
+                  width: 214.h,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      PieChart(
+                        PieChartData(
+                          sectionsSpace: 2,
+                          centerSpaceRadius: 70.h,
+                          sections: [
+                            PieChartSectionData(
+                              value: controller.weeklyNutritionReportModel
+                                      .value?.proteinPercentage?.value ??
+                                  35,
+                              color: appTheme.redCustom,
+                              radius: 25.h,
+                              showTitle: false,
+                            ),
+                            PieChartSectionData(
+                              value: controller.weeklyNutritionReportModel
+                                      .value?.carbsPercentage?.value ??
+                                  32,
+                              color: appTheme.deepPurple_300,
+                              radius: 25.h,
+                              showTitle: false,
+                            ),
+                            PieChartSectionData(
+                              value: controller.weeklyNutritionReportModel
+                                      .value?.fatPercentage?.value ??
+                                  33,
+                              color: appTheme.deepPurple_800,
+                              radius: 25.h,
+                              showTitle: false,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            totalCalories.toString(),
+                            style: TextStyleHelper.instance.headline28BoldPoppins
+                                .copyWith(height: 1.6),
+                          ),
+                          Text(
+                            'Cal',
+                            style: TextStyleHelper.instance.title16MediumRoboto
+                                .copyWith(height: 1.6),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16.h),
+                _buildNutritionLegend(context),
               ],
             ),
           ),
