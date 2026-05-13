@@ -6,12 +6,12 @@ import '../../widgets/custom_floating_text_field.dart';
 import './controller/profile_settings_controller.dart';
 
 class ProfileSettingsScreen extends GetWidget<ProfileSettingsController> {
-  ProfileSettingsScreen({Key? key}) : super(key: key);
+  const ProfileSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       appBar: CustomAppBar(
         leadingIcon: ImageConstant.imgArrowLeft,
         onLeadingTap: () => Get.back(),
@@ -166,8 +166,8 @@ class ProfileSettingsScreen extends GetWidget<ProfileSettingsController> {
           onPressed:
               controller.isLoading.value ? null : () => controller.saveProfile(),
           style: ElevatedButton.styleFrom(
-            backgroundColor: appTheme.deep_purple_800,
-            disabledBackgroundColor: appTheme.deep_purple_300,
+            backgroundColor: appTheme.deepPurple_800,
+            disabledBackgroundColor: appTheme.deepPurple_300,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(32.h),
             ),
@@ -178,14 +178,14 @@ class ProfileSettingsScreen extends GetWidget<ProfileSettingsController> {
                   width: 22.h,
                   height: 22.h,
                   child: CircularProgressIndicator(
-                    color: appTheme.white_A700,
+                    color: appTheme.white_700,
                     strokeWidth: 2,
                   ),
                 )
               : Text(
                   'Save Changes',
                   style: TextStyleHelper.instance.title16MediumRoboto.copyWith(
-                    color: appTheme.white_A700,
+                    color: appTheme.white_700,
                   ),
                 ),
         ),

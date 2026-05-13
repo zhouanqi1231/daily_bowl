@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../core/app_export.dart';
@@ -9,14 +8,14 @@ import '../../widgets/custom_recipe_card.dart';
 import './controller/user_profile_controller.dart';
 
 class UserProfileScreen extends StatelessWidget {
-  UserProfileScreen({Key? key}) : super(key: key);
+  UserProfileScreen({super.key});
 
   final UserProfileController controller = Get.put(UserProfileController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.h),
         child: CustomAppBar(
@@ -29,14 +28,14 @@ class UserProfileScreen extends StatelessWidget {
               iconPath: ImageConstant.imgShare,
             ),
           ],
-          backgroundColor: appTheme.white_A700,
+          backgroundColor: appTheme.white_700,
           horizontalPadding: 16.h,
         ),
       ),
       body: RefreshIndicator(
         onRefresh: () async => controller.refreshUserProfile(),
         child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -54,7 +53,7 @@ class UserProfileScreen extends StatelessWidget {
   Widget _buildUserProfileSection() {
     return Container(
       width: double.infinity,
-      color: appTheme.white_A700,
+      color: appTheme.white_700,
       padding: EdgeInsets.fromLTRB(24.h, 4.h, 24.h, 16.h),
       child: Row(
         children: [
@@ -64,7 +63,7 @@ class UserProfileScreen extends StatelessWidget {
             width: 104.h,
             radius: BorderRadius.circular(52.h),
             border: Border.all(
-              color: appTheme.deep_purple_800,
+              color: appTheme.deepPurple_800,
               width: 1.h,
             ),
             margin: EdgeInsets.only(top: 6.h),
@@ -88,7 +87,7 @@ class UserProfileScreen extends StatelessWidget {
                       () => Text(
                         "${controller.userProfileModel.value?.recipeCount?.value ?? 0} Recipes",
                         style: TextStyleHelper.instance.body14MediumRoboto
-                            .copyWith(color: appTheme.blue_gray_400),
+                            .copyWith(color: appTheme.blueGray_400),
                       ),
                     ),
                     SizedBox(width: 24.h),
@@ -96,7 +95,7 @@ class UserProfileScreen extends StatelessWidget {
                       () => Text(
                         "${controller.userProfileModel.value?.saveCount?.value ?? 0} Saves",
                         style: TextStyleHelper.instance.body14MediumRoboto
-                            .copyWith(color: appTheme.blue_gray_400),
+                            .copyWith(color: appTheme.blueGray_400),
                       ),
                     ),
                   ],
@@ -114,12 +113,12 @@ class UserProfileScreen extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(16.h, 10.h, 16.h, 0),
       padding: EdgeInsets.fromLTRB(14.h, 8.h, 14.h, 8.h),
       decoration: BoxDecoration(
-        color: appTheme.white_A700,
+        color: appTheme.white_700,
         borderRadius: BorderRadius.circular(12.h),
         boxShadow: [
           BoxShadow(
             color: appTheme.gray_300,
-            offset: Offset(0, 1),
+            offset: const Offset(0, 1),
             blurRadius: 4.h,
           ),
         ],
@@ -148,13 +147,13 @@ class UserProfileScreen extends StatelessWidget {
                   weeks.add(currentWeek);
                   currentWeek = [];
                 }
-                iter = iter.add(Duration(days: 1));
+                iter = iter.add(const Duration(days: 1));
               }
               if (currentWeek.isNotEmpty) {
-                DateTime fillIter = currentWeek.last.add(Duration(days: 1));
+                DateTime fillIter = currentWeek.last.add(const Duration(days: 1));
                 while (currentWeek.length < 7) {
                   currentWeek.add(fillIter);
-                  fillIter = fillIter.add(Duration(days: 1));
+                  fillIter = fillIter.add(const Duration(days: 1));
                 }
                 weeks.add(currentWeek);
               }
@@ -195,7 +194,7 @@ class UserProfileScreen extends StatelessWidget {
 
   Widget _buildActivityPopup() {
     if (controller.popupDate.value == null || controller.popupActivity.value == null) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
 
     final date = controller.popupDate.value!;
@@ -207,7 +206,7 @@ class UserProfileScreen extends StatelessWidget {
       right: 0,
       child: AnimatedOpacity(
         opacity: controller.showPopup.value ? 1.0 : 0.0,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         child: Container(
           width: 140.h,
           padding: EdgeInsets.all(8.h),
@@ -218,7 +217,7 @@ class UserProfileScreen extends StatelessWidget {
               BoxShadow(
                 color: Colors.black12,
                 blurRadius: 4.h,
-                offset: Offset(0, 2),
+                offset: const Offset(0, 2),
               ),
             ],
             border: Border.all(color: appTheme.gray_200),
@@ -230,7 +229,7 @@ class UserProfileScreen extends StatelessWidget {
               Text(
                 dateStr,
                 style: TextStyleHelper.instance.label11MediumRoboto.copyWith(
-                  color: appTheme.blue_gray_400,
+                  color: appTheme.blueGray_400,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -250,7 +249,7 @@ class UserProfileScreen extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 2.h),
       child: Row(
         children: [
-          Icon(icon, size: 10.h, color: appTheme.deep_purple_800),
+          Icon(icon, size: 10.h, color: appTheme.deepPurple_800),
           SizedBox(width: 4.h),
           Text(
             text,
@@ -280,7 +279,7 @@ class UserProfileScreen extends StatelessWidget {
     List<int> sortedMonths = monthStartWeeks.keys.toList()..sort();
     double weekColumnWidth = 18.h; 
 
-    return Container(
+    return SizedBox(
       height: 18.h,
       width: weeks.length * weekColumnWidth,
       child: Stack(
@@ -317,7 +316,7 @@ class UserProfileScreen extends StatelessWidget {
               child: Obx(() {
                 bool isSelected = controller.popupDate.value == day && controller.showPopup.value;
                 return AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   width: 16.h,
                   height: 16.h,
                   margin: EdgeInsets.all(1.h),
@@ -325,7 +324,7 @@ class UserProfileScreen extends StatelessWidget {
                     color: _getHeatMapColor(score),
                     borderRadius: BorderRadius.circular(0.h),
                     border: Border.all(
-                      color: isSelected ? appTheme.blue_gray_400 : Colors.transparent,
+                      color: isSelected ? appTheme.blueGray_400 : Colors.transparent,
                       width: 1.8.h,
                     ),
                   ),
@@ -340,10 +339,10 @@ class UserProfileScreen extends StatelessWidget {
 
   Color _getHeatMapColor(int score) {
     if (score == -1) return Colors.transparent;
-    if (score == 0) return Color(0xB0F3F3F3);
-    if (score <= 1) return Color(0xFFACAAFF);
-    if (score <= 3) return Color(0xFF7A56FF);
-    return Color(0xFF5609C8);
+    if (score == 0) return const Color(0xB0F3F3F3);
+    if (score <= 1) return const Color(0xFFACAAFF);
+    if (score <= 3) return const Color(0xFF7A56FF);
+    return const Color(0xFF5609C8);
   }
 
   Widget _buildMonthLabel(String month) {
@@ -369,7 +368,7 @@ class UserProfileScreen extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
               Container(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
               ),
               Text(
                 "Check Your Weekly Report!",
@@ -379,7 +378,7 @@ class UserProfileScreen extends StatelessWidget {
                   shadows: [
                     Shadow(
                       color: Colors.black,
-                      offset: Offset(0, 2),
+                      offset: const Offset(0, 2),
                       blurRadius: 4.h,
                     ),
                   ],
@@ -429,7 +428,7 @@ class UserProfileScreen extends StatelessWidget {
                             child: Container(
                               width: 48.h,
                               height: 48.h,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Colors.deepPurple,
                                 shape: BoxShape.circle,
                               ),
@@ -444,7 +443,7 @@ class UserProfileScreen extends StatelessWidget {
                             child: Container(
                               width: 48.h,
                               height: 48.h,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Color(0xFFFE4A49),
                                 shape: BoxShape.circle,
                               ),
@@ -490,16 +489,13 @@ class MonthBorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.grey.withOpacity(0.5)
+      ..color = Colors.grey.withValues(alpha: 0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
     final step = cellSize + cellMargin * 2;
 
     for (int month = 1; month <= 12; month++) {
-      Path path = Path();
-      List<Offset> points = [];
-
       List<Point<int>> monthCells = [];
       for (int x = 0; x < weeks.length; x++) {
         for (int y = 0; y < weeks[x].length; y++) {

@@ -69,7 +69,7 @@ class CategorizedRecipeController extends GetxController {
       }
 
       if (params.isNotEmpty) {
-        endpoint += '?' + params.join('&');
+        endpoint += '?${params.join('&')}';
       }
 
       final response = await ApiClient.get(endpoint);
@@ -94,7 +94,7 @@ class CategorizedRecipeController extends GetxController {
         categorizedRecipeModelObj.refresh();
       }
     } catch (e) {
-      print("Error fetching recipes: $e");
+      // print("Error fetching recipes: $e");
       Get.snackbar("Error", "Failed to load recipes");
     } finally {
       isLoading.value = false;

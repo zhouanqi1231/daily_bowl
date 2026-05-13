@@ -21,13 +21,13 @@ class RecipeCardItem extends StatelessWidget {
   /// Whether to show the bookmark (save) button.
   final bool showBookmark;
 
-  RecipeCardItem({
-    Key? key,
+  const RecipeCardItem({
+    super.key,
     this.recipeItemModel,
     this.onCardTap,
     this.onBookmarkTap,
     this.showBookmark = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class RecipeCardItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: appTheme.gray_50,
           borderRadius: BorderRadius.circular(12.h),
-          border: Border.all(color: appTheme.blue_gray_100, width: 1.h),
+          border: Border.all(color: appTheme.blueGray_100, width: 1.h),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -68,13 +68,13 @@ class RecipeCardItem extends StatelessWidget {
             height: 40.h,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: appTheme.deep_purple_50,
+              color: appTheme.deepPurple_50,
               borderRadius: BorderRadius.circular(20.h),
             ),
             child: Text(
               recipeItemModel?.userInitial?.value ?? "A",
               style: TextStyleHelper.instance.title16MediumRoboto.copyWith(
-                color: appTheme.deep_purple_800,
+                color: appTheme.deepPurple_800,
               ),
             ),
           ),

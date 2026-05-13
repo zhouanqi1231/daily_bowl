@@ -6,14 +6,14 @@ import '../../widgets/custom_floating_text_field.dart';
 import './controller/recipe_creation_controller.dart';
 
 class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
-  const RecipeCreationScreen({Key? key}) : super(key: key);
+  const RecipeCreationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       appBar: AppBar(
-        backgroundColor: appTheme.white_A700,
+        backgroundColor: appTheme.white_700,
         elevation: 0,
         title: Obx(() => Text(
           controller.isEditMode.value ? "Edit Recipe" : "Create a Recipe",
@@ -68,7 +68,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
             Container(
               color: Colors.black26,
               child: Center(
-                child: CircularProgressIndicator(color: appTheme.deep_purple_800),
+                child: CircularProgressIndicator(color: appTheme.deepPurple_800),
               ),
             ),
         ],
@@ -118,7 +118,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
         Container(
           padding: EdgeInsets.all(12.h),
           decoration: BoxDecoration(
-            color: appTheme.white_A700,
+            color: appTheme.white_700,
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -242,7 +242,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                       color: Colors.red.shade400,
                       borderRadius: BorderRadius.circular(12.h),
                     ),
-                    child: Icon(Icons.delete, color: Colors.white),
+                    child: const Icon(Icons.delete, color: Colors.white),
                   ),
                   child: Container(
                     margin: EdgeInsets.only(bottom: 12.h),
@@ -308,7 +308,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                         SizedBox(
                           width: 90.h,
                           child: DropdownButtonFormField<String>(
-                            value: controllers['unit']!.text.isEmpty ? 'g' : controllers['unit']!.text,
+                            initialValue: controllers['unit']!.text.isEmpty ? 'g' : controllers['unit']!.text,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 12.h),
                               filled: true,
@@ -332,16 +332,16 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                     ),
                   ),
                 );
-              }).toList(),
+              }),
             ],
           ),
         ),
         CustomButton(
           text: "Add more ingredients",
           width: double.infinity,
-          backgroundColor: appTheme.deep_purple_50,
-          textColor: appTheme.blue_gray_800,
-          leftIcon: ImageConstant.imgIconBlueGray800,
+          backgroundColor: appTheme.deepPurple_50,
+          textColor: appTheme.blueGray_800,
+          leftIcon: ImageConstant.imgIconblueGray_800,
           onPressed: () => controller.addIngredientRow(),
         ),
       ],
@@ -380,7 +380,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                       color: Colors.red.shade400,
                       borderRadius: BorderRadius.circular(12.h),
                     ),
-                    child: Icon(Icons.delete, color: Colors.white),
+                    child: const Icon(Icons.delete, color: Colors.white),
                   ),
                   child: Container(
                     margin: EdgeInsets.only(bottom: 12.h),
@@ -395,16 +395,16 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
                     ),
                   ),
                 );
-              }).toList(),
+              }),
             ],
           ),
         ),
         CustomButton(
           text: "Add more steps",
           width: double.infinity,
-          backgroundColor: appTheme.deep_purple_50,
-          textColor: appTheme.blue_gray_800,
-          leftIcon: ImageConstant.imgIconBlueGray800,
+          backgroundColor: appTheme.deepPurple_50,
+          textColor: appTheme.blueGray_800,
+          leftIcon: ImageConstant.imgIconblueGray_800,
           onPressed: () => controller.addStepRow(),
         ),
       ],
@@ -414,7 +414,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
   Widget _buildActionButtons() {
     return Container(
       padding: EdgeInsets.fromLTRB(24.h, 16.h, 24.h, 16.h),
-      decoration: BoxDecoration(color: appTheme.white_A700),
+      decoration: BoxDecoration(color: appTheme.white_700),
       child: Row(
         children: [
           Expanded(
@@ -422,7 +422,7 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
               text: "Discard",
               width: double.infinity,
               backgroundColor: appTheme.gray_700,
-              textColor: appTheme.white_A700,
+              textColor: appTheme.white_700,
               onPressed: () => controller.discardRecipe(),
             ),
           ),
@@ -432,8 +432,8 @@ class RecipeCreationScreen extends GetWidget<RecipeCreationController> {
               () => CustomButton(
                 text: controller.isLoading.value ? "Saving..." : "Confirm",
                 width: double.infinity,
-                backgroundColor: appTheme.deep_purple_800,
-                textColor: appTheme.white_A700,
+                backgroundColor: appTheme.deepPurple_800,
+                textColor: appTheme.white_700,
                 onPressed: controller.isLoading.value
                     ? null
                     : () => controller.confirmRecipe(),

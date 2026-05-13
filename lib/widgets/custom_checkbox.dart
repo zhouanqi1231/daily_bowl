@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../core/app_export.dart';
 
-/**
- * CustomCheckBox - A reusable checkbox component with custom styling
- */
+/// CustomCheckBox - A reusable checkbox component with custom styling
 class CustomCheckBox extends StatelessWidget {
   const CustomCheckBox({
-    Key? key,
+    super.key,
     required this.text,
     required this.value,
     required this.onChanged,
@@ -17,7 +15,7 @@ class CustomCheckBox extends StatelessWidget {
     this.borderRadius,
     this.padding,
     this.height, // Added height parameter
-  }) : super(key: key);
+  });
 
   final String text;
   final bool value;
@@ -34,11 +32,11 @@ class CustomCheckBox extends StatelessWidget {
     return Container(
       height: height, // Set fixed height if provided
       decoration: BoxDecoration(
-        color: backgroundColor ?? Color(0xFFFFFFFF),
+        color: backgroundColor ?? const Color(0xFFFFFFFF),
         borderRadius: borderRadius ?? BorderRadius.circular(12.h),
         boxShadow: [
           BoxShadow(
-            color: Color(0xFF9F86C6).withAlpha(77),
+            color: const Color(0xFF9F86C6).withAlpha(77),
             offset: Offset(0, 1.h),
             blurRadius: 5.h,
             spreadRadius: 0,
@@ -51,7 +49,7 @@ class CustomCheckBox extends StatelessWidget {
           onChanged: onChanged,
           title: Text(text, style: textStyle ?? _getDefaultTextStyle()),
           controlAffinity: ListTileControlAffinity.leading,
-          activeColor: checkboxColor ?? appTheme.deep_purple_800,
+          activeColor: checkboxColor ?? appTheme.deepPurple_800,
           contentPadding: padding ?? EdgeInsets.symmetric(horizontal: 18.h),
           dense: true,
           visualDensity: VisualDensity.compact,

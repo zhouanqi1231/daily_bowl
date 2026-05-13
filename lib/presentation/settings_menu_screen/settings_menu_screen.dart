@@ -6,12 +6,12 @@ import '../../widgets/custom_app_bar.dart';
 import './controller/settings_menu_controller.dart';
 
 class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
-  SettingsMenuScreen({Key? key}) : super(key: key);
+  const SettingsMenuScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.deep_purple_50,
+      backgroundColor: appTheme.deepPurple_50,
       appBar: CustomAppBar(
         leadingIcon: ImageConstant.imgArrowLeft,
         onLeadingTap: () => Get.back(),
@@ -60,12 +60,12 @@ class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 18.h),
         decoration: BoxDecoration(
-          color: appTheme.white_A700,
+          color: appTheme.white_700,
           borderRadius: BorderRadius.circular(12.h),
           boxShadow: [
             BoxShadow(
-              color: appTheme.deep_purple_300.withOpacity(0.3),
-              offset: Offset(0, 1),
+              color: appTheme.deepPurple_300.withValues(alpha: 0.3),
+              offset: const Offset(0, 1),
               blurRadius: 5,
             ),
           ],
@@ -88,18 +88,18 @@ class SettingsMenuScreen extends GetWidget<SettingsMenuController> {
       onTap: () {
         Get.dialog(
           AlertDialog(
-            title: Text('Logout'),
-            content: Text(
+            title: const Text('Logout'),
+            content: const Text(
               'Are you sure you want to log out?',
             ),
             actions: [
-              TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
+              TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
               TextButton(
                 onPressed: () {
                   Get.back(); // close dialog
                   controller.onLogoutTap();
                 },
-                child: Text('Logout'),
+                child: const Text('Logout'),
               ),
             ],
           ),

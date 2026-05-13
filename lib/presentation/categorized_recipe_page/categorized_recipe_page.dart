@@ -12,7 +12,7 @@ import './categorized_recipe_page_initial_page.dart';
 /// displays the list of recipes using [CategorizedRecipePageInitialPage].
 class CategorizedRecipePage
     extends GetWidget<CategorizedRecipeController> {
-  CategorizedRecipePage({Key? key}) : super(key: key);
+  const CategorizedRecipePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class CategorizedRecipePage
         statusBarBrightness: Brightness.light,
       ),
       child: Scaffold(
-        backgroundColor: appTheme.white_A700,
+        backgroundColor: appTheme.white_700,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(70.h),
           child: Obx(() => CustomAppBar(
@@ -31,7 +31,7 @@ class CategorizedRecipePage
             leadingIcon: ImageConstant.imgArrowLeft,
             onLeadingTap: () => Get.back(),
             title: controller.cuisineType.value ?? "Recipes",
-            backgroundColor: appTheme.white_A700,
+            backgroundColor: appTheme.white_700,
             horizontalPadding: 16.h,
           )),
         ),

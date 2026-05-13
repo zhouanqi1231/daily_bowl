@@ -44,7 +44,7 @@ class CategoryController extends GetxController {
         _fetchCategoryImages();
       }
     } catch (e) {
-      print("Error fetching categories: $e");
+      // print("Error fetching categories: $e");
       Get.snackbar("Error", "Failed to load categories");
     } finally {
       isLoading.value = false;
@@ -66,7 +66,7 @@ class CategoryController extends GetxController {
           }
         }
       } catch (e) {
-        print("Error fetching image for ${category.cuisineType.value}: $e");
+        // print("Error fetching image for ${category.cuisineType.value}: $e");
       }
     }
   }

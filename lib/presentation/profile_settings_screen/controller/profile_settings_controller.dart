@@ -167,7 +167,7 @@ class ProfileSettingsController extends GetxController {
 
       Get.showSnackbar(GetSnackBar(
         message: 'Profile updated successfully',
-        duration: Duration(milliseconds: 1500),
+        duration: const Duration(milliseconds: 1500),
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.black87,
         borderRadius: 8.h,
@@ -177,7 +177,7 @@ class ProfileSettingsController extends GetxController {
       // Jump back to my profile
       Get.back();
     } catch (e) {
-      print("Error updating profile: $e");
+      // print("Error updating profile: $e");
       Get.snackbar('Error', 'Failed to update profile. Please try again.');
     } finally {
       isLoading.value = false;

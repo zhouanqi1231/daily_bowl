@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
@@ -11,12 +10,12 @@ import './models/recipe_item_model.dart';
 
 class WeeklyNutritionReportScreen
     extends GetWidget<WeeklyNutritionReportController> {
-  WeeklyNutritionReportScreen({Key? key}) : super(key: key);
+  const WeeklyNutritionReportScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.h),
@@ -30,7 +29,7 @@ class WeeklyNutritionReportScreen
               topPadding: 0.h,
               leadingIcon: ImageConstant.imgArrowLeft,
               onLeadingTap: () => Get.back(),
-              backgroundColor: appTheme.white_A700.withOpacity(opacity),
+              backgroundColor: appTheme.white_700.withValues(alpha: opacity),
               horizontalPadding: 16.h,
             );
           },
@@ -56,7 +55,7 @@ class WeeklyNutritionReportScreen
   }
 
   Widget _buildHeaderSection(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 200.h,
       child: Stack(
@@ -84,8 +83,8 @@ class WeeklyNutritionReportScreen
                       color: Colors.white,
                       shadows: [
                         Shadow(
-                          color: Colors.black.withOpacity(0.6),
-                          offset: Offset(0, 2),
+                          color: Colors.black.withValues(alpha: 0.6),
+                          offset: const Offset(0, 2),
                           blurRadius: 6.h,
                         ),
                       ],
@@ -166,7 +165,7 @@ class WeeklyNutritionReportScreen
   Widget _buildIngredientsSection(BuildContext context) {
     return Obx(() {
       final ingredients = controller.weeklyNutritionReportModel.value?.ingredientsList ?? [];
-      if (ingredients.isEmpty) return SizedBox.shrink();
+      if (ingredients.isEmpty) return const SizedBox.shrink();
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +195,7 @@ class WeeklyNutritionReportScreen
   Widget _buildNutritionAnalysisSection(BuildContext context) {
     return Obx(() {
       final totalCalories = controller.weeklyNutritionReportModel.value?.totalCalories?.value ?? 0;
-      if (totalCalories == 0) return SizedBox.shrink();
+      if (totalCalories == 0) return const SizedBox.shrink();
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,12 +212,12 @@ class WeeklyNutritionReportScreen
             margin: EdgeInsets.symmetric(horizontal: 52.h),
             padding: EdgeInsets.fromLTRB(12.h, 26.h, 12.h, 26.h),
             decoration: BoxDecoration(
-              color: appTheme.white_A700,
+              color: appTheme.white_700,
               borderRadius: BorderRadius.circular(16.h),
               boxShadow: [
                 BoxShadow(
-                  color: appTheme.color6E196E.withOpacity(0.2),
-                  offset: Offset(0, 1),
+                  color: appTheme.color6E196E.withValues(alpha: 0.2),
+                  offset: const Offset(0, 1),
                   blurRadius: 8.h,
                 ),
               ],
@@ -237,10 +236,6 @@ class WeeklyNutritionReportScreen
                     ),
                   ),
                 ),
-                SizedBox(height: 28.h),
-                _buildNutritionChart(context, totalCalories),
-                SizedBox(height: 28.h),
-                _buildNutritionLegend(context),
               ],
             ),
           ),
@@ -391,11 +386,10 @@ class WeeklyNutritionReportScreen
       );
     });
   }
-
   Widget _buildCongratulationsSection(BuildContext context) {
     return Obx(() {
       final recipes = controller.weeklyNutritionReportModel.value?.recipesList ?? [];
-      if (recipes.isEmpty) return SizedBox.shrink();
+      if (recipes.isEmpty) return const SizedBox.shrink();
 
       return Padding(
         padding: EdgeInsets.only(top: 18.h),

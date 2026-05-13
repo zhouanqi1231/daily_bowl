@@ -5,7 +5,7 @@ import '../../widgets/custom_recipe_card.dart';
 import './controller/categorized_recipe_controller.dart';
 
 class CategorizedRecipePageInitialPage extends StatelessWidget {
-  CategorizedRecipePageInitialPage({Key? key}) : super(key: key);
+  CategorizedRecipePageInitialPage({super.key});
 
   final CategorizedRecipeController controller = Get.put(
     CategorizedRecipeController(),
@@ -15,12 +15,12 @@ class CategorizedRecipePageInitialPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.maxFinite,
-      color: appTheme.white_A700,
+      color: appTheme.white_700,
       child: Obx(() {
         if (controller.isLoading.value) {
           return Center(
             child: CircularProgressIndicator(
-              color: appTheme.deep_purple_800,
+              color: appTheme.deepPurple_800,
             ),
           );
         }
@@ -33,8 +33,6 @@ class CategorizedRecipePageInitialPage extends StatelessWidget {
             ),
           );
         }
-
-        double statusBarHeight = MediaQuery.of(context).padding.top;
 
         return ListView.separated(
           padding: EdgeInsets.fromLTRB(16.h, 0.h, 16.h, 20.h),

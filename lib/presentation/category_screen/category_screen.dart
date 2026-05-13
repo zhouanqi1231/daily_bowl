@@ -9,7 +9,7 @@ import './models/category_model.dart';
 /// Each category item displays the cuisine name, the number of recipes available,
 /// and a representative image.
 class CategoryScreen extends StatelessWidget {
-  CategoryScreen({Key? key}) : super(key: key);
+  CategoryScreen({super.key});
 
   final CategoryController controller = Get.put(CategoryController());
 
@@ -18,12 +18,12 @@ class CategoryScreen extends StatelessWidget {
     double statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       body: Obx(() {
         if (controller.isLoading.value) {
           return Center(
             child: CircularProgressIndicator(
-              color: appTheme.deep_purple_800,
+              color: appTheme.deepPurple_800,
             ),
           );
         }
@@ -41,7 +41,7 @@ class CategoryScreen extends StatelessWidget {
           onRefresh: () => controller.fetchCategories(),
           child: GridView.builder(
             padding: EdgeInsets.fromLTRB(16.h, statusBarHeight + 20.h, 16.h, 40.h),
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: 16.h,
@@ -68,13 +68,13 @@ class CategoryScreen extends StatelessWidget {
       onTap: () => controller.onCategoryTap(category),
       child: Container(
         decoration: BoxDecoration(
-          color: appTheme.deep_purple_50,
+          color: appTheme.deepPurple_50,
           borderRadius: BorderRadius.circular(16.h),
           boxShadow: [
             BoxShadow(
-              color: appTheme.gray_300.withOpacity(0.3),
+              color: appTheme.gray_300.withValues(alpha: 0.3),
               blurRadius: 4.h,
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -103,7 +103,7 @@ class CategoryScreen extends StatelessWidget {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withOpacity(0.7),
+                            Colors.black.withValues(alpha: 0.7),
                           ],
                         ),
                       ),
@@ -117,7 +117,7 @@ class CategoryScreen extends StatelessWidget {
                       child: Icon(
                         Icons.restaurant_menu,
                         size: 80.h,
-                        color: appTheme.deep_purple_800,
+                        color: appTheme.deepPurple_800,
                       ),
                     ),
                   ),
@@ -132,14 +132,14 @@ class CategoryScreen extends StatelessWidget {
                       Text(
                         category.cuisineType.value,
                         style: TextStyleHelper.instance.title16BoldPoppins.copyWith(
-                          color: hasImage ? Colors.white : appTheme.deep_purple_800,
+                          color: hasImage ? Colors.white : appTheme.deepPurple_800,
                         ),
                       ),
                       SizedBox(height: 4.h),
                       Text(
                         "${category.recipeCount.value} Recipes",
                         style: TextStyleHelper.instance.body12RegularRoboto.copyWith(
-                          color: hasImage ? Colors.white.withOpacity(0.8) : appTheme.gray_600,
+                          color: hasImage ? Colors.white.withValues(alpha: 0.8) : appTheme.gray_600,
                         ),
                       ),
                     ],

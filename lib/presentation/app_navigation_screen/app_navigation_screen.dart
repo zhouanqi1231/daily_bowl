@@ -9,13 +9,13 @@ import './controller/app_navigation_controller.dart';
 ///
 /// This is primarily used during development to quickly jump to different parts of the app.
 class AppNavigationScreen extends GetWidget<AppNavigationController> {
-  const AppNavigationScreen({Key? key}) : super(key: key);
+  const AppNavigationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color(0XFFFFFFFF),
+        backgroundColor: const Color(0XFFFFFFFF),
         body: Column(
           children: [
             Expanded(
@@ -115,7 +115,7 @@ class AppNavigationScreen extends GetWidget<AppNavigationController> {
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.h),
-        decoration: BoxDecoration(color: Color(0XFFFFFFFF)),
+        decoration: const BoxDecoration(color: Color(0XFFFFFFFF)),
         child: Column(
           children: [
             SizedBox(height: 10.h),
@@ -126,14 +126,14 @@ class AppNavigationScreen extends GetWidget<AppNavigationController> {
                   screenTitle,
                   textAlign: TextAlign.center,
                   style: TextStyleHelper.instance.title20RegularRoboto.copyWith(
-                    color: Color(0XFF000000),
+                    color: const Color(0XFF000000),
                   ),
                 ),
-                Icon(Icons.arrow_forward, color: Color(0XFF343330)),
+                const Icon(Icons.arrow_forward, color: Color(0XFF343330)),
               ],
             ),
             SizedBox(height: 10.h),
-            Divider(height: 1.h, thickness: 1.h, color: Color(0XFFD2D2D2)),
+            Divider(height: 1.h, thickness: 1.h, color: const Color(0XFFD2D2D2)),
           ],
         ),
       ),

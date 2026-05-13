@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart'; // These are the Viewport values of your Figma Design.
 
 // These are used in the code as a reference to create your UI Responsively.
-const num FIGMA_DESIGN_WIDTH = 412;
-const num FIGMA_DESIGN_HEIGHT = 875;
-const num FIGMA_DESIGN_STATUS_BAR = 0;
+const num figmaDesignWidth = 412;
 
 extension ResponsiveExtension on num {
   double get _width => SizeUtils.width;
 
-  double get h => ((this * _width) / FIGMA_DESIGN_WIDTH);
+  double get h => ((this * _width) / figmaDesignWidth);
 
-  double get fSize => ((this * _width) / FIGMA_DESIGN_WIDTH);
+  double get fSize => ((this * _width) / figmaDesignWidth);
 }
 
 extension FormatExtension on double {
   double toDoubleValue({int fractionDigits = 2}) {
-    return double.parse(this.toStringAsFixed(fractionDigits));
+    return double.parse(toStringAsFixed(fractionDigits));
   }
 
   double isNonZero({num defaultValue = 0.0}) {
@@ -33,7 +31,7 @@ typedef ResponsiveBuild =
     );
 
 class Sizer extends StatelessWidget {
-  const Sizer({Key? key, required this.builder}) : super(key: key);
+  const Sizer({super.key, required this.builder});
 
   /// Builds the widget whenever the orientation changes.
   final ResponsiveBuild builder;
@@ -80,12 +78,12 @@ class SizeUtils {
     orientation = currentOrientation;
     if (orientation == Orientation.portrait) {
       width = boxConstraints.maxWidth.isNonZero(
-        defaultValue: FIGMA_DESIGN_WIDTH,
+        defaultValue: figmaDesignWidth,
       );
       height = boxConstraints.maxHeight.isNonZero();
     } else {
       width = boxConstraints.maxHeight.isNonZero(
-        defaultValue: FIGMA_DESIGN_WIDTH,
+        defaultValue: figmaDesignWidth,
       );
       height = boxConstraints.maxWidth.isNonZero();
     }

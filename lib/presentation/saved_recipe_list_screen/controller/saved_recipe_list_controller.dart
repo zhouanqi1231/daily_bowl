@@ -1,5 +1,4 @@
 import 'package:daily_bowl/core/global_save_manager.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/app_export.dart';
 import '../models/saved_recipe_list_model.dart';
@@ -49,13 +48,13 @@ class SavedRecipeListController extends GetxController {
             );
           }
         } catch (e) {
-          print("Failed to load details for recipe $recipeId: $e");
+          // print("Failed to load details for recipe $recipeId: $e");
         }
       }
 
       recipeList.value = fetchedRecipes;
     } catch (e) {
-      print("Error fetching saved recipes details: $e");
+      // print("Error fetching saved recipes details: $e");
     } finally {
       isLoading.value = false;
     }

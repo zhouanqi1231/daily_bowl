@@ -14,7 +14,7 @@ import './controller/recipe_detail_controller.dart';
 /// preparation steps, nutrition facts, and allergy alerts. It also provides
 /// functionality to mark the recipe as "cooked" or save it to the user's collection.
 class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
-  RecipeDetailScreen({Key? key}) : super(key: key);
+  const RecipeDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
                   margin: 2.h,
                 ),
               ],
-              backgroundColor: appTheme.white_A700.withOpacity(opacity),
+              backgroundColor: appTheme.white_700.withValues(alpha: opacity),
               horizontalPadding: 16.h,
             );
           },
@@ -46,7 +46,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
       body: Obx(() {
         // check if loading
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator(color: appTheme.deep_purple_800));
+          return Center(child: CircularProgressIndicator(color: appTheme.deepPurple_800));
         }
 
         return Stack(
@@ -120,7 +120,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
             children: [
               CustomIconButton(
                 iconPath: ImageConstant.imgGenericAvatar,
-                backgroundColor: appTheme.deep_purple_50,
+                backgroundColor: appTheme.deepPurple_50,
                 width: 40.h,
                 height: 40.h,
                 borderRadius: 20.h,
@@ -184,7 +184,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
   ///
   /// [context] The build context.
   Widget _buildAllergyAlertSection(BuildContext context) {
-    if (controller.allergyTags.isEmpty) return SizedBox.shrink();
+    if (controller.allergyTags.isEmpty) return const SizedBox.shrink();
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       spacing: 8.h,
@@ -216,7 +216,7 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               ),
             ),
           );
-        }).toList(),
+        }),
       ],
     );
   }
@@ -299,12 +299,12 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
               onPressed: () => controller.onBookmarkTap(),
               backgroundColor:
                   controller.isBookmarked.value
-                      ? appTheme.deep_purple_800
-                      : appTheme.white_A700,
+                      ? appTheme.deepPurple_800
+                      : appTheme.white_700,
               child: CustomImageView(
                 imagePath: ImageConstant.imgFab,
                 color: controller.isBookmarked.value
-                    ? appTheme.white_A700
+                    ? appTheme.white_700
                     : null,
               ),
             ),
@@ -314,17 +314,17 @@ class RecipeDetailScreen extends GetWidget<RecipeDetailController> {
             () => CustomFloatingActionButton(
               heroTag: 'detail_main_fab',
               onPressed: () => controller.onMainFabTap(),
+              backgroundColor:
+                  controller.isSaved.value
+                      ? appTheme.deepPurple_800
+                      : appTheme.deepPurple_50,
               child: Icon( 
                 controller.isSaved.value ? Icons.star : Icons.star_border, // Changed to star icon
                 color:
                     controller.isSaved.value
-                        ? appTheme.white_A700
-                        : appTheme.deep_purple_800,
+                        ? appTheme.white_700
+                        : appTheme.deepPurple_800,
               ),
-              backgroundColor:
-                  controller.isSaved.value
-                      ? appTheme.deep_purple_800
-                      : appTheme.deep_purple_50,
             ),
           ),
         ],

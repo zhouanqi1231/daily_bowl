@@ -3,19 +3,17 @@ import 'package:flutter/material.dart';
 import '../core/app_export.dart';
 import './custom_image_view.dart';
 
-/**
- * CustomFloatingActionButton - A reusable floating action button component
- */
+/// CustomFloatingActionButton - A reusable floating action button component
 class CustomFloatingActionButton extends StatelessWidget {
   const CustomFloatingActionButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     this.iconPath,
     this.backgroundColor,
     this.iconSize,
     this.child, // Added child support
     this.heroTag, // Added heroTag to prevent tag collisions
-  }) : super(key: key);
+  });
 
   final VoidCallback? onPressed;
   final String? iconPath;
@@ -32,7 +30,7 @@ class CustomFloatingActionButton extends StatelessWidget {
       child: FloatingActionButton(
         heroTag: heroTag, // Pass the heroTag to the internal FAB
         onPressed: onPressed,
-        backgroundColor: backgroundColor ?? Color(0xFFFFFFFF),
+        backgroundColor: backgroundColor ?? const Color(0xFFFFFFFF),
         elevation: 6.h,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.h),

@@ -26,7 +26,7 @@ class GlobalSaveManager extends GetxService {
         }
       }
     } catch (e) {
-      print("Global fetch saves error: $e");
+      // print("Global fetch saves error: $e");
     }
   }
 

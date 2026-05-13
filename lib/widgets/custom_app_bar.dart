@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import '../core/app_export.dart';
 import './custom_image_view.dart';
 
-/**
- * CustomAppBar - A flexible and reusable AppBar component
- */
+/// CustomAppBar - A flexible and reusable AppBar component
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
-    Key? key,
+    super.key,
     this.height,
     this.title,
     this.leadingIcon,
@@ -28,7 +26,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onSearchRightTap,
     this.searchBackgroundColor,
     this.searchBorderRadius,
-  }) : super(key: key);
+  });
 
   final double? height;
   final String? title;
@@ -149,7 +147,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               hintText: searchPlaceholder ?? "Search...",
               hintStyle: TextStyleHelper.instance.title16RegularRoboto,
               filled: true,
-              fillColor: searchBackgroundColor ?? Color(0xFFECE6F0),
+              fillColor: searchBackgroundColor ?? const Color(0xFFECE6F0),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(searchBorderRadius ?? 28.h),
                 borderSide: BorderSide.none,

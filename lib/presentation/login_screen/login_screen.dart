@@ -12,12 +12,12 @@ class LoginScreen extends GetWidget<LoginController> {
   /// Optional callback to be executed when the register button is pressed.
   final VoidCallback? onRegisterPressed;
 
-  const LoginScreen({Key? key, this.onRegisterPressed}) : super(key: key);
+  const LoginScreen({super.key, this.onRegisterPressed});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.h),
@@ -66,7 +66,7 @@ class LoginScreen extends GetWidget<LoginController> {
                       text: "Register",
                       width: double.infinity,
                       backgroundColor: appTheme.gray_700,
-                      textColor: appTheme.white_A700,
+                      textColor: appTheme.white_700,
                       onPressed: onRegisterPressed ?? () => controller.onRegisterPressed(),
                     ),
                   ),
@@ -76,8 +76,8 @@ class LoginScreen extends GetWidget<LoginController> {
                     child: CustomButton(
                       text: "Login",
                       width: double.infinity,
-                      backgroundColor: appTheme.deep_purple_800,
-                      textColor: appTheme.white_A700,
+                      backgroundColor: appTheme.deepPurple_800,
+                      textColor: appTheme.white_700,
                       onPressed: () => controller.login(),
                     ),
                   ),

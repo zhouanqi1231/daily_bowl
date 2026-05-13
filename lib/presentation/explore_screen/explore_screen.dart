@@ -10,7 +10,7 @@ import './controller/explore_controller.dart';
 /// This screen includes features like pull-to-refresh, infinite scrolling,
 /// and a floating action button for creating new recipes (when logged in).
 class ExploreScreen extends StatelessWidget {
-  ExploreScreen({Key? key}) : super(key: key);
+  ExploreScreen({super.key});
 
   final ExploreController controller = Get.put(ExploreController());
 
@@ -19,7 +19,7 @@ class ExploreScreen extends StatelessWidget {
     double statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
+      backgroundColor: appTheme.white_700,
       body: Stack(
         children: [
           // add NotificationListener for scroll event
@@ -37,7 +37,7 @@ class ExploreScreen extends StatelessWidget {
             },
             child: RefreshIndicator(
               onRefresh: () => controller.refreshData(),
-              color: appTheme.deep_purple_800,
+              color: appTheme.deepPurple_800,
               child: Obx(() {
                 int recipeCount =
                     controller.exploreModelObj.value.recipeList?.length ?? 0;
@@ -96,10 +96,10 @@ class ExploreScreen extends StatelessWidget {
               onPressed: () {
                 Get.toNamed(AppRoutes.recipeCreationScreen);
               },
-              backgroundColor: appTheme.deep_purple_800,
+              backgroundColor: appTheme.deepPurple_800,
               child: CustomImageView(
                 imagePath: ImageConstant.imgCreateARecipe,
-                color: appTheme.white_A700,
+                color: appTheme.white_700,
               ),
             ),
           ],

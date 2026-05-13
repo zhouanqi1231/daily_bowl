@@ -1,6 +1,5 @@
 import '../../main_container_screen/controller/main_container_controller.dart';
 import 'package:daily_bowl/presentation/user_profile_screen/controller/user_profile_controller.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/app_export.dart';
 import '../models/settings_menu_model.dart';
@@ -22,10 +21,6 @@ class SettingsMenuController extends GetxController {
     isLoggedIn.value = prefs.getString('api_key') != null;
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   void onProfileSettingsTap() {
     Get.toNamed(AppRoutes.profileSettingsScreen);
@@ -41,7 +36,7 @@ class SettingsMenuController extends GetxController {
       // delete token
       await ApiClient.delete('/tokens/');
     } catch (e) {
-      print("Logout API call failed: $e");
+      // print("Logout API call failed: $e");
     } finally {
       // clear locally
       final prefs = await SharedPreferences.getInstance();

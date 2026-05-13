@@ -5,7 +5,7 @@ import '../../widgets/custom_recipe_card.dart';
 import './controller/saved_recipe_list_controller.dart';
 
 class SavedRecipeListInitialPage extends StatelessWidget {
-  SavedRecipeListInitialPage({Key? key}) : super(key: key);
+  SavedRecipeListInitialPage({super.key});
 
   final SavedRecipeListController controller = Get.put(SavedRecipeListController());
 
@@ -15,8 +15,8 @@ class SavedRecipeListInitialPage extends StatelessWidget {
     double statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      backgroundColor: appTheme.white_A700,
-      body: Container(
+      backgroundColor: appTheme.white_700,
+      body: SizedBox(
         width: double.infinity,
         child: Column(
           children: [
@@ -24,7 +24,7 @@ class SavedRecipeListInitialPage extends StatelessWidget {
               child: Obx(
                 () => RefreshIndicator(
                   onRefresh: () => controller.refreshRecipes(),
-                  color: appTheme.deep_purple_800,
+                  color: appTheme.deepPurple_800,
                   child: ListView.separated(
                     // Use status bar height in padding to prevent coverage initially,
                     // but allow content to scroll behind status bar.

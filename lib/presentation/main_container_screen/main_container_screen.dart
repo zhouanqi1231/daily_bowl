@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../../core/app_export.dart';
 import '../../widgets/custom_bottom_bar.dart';
 import '../explore_screen/explore_screen.dart';
@@ -17,6 +16,8 @@ import './controller/main_container_controller.dart';
 /// rendering of login and registration screens for unauthenticated users.
 class MainContainerScreen extends StatelessWidget {
   final MainContainerController controller = Get.put(MainContainerController());
+
+  MainContainerScreen({super.key});
 
   /// Builds the "Me" tab content based on the user's login status.
   ///

@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../widgets/custom_ingredients_list.dart';
 import '../models/recipe_detail_model.dart';
@@ -124,7 +122,7 @@ class RecipeDetailController extends GetxController {
         }
       }
     } catch (e) {
-      print("Error loading user allergies: $e");
+      // print("Error loading user allergies: $e");
     }
   }
 
@@ -244,7 +242,7 @@ class RecipeDetailController extends GetxController {
         instructionsList: steps,
       );
     } catch (e) {
-      print("Failed to fetch recipe details: $e");
+      // print("Failed to fetch recipe details: $e");
       if (!isClosed) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!isClosed) {
@@ -309,7 +307,7 @@ class RecipeDetailController extends GetxController {
       Get.showSnackbar(
         GetSnackBar(
           message: 'Marked as cooked!',
-          duration: Duration(milliseconds: 1500),
+          duration: const Duration(milliseconds: 1500),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.black87,
           margin: EdgeInsets.all(16.h),
@@ -339,7 +337,7 @@ class RecipeDetailController extends GetxController {
           message: willBeSaved
               ? 'Recipe saved to your collection'
               : 'Recipe removed from your collection',
-          duration: Duration(milliseconds: 1000),
+          duration: const Duration(milliseconds: 1000),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.black87,
           margin: EdgeInsets.all(16.h),

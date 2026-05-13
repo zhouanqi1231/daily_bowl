@@ -2,28 +2,26 @@ import 'package:flutter/material.dart';
 
 import '../core/app_export.dart';
 
-/** 
- * CustomIngredientsList - A flexible ingredients list component that displays ingredient names with their quantities.
- * 
- * This component creates a vertical list of ingredients where each row contains an ingredient name 
- * on the left and its quantity on the right. The layout uses space-between justification for 
- * proper alignment and consistent spacing between items.
- * 
- * @param ingredientsList List of CustomIngredientsItem containing ingredient data
- * @param itemSpacing Vertical spacing between ingredient rows
- * @param textColor Color for the ingredient text
- * @param fontSize Font size for the ingredient text
- * @param fontWeight Font weight for the ingredient text
- */
+/// CustomIngredientsList - A flexible ingredients list component that displays ingredient names with their quantities.
+/// 
+/// This component creates a vertical list of ingredients where each row contains an ingredient name 
+/// on the left and its quantity on the right. The layout uses space-between justification for 
+/// proper alignment and consistent spacing between items.
+/// 
+/// @param ingredientsList List of CustomIngredientsItem containing ingredient data
+/// @param itemSpacing Vertical spacing between ingredient rows
+/// @param textColor Color for the ingredient text
+/// @param fontSize Font size for the ingredient text
+/// @param fontWeight Font weight for the ingredient text
 class CustomIngredientsList extends StatelessWidget {
   const CustomIngredientsList({
-    Key? key,
+    super.key,
     required this.ingredientsList,
     this.itemSpacing,
     this.textColor,
     this.fontSize,
     this.fontWeight,
-  }) : super(key: key);
+  });
 
   /// List of ingredients with their names and quantities
   final List<CustomIngredientsItem> ingredientsList;
@@ -67,7 +65,7 @@ class CustomIngredientsList extends StatelessWidget {
           child: Text(
             ingredient.name ?? '',
             style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
-              color: textColor ?? Color(0xFF000000),
+              color: textColor ?? const Color(0xFF000000),
               fontSize: fontSize?.fSize,
               fontWeight: fontWeight,
               height: 1.25,
@@ -77,7 +75,7 @@ class CustomIngredientsList extends StatelessWidget {
         Text(
           ingredient.quantity ?? '',
           style: TextStyleHelper.instance.body14RegularRoboto.copyWith(
-            color: textColor ?? Color(0xFF000000),
+            color: textColor ?? const Color(0xFF000000),
             fontSize: fontSize?.fSize,
             fontWeight: fontWeight,
             height: 1.25,

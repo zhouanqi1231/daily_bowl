@@ -24,11 +24,13 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
     value,
   ) {
-    runApp(MyApp());
+    runApp(const MyApp());
   });
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -37,8 +39,8 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           theme: theme,
-          locale: Locale('en', ''),
-          fallbackLocale: Locale('en', ''),
+          locale: const Locale('en', ''),
+          fallbackLocale: const Locale('en', ''),
           title: 'recipe_master',
           initialRoute: AppRoutes.initialRoute,
           getPages: AppRoutes.pages,
@@ -47,7 +49,7 @@ class MyApp extends StatelessWidget {
             return MediaQuery(
               data: MediaQuery.of(
                 context,
-              ).copyWith(textScaler: TextScaler.linear(1.0)),
+              ).copyWith(textScaler: const TextScaler.linear(1.0)),
               child: child!,
             );
           },
