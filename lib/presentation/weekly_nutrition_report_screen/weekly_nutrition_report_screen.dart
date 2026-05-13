@@ -281,7 +281,7 @@ class WeeklyNutritionReportScreen
                         children: [
                           Text(
                             totalCalories.toString(),
-                            style: TextStyleHelper.instance.headline28BoldPoppins
+                            style: TextStyleHelper.instance.headline28MediumRoboto
                                 .copyWith(height: 1.6),
                           ),
                           Text(
