@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
@@ -52,6 +51,7 @@ class WeeklyNutritionReportScreen
           ),
         ),
       ),
+      bottomNavigationBar: _buildGenerateReportButton(context),
     );
   }
 
@@ -112,12 +112,6 @@ class WeeklyNutritionReportScreen
           SizedBox(height: 24.h),
           _buildIngredientsSection(context),
           SizedBox(height: 24.h),
-          _buildNutritionAnalysisSection(context),
-          SizedBox(height: 24.h),
-          _buildGenerateReportButton(context),
-          SizedBox(height: 24.h),
-          // _buildCongratulationsSection(context),
-          SizedBox(height: 60.h),
         ],
       ),
     );
@@ -193,273 +187,51 @@ class WeeklyNutritionReportScreen
     });
   }
 
-  Widget _buildNutritionAnalysisSection(BuildContext context) {
-    return Obx(() {
-      final totalCalories = controller.weeklyNutritionReportModel.value?.totalCalories?.value ?? 0;
-      if (totalCalories == 0) return const SizedBox.shrink();
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Here's your weekly nutrition analysis:",
-            style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
-              height: 1.2,
-            ),
-          ),
-          SizedBox(height: 18.h),
-          Container(
-            width: double.infinity,
-            margin: EdgeInsets.symmetric(horizontal: 52.h),
-            padding: EdgeInsets.fromLTRB(12.h, 26.h, 12.h, 26.h),
-            decoration: BoxDecoration(
-              color: appTheme.white_700,
-              borderRadius: BorderRadius.circular(16.h),
-              boxShadow: [
-                BoxShadow(
-                  color: appTheme.color6E196E.withValues(alpha: 0.2),
-                  offset: const Offset(0, 1),
-                  blurRadius: 8.h,
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 16.h),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Nutrition Consumption',
-                      style: TextStyleHelper.instance.title16BoldPoppins.copyWith(
-                        height: 1.6,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                SizedBox(
-                  height: 214.h,
-                  width: 214.h,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      PieChart(
-                        PieChartData(
-                          sectionsSpace: 2,
-                          centerSpaceRadius: 70.h,
-                          sections: [
-                            PieChartSectionData(
-                              value: controller.weeklyNutritionReportModel
-                                      .value?.proteinPercentage?.value ??
-                                  35,
-                              color: appTheme.redCustom,
-                              radius: 25.h,
-                              showTitle: false,
-                            ),
-                            PieChartSectionData(
-                              value: controller.weeklyNutritionReportModel
-                                      .value?.carbsPercentage?.value ??
-                                  32,
-                              color: appTheme.deepPurple_300,
-                              radius: 25.h,
-                              showTitle: false,
-                            ),
-                            PieChartSectionData(
-                              value: controller.weeklyNutritionReportModel
-                                      .value?.fatPercentage?.value ??
-                                  33,
-                              color: appTheme.deepPurple_800,
-                              radius: 25.h,
-                              showTitle: false,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '${totalCalories.toInt()}',
-                            style: TextStyleHelper.instance.headline28MediumRoboto
-                                .copyWith(height: 1.6, color: appTheme.gray_900),
-                          ),
-                          Text(
-                            'Cal',
-                            style: TextStyleHelper.instance.title16MediumRoboto
-                                .copyWith(height: 1.6, color: appTheme.gray_600),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                _buildNutritionLegend(context),
-              ],
-            ),
-          ),
-        ],
-      );
-    });
-  }
-
-  // Widget _buildNutritionChart(BuildContext context, int totalCalories) {
-  //   return Container(
-  //     height: 214.h,
-  //     width: 214.h,
-  //     child: Stack(
-  //       alignment: Alignment.center,
-  //       children: [
-  //         PieChart(
-  //           PieChartData(
-  //             sectionsSpace: 2,
-  //             centerSpaceRadius: 70.h,
-  //             sections: [
-  //               PieChartSectionData(
-  //                 value: 35,
-  //                 color: appTheme.deepPurple_800,
-  //                 radius: 25.h,
-  //                 showTitle: false,
-  //               ),
-  //               PieChartSectionData(
-  //                 value: 32,
-  //                 color: appTheme.redCustom,
-  //                 radius: 25.h,
-  //                 showTitle: false,
-  //               ),
-  //               PieChartSectionData(
-  //                 value: 33,
-  //                 color: appTheme.deepPurple_300,
-  //                 radius: 25.h,
-  //                 showTitle: false,
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             Text(
-  //               '$totalCalories',
-  //               style: TextStyleHelper.instance.headline32BoldPoppins,
-  //             ),
-  //             Text(
-  //               'CALORIES',
-  //               style: TextStyleHelper.instance.body12MediumPoppins,
-  //             ),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  Widget _buildNutritionLegend(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.fromLTRB(4.h, 2.h, 4.h, 2.h),
-          decoration: BoxDecoration(
-            color: appTheme.redCustom,
-            borderRadius: BorderRadius.circular(4.h),
-          ),
-          child: Text(
-            'PROTEIN',
-            style: TextStyleHelper.instance.label10BoldRoboto.copyWith(
-              height: 1.2,
-            ),
-          ),
-        ),
-        SizedBox(width: 10.h),
-        Container(
-          padding: EdgeInsets.fromLTRB(2.h, 2.h, 2.h, 2.h),
-          decoration: BoxDecoration(
-            color: appTheme.deepPurple_800,
-            borderRadius: BorderRadius.circular(4.h),
-          ),
-          child: Text(
-            'CARBS',
-            style: TextStyleHelper.instance.label10BoldRoboto.copyWith(
-              height: 1.2,
-            ),
-          ),
-        ),
-        SizedBox(width: 10.h),
-        Container(
-          padding: EdgeInsets.fromLTRB(2.h, 2.h, 2.h, 2.h),
-          decoration: BoxDecoration(
-            color: appTheme.deepPurple_300,
-            borderRadius: BorderRadius.circular(4.h),
-          ),
-          child: Text(
-            'FAT',
-            style: TextStyleHelper.instance.label10BoldRoboto.copyWith(
-              height: 1.2,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildGenerateReportButton(BuildContext context) {
     return Obx(() {
       final recipes =
           controller.weeklyNutritionReportModel.value?.recipesList ?? [];
       if (recipes.isEmpty) return const SizedBox.shrink();
 
-      return SizedBox(
-        width: double.infinity,
-        height: 50.h,
-        child: ElevatedButton.icon(
-          onPressed: controller.isGeneratingReport.value
-              ? null
-              : () => controller.generateReport(),
-          icon: controller.isGeneratingReport.value
-              ? SizedBox(
-                  width: 20.h,
-                  height: 20.h,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: appTheme.white_700,
-                  ),
-                )
-              : const Icon(Icons.picture_as_pdf, size: 20),
-          label: Text(
-            controller.isGeneratingReport.value
-                ? 'Generating...'
-                : 'Generate Nutrition Report (PDF)',
-            style: TextStyleHelper.instance.title16MediumRoboto
-                .copyWith(color: appTheme.white_700),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: appTheme.deepPurple_800,
-            disabledBackgroundColor: appTheme.deepPurple_300,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.h),
+      return SafeArea(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(24.h, 8.h, 24.h, 16.h),
+          child: SizedBox(
+            width: double.infinity,
+            height: 50.h,
+            child: ElevatedButton.icon(
+              onPressed: controller.isGeneratingReport.value
+                  ? null
+                  : () => controller.generateReport(),
+              icon: controller.isGeneratingReport.value
+                  ? SizedBox(
+                      width: 20.h,
+                      height: 20.h,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: appTheme.white_700,
+                      ),
+                    )
+                  : const Icon(Icons.picture_as_pdf, size: 20),
+              label: Text(
+                controller.isGeneratingReport.value
+                    ? 'Generating...'
+                    : 'Generate Nutrition Report (PDF)',
+                style: TextStyleHelper.instance.title16MediumRoboto
+                    .copyWith(color: appTheme.white_700),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: appTheme.deepPurple_800,
+                disabledBackgroundColor: appTheme.deepPurple_300,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.h),
+                ),
+                elevation: 0,
+              ),
             ),
-            elevation: 0,
           ),
         ),
       );
     });
   }
-  // Widget _buildCongratulationsSection(BuildContext context) {
-  //   return Obx(() {
-  //     final recipes = controller.weeklyNutritionReportModel.value?.recipesList ?? [];
-  //     if (recipes.isEmpty) return const SizedBox.shrink();
-
-  //     return Padding(
-  //       padding: EdgeInsets.only(top: 18.h),
-  //       child: Text(
-  //         'Congratulations! This is a remarkably healthy week in terms of food. You have a balanced diet and nutrition consumption. Keep going!',
-  //         style: TextStyleHelper.instance.title16RegularRoboto.copyWith(
-  //           height: 1.5,
-  //         ),
-  //       ),
-  //     );
-  //   });
-  // }
 }
