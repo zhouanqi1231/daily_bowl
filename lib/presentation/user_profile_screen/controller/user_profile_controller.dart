@@ -120,6 +120,7 @@ class UserProfileController extends GetxController {
   Future<void> _loadServerData(int userId, String displayName, Map<DateTime, DailyActivity> tempActivity) async {
     try {
       // 0. Fetch basic user details (including allergies)
+      print("[PROFILE] _loadServerData userId=$userId");
       String allergyStr = "";
       try {
         final userData = await ApiClient.get('/users/$userId/');
@@ -135,7 +136,8 @@ class UserProfileController extends GetxController {
 
       // 1. Fetch created recipes and update activity
       final recipes = await _fetchCreatedRecipes(userId, tempActivity);
-      
+      print("[PROFILE] fetched ${recipes.length} recipes");
+
       // 2. Fetch saved recipes and update activity
       await _fetchSavedRecipes(userId, tempActivity);
 
@@ -152,6 +154,7 @@ class UserProfileController extends GetxController {
     } catch (e) {
       // print("Error fetching profile details: $e");
       if (!isClosed) {
+        print("[PROFILE] _loadServerData FAILED, falling back to mock");
         activityData.value = tempActivity;
         _loadMockData(displayName);
       }
